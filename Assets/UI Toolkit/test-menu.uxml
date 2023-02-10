@@ -1,0 +1,15 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="True">
+    <Style src="project://database/Assets/UI%20Toolkit/AllStyles.uss?fileID=7433441132597879392&amp;guid=f61304e1ad1bf423e9d432b304a7f9e4&amp;type=3#AllStyles" />
+    <ui:VisualElement style="margin-top: 20px; flex-direction: column; flex-basis: auto; justify-content: flex-start; align-items: flex-start; width: 20%;">
+        <ui:Label text="Label" display-tooltip-when-elided="true" style="font-size: 36px; -unity-font-style: bold; -unity-font: url(&apos;project://database/Assets/Fonts/RockfordSans-Bold.otf?fileID=12800000&amp;guid=2212a8c12f1db436ab6a932e923d8748&amp;type=3#RockfordSans-Bold&apos;);" />
+        <ui:VisualElement>
+            <ui:Label text="Label" display-tooltip-when-elided="true" />
+        </ui:VisualElement>
+    </ui:VisualElement>
+    <ui:VisualElement>
+        <ui:Label text="Label" display-tooltip-when-elided="true" />
+    </ui:VisualElement>
+    <ui:VisualElement name="VisualElement">
+        <ui:Label text="Label" display-tooltip-when-elided="true" />
+    </ui:VisualElement>
+</ui:UXML>

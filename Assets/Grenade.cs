@@ -1,0 +1,114 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using MoreMountains.Feedbacks;
+
+
+public class Grenade : MonoBehaviour
+{
+
+    public float delay = 2f;
+    private float countdown;
+    private bool hasExploded;
+    public float blastRadius = 5f;
+    public float explosionForce = 500f;
+    public int damageInflicted = 3;
+
+    public MMF_Player MyPlayer;
+
+    //public GameObject explosionEffect;
+    private void OnEnable()
+    {
+        // initializes the player and all its feedbacks, making sure everything's correctly setup before playing it
+        MyPlayer.Initialization();
+    }
+
+    // Start is called before the first frame update
+    void Start()
+    {
+        countdown = delay;
+        
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+        
+        countdown -= Time.deltaTime;
+        if (countdown <= 0 && !hasExploded)
+        {
+            Explode();
+            hasExploded = true;
+            Debug.Log("Boom! Timed out!");
+        }
+    }
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        
+
+        
+        IDamagable damagable = collision.gameObject.GetComponent<IDamagable>();
+
+        if (damagable != null)
+        {
+            damagable.Damage(damageInflicted);
+            Explode();
+
+        }
+
+        
+        if (collision.gameObject.tag == "enemy")
+        {
+            Explode();
+            hasExploded = true;
+        }
+
+        if (collision.gameObject.tag == "environment")
+        {
+            Explode();
+            hasExploded = true;
+        }
+
+    }
+
+
+    public void Explode()
+    {
+
+        GameObject boom = ObjectPooler.SharedInstance.GetPooledObject("explosion");
+
+        if (boom != null)
+        {
+            boom.transform.position = transform.position;
+            boom.SetActive(true);
+            MyPlayer.PlayFeedbacks();
+            hasExploded = true;
+           // Debug.Log("Boom! HeadSHOT!");
+            // asks the player to play its sequence of feedbacks
+
+        }
+
+        Collider[] colliders = Physics.OverlapSphere(transform.position, blastRadius);
+//        Debug.Log(colliders.Length);
+        foreach (Collider nearbyObject in colliders)
+        {          
+
+            Rigidbody rb = nearbyObject.GetComponent<Rigidbody>();
+            EnemyBehaviour enemyBehaviour = nearbyObject.GetComponent<EnemyBehaviour>();
+
+            if (rb != null && enemyBehaviour != null)
+            {
+                enemyBehaviour.Damage(damageInflicted);
+                rb.AddExplosionForce(explosionForce, transform.position, blastRadius);
+                //Debug.Log("enemy destroyed");
+            }
+
+        }
+        gameObject.GetComponent<Rigidbody>().velocity = Vector3.zero;
+        gameObject.SetActive(false);
+
+    }
+
+
+}

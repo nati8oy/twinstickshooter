@@ -1,0 +1,8 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../UIElementsSchema/UIElements.xsd" editor-extension-mode="True">
+    <ui:Template name="ShopListItem" src="project://database/Assets/UI%20Toolkit/ShopListItem.uxml?fileID=9197481963319205126&amp;guid=3baa84a227c8c4a82adfe8ff0423b7a3&amp;type=3#ShopListItem" />
+    <Style src="project://database/Assets/UI%20Toolkit/AllStyles.uss?fileID=7433441132597879392&amp;guid=f61304e1ad1bf423e9d432b304a7f9e4&amp;type=3#AllStyles" />
+    <ui:VisualElement name="MainWrapper" style="width: 350px; margin-top: 20px; margin-left: 20px; height: 200%;">
+        <ui:ListView focusable="true" name="shop-list" />
+        <ui:Instance template="ShopListItem" name="ShopListItem" />
+    </ui:VisualElement>
+</ui:UXML>

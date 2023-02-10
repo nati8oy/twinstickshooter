@@ -1,0 +1,34 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e5bb70da5a905444aab1e3c818aacd9f, type: 3}
+  m_Name: Defence tower
+  m_EditorClassIdentifier: 
+  structureModel: {fileID: 7518906657439490759, guid: af7abd86cb91e478b80a7add7b87d688, type: 3}
+  ghostModel: {fileID: 1782419458224050939, guid: 7f94b608a65f84515bc8986b70e15566, type: 3}
+  shopThumnail: {fileID: 21300000, guid: e8a298267fda94a3492354429b462f59, type: 3}
+  woodIcon: {fileID: 21300000, guid: 7cf2f38432d774322be5e39241582eb7, type: 3}
+  wood: 10
+  stoneIcon: {fileID: 21300000, guid: 03ebee77ce2a84b94a17b2a331ad1244, type: 3}
+  stone: 0
+  wheatIcon: {fileID: 21300000, guid: 72b13a456ea0749dbb7df7394ca97af4, type: 3}
+  wheat: 0
+  sheepIcon: {fileID: 21300000, guid: 2da5d69e49d7b4727ba2dc73bc3b8cc6, type: 3}
+  sheep: 0
+  brickIcon: {fileID: 21300000, guid: c1702df6de50b40d6a9e1305220cf3c4, type: 3}
+  brick: 0
+  offensive: 0
+  health: 10
+  attackPower: 1
+  buffType: 
+  generator: 0
+  resourceToGenerate: {fileID: 2019937143730229997, guid: 3293d8439d6564976abca0a9a505d824, type: 3}
+  type: defence

@@ -1,0 +1,31 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 013bb16fb9e7b4384b235d3788e709de, type: 3}
+  m_Name: Common Enemy
+  m_EditorClassIdentifier: 
+  health: 1
+  damage: 1
+  attackSpeed: 1
+  objectPoolerTag: enemy
+  moveSpeed: 20
+  shield: 0
+  followPlayer: 0
+  canAttack: 1
+  enemyMaterial: {fileID: 2100000, guid: 5c270a73328a99e439fec44a0cf3a17d, type: 2}
+  enemyModel: {fileID: 8208434519250324759, guid: b153d2bff063d43019d15f928a232a2d, type: 3}
+  resourceDrop:
+  - ammo
+  - health
+  - fire
+  - XP
+  - none
+  XP: 1
