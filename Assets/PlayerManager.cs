@@ -56,7 +56,8 @@ public class PlayerManager : Singleton<PlayerManager>
     // Update is called once per frame
     void Update()
     {
-        if (GameManager.levelComplete || playerDead)
+        //check the game state. If it's in build mode or the player is dead then disable the controller
+        if (GameManager.Instance.gameState == GameManager.GameState.building || playerDead)
         {
             characterController.enabled = false;
 
@@ -98,7 +99,11 @@ public class PlayerManager : Singleton<PlayerManager>
         healthBar.SetAmount(currentHealth);
         if (currentHealth <= 0)
         {
+
+            //if health is equal to or less than 0 then set the player to dead
             playerDead = true;
+            GameManager.Instance.gameState = GameManager.GameState.dead;
+
 
             UIManager.Instance.gameoverUI.SetActive(true);
   

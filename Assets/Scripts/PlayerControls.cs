@@ -89,6 +89,15 @@ public partial class @PlayerControls : IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Edit mode"",
+                    ""type"": ""Button"",
+                    ""id"": ""6a69ef16-ac97-4aea-8a61-0fb1a35b27d8"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -256,6 +265,17 @@ public partial class @PlayerControls : IInputActionCollection2, IDisposable
                     ""action"": ""PlaceObject"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""a8b363a3-75c8-4502-b7e0-45394df005aa"",
+                    ""path"": ""<DualShockGamepad>/leftStickPress"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Gamepad"",
+                    ""action"": ""Edit mode"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -304,6 +324,7 @@ public partial class @PlayerControls : IInputActionCollection2, IDisposable
         m_Controls_Debug = m_Controls.FindAction("Debug", throwIfNotFound: true);
         m_Controls_Point = m_Controls.FindAction("Point", throwIfNotFound: true);
         m_Controls_PlaceObject = m_Controls.FindAction("PlaceObject", throwIfNotFound: true);
+        m_Controls_Editmode = m_Controls.FindAction("Edit mode", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -370,6 +391,7 @@ public partial class @PlayerControls : IInputActionCollection2, IDisposable
     private readonly InputAction m_Controls_Debug;
     private readonly InputAction m_Controls_Point;
     private readonly InputAction m_Controls_PlaceObject;
+    private readonly InputAction m_Controls_Editmode;
     public struct ControlsActions
     {
         private @PlayerControls m_Wrapper;
@@ -381,6 +403,7 @@ public partial class @PlayerControls : IInputActionCollection2, IDisposable
         public InputAction @Debug => m_Wrapper.m_Controls_Debug;
         public InputAction @Point => m_Wrapper.m_Controls_Point;
         public InputAction @PlaceObject => m_Wrapper.m_Controls_PlaceObject;
+        public InputAction @Editmode => m_Wrapper.m_Controls_Editmode;
         public InputActionMap Get() { return m_Wrapper.m_Controls; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -411,6 +434,9 @@ public partial class @PlayerControls : IInputActionCollection2, IDisposable
                 @PlaceObject.started -= m_Wrapper.m_ControlsActionsCallbackInterface.OnPlaceObject;
                 @PlaceObject.performed -= m_Wrapper.m_ControlsActionsCallbackInterface.OnPlaceObject;
                 @PlaceObject.canceled -= m_Wrapper.m_ControlsActionsCallbackInterface.OnPlaceObject;
+                @Editmode.started -= m_Wrapper.m_ControlsActionsCallbackInterface.OnEditmode;
+                @Editmode.performed -= m_Wrapper.m_ControlsActionsCallbackInterface.OnEditmode;
+                @Editmode.canceled -= m_Wrapper.m_ControlsActionsCallbackInterface.OnEditmode;
             }
             m_Wrapper.m_ControlsActionsCallbackInterface = instance;
             if (instance != null)
@@ -436,6 +462,9 @@ public partial class @PlayerControls : IInputActionCollection2, IDisposable
                 @PlaceObject.started += instance.OnPlaceObject;
                 @PlaceObject.performed += instance.OnPlaceObject;
                 @PlaceObject.canceled += instance.OnPlaceObject;
+                @Editmode.started += instance.OnEditmode;
+                @Editmode.performed += instance.OnEditmode;
+                @Editmode.canceled += instance.OnEditmode;
             }
         }
     }
@@ -467,5 +496,6 @@ public partial class @PlayerControls : IInputActionCollection2, IDisposable
         void OnDebug(InputAction.CallbackContext context);
         void OnPoint(InputAction.CallbackContext context);
         void OnPlaceObject(InputAction.CallbackContext context);
+        void OnEditmode(InputAction.CallbackContext context);
     }
 }

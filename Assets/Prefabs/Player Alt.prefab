@@ -247,6 +247,14 @@ MonoBehaviour:
       m_Calls: []
     m_ActionId: 99b9a443-86fd-494c-a7a5-321a79c6623f
     m_ActionName: Controls/Point[/VirtualMouse/delta,/VirtualMouse1/delta,/VirtualMouse2/delta,/VirtualMouse3/delta,/VirtualMouse4/delta,/VirtualMouse5/delta,/VirtualMouse6/delta,/VirtualMouse7/delta,/VirtualMouse8/delta]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 42398fa9-971f-48a1-9be9-82de5064307d
+    m_ActionName: Controls/PlaceObject[/DualShock4GamepadHID/buttonSouth]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 6a69ef16-ac97-4aea-8a61-0fb1a35b27d8
+    m_ActionName: Controls/Edit mode[/DualShock4GamepadHID/leftStickPress]
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: 
   m_DefaultActionMap: Controls
@@ -324,12 +332,11 @@ MonoBehaviour:
   currentHealth: 0
   playerDead: 0
   playerInput: {fileID: 3154581663302683127}
-  firePoint: {fileID: 3566868977290621469}
   levelBar: {fileID: 0}
   playerLevels: {fileID: 11400000, guid: d7aac3c57f7a946528b3e9b86cbb8d3d, type: 2}
   playerLevelMax: 0
   XP: {fileID: 11400000, guid: add48375777034678ab7fcf5a1b6712a, type: 2}
-  weapon: {fileID: 11400000, guid: bf57104883e644c2fb5a470adf115757, type: 2}
+  playerDeath: {fileID: 198049818700294864, guid: da420a91596617b4ab0f8941677b52e2, type: 3}
   characterController: {fileID: 3154581663302683128}
   levelManager: {fileID: 0}
 --- !u!114 &1812333364360549038

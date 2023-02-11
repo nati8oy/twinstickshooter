@@ -541,6 +541,67 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 3154581663302683132, guid: ed4b5c8e928f24fac9a372686bd2ffcd, type: 3}
   m_PrefabInstance: {fileID: 3154581663426434144}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &123755940
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 123755925}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2215dd48f6c124bb988f4b0c3ebcb643, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  shootAction:
+    m_Name: Shoot
+    m_Type: 0
+    m_ExpectedControlType: 
+    m_Id: eeb9c72f-2aa8-4e3a-a04a-4b3e2d4d755e
+    m_Processors: 
+    m_Interactions: 
+    m_SingletonActionBindings: []
+    m_Flags: 0
+  editMode:
+    m_Name: 
+    m_Type: 0
+    m_ExpectedControlType: 
+    m_Id: 
+    m_Processors: 
+    m_Interactions: 
+    m_SingletonActionBindings: []
+    m_Flags: 0
+  secondaryShootAction:
+    m_Name: Secondary Shoot
+    m_Type: 0
+    m_ExpectedControlType: 
+    m_Id: aa22ea85-8334-448b-88f4-e4593d416db8
+    m_Processors: 
+    m_Interactions: 
+    m_SingletonActionBindings: []
+    m_Flags: 0
+  debugKillAll:
+    m_Name: Debug Kill All
+    m_Type: 0
+    m_ExpectedControlType: 
+    m_Id: 1905201d-cfdb-4554-815a-1bcacfd8118a
+    m_Processors: 
+    m_Interactions: 
+    m_SingletonActionBindings: []
+    m_Flags: 0
+  firePoint: {fileID: 144405415}
+  secondaryFirePoint: {fileID: 1619603536}
+  bulletPrefab: {fileID: 8128409212052658623, guid: c6bb4c01daf2f44f5b3053c7ea227be4, type: 3}
+  secondaryPrefab: {fileID: 3557350299342114084, guid: 775a120418ff5443cb0a5d57bacaafa5, type: 3}
+  weaponCooldown: 0
+  cooldownComplete: 0
+  bulletForce: 40
+  secondaryWeaponForce: 80
+--- !u!4 &144405415 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 3566868977290621469, guid: ed4b5c8e928f24fac9a372686bd2ffcd, type: 3}
+  m_PrefabInstance: {fileID: 3154581663426434144}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &146359189
 GameObject:
   m_ObjectHideFlags: 0
@@ -3107,6 +3168,11 @@ MonoBehaviour:
   CurrentTimeScale: 1
   TargetTimeScale: 1
   TestButton: 0
+--- !u!4 &1619603536 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 5450850766826555495, guid: ed4b5c8e928f24fac9a372686bd2ffcd, type: 3}
+  m_PrefabInstance: {fileID: 3154581663426434144}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1691243788
 GameObject:
   m_ObjectHideFlags: 0
@@ -3270,7 +3336,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4db4fa62d85114d3aab57640bf73c6a2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  godMode: 1
+  godMode: 0
 --- !u!1 &1783384954
 GameObject:
   m_ObjectHideFlags: 3
@@ -4049,10 +4115,6 @@ PrefabInstance:
       propertyPath: healthBar
       value: 
       objectReference: {fileID: 78048288}
-    - target: {fileID: 123755933, guid: ed4b5c8e928f24fac9a372686bd2ffcd, type: 3}
-      propertyPath: playerDeath
-      value: 
-      objectReference: {fileID: 198049818700294864, guid: da420a91596617b4ab0f8941677b52e2, type: 3}
     - target: {fileID: 123755933, guid: ed4b5c8e928f24fac9a372686bd2ffcd, type: 3}
       propertyPath: levelManager
       value: 

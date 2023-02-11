@@ -23,7 +23,6 @@ public class GameManager : Singleton<GameManager>
 
     public float divider = 0.1f;
     public float timeInterval = 3f;
-    public string gameMode;
 
     public static bool levelComplete;
 
@@ -35,6 +34,7 @@ public class GameManager : Singleton<GameManager>
 
     public bool gameOver; 
 
+    //test
 
     public static int maxEnemies;
 
@@ -46,6 +46,7 @@ public class GameManager : Singleton<GameManager>
         play,
         paused,
         building,
+        dead,
     }
 
     [SerializeField] private GameObject[] spawnPoints;
@@ -54,10 +55,6 @@ public class GameManager : Singleton<GameManager>
     {
         //set the current state of the game to playing
         gameState = GameState.play;
-
-    //Start the coroutine we define below named EnemySpawn.
-    gameMode = "tws";
-        //StartEnemySpawn();
 
 
     }
@@ -85,7 +82,7 @@ public class GameManager : Singleton<GameManager>
         yield return new WaitForSeconds(timeInterval);
 
 
-        if (gameMode == "tws" && enemyCount < maxEnemies)
+        if (gameState == GameState.play && enemyCount < maxEnemies)
         {
             StartCoroutine(EnemySpawn());
             enemyCount += 1;
@@ -96,7 +93,7 @@ public class GameManager : Singleton<GameManager>
         enemyCount = 1;
         //check the game mode is tws before starting the coroutine.
         //tws means twin stick shooter. The other mode is building mode. 
-        if (gameMode == "tws" && enemyCount < maxEnemies)
+        if (gameState == GameState.play && enemyCount < maxEnemies)
         {
             StartCoroutine(EnemySpawn());
 
@@ -112,9 +109,13 @@ public class GameManager : Singleton<GameManager>
            // Debug.Log("checked for enemies");
             levelComplete = true;
             LevelManager.Instance.LevelComplete();
+
+            //set the game state to build mode
+            gameState = GameState.building;
+
+
         }
     }
 
-  
 
 }
