@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 2815876294174825486}
   - component: {fileID: 3551441097403011677}
   - component: {fileID: 2051813158199846175}
+  - component: {fileID: -7679758710775808617}
   m_Layer: 0
   m_Name: Block Ghost
   m_TagString: ghost
@@ -105,7 +106,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1542429475282784854}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 16c76ab4122154e31b526233bb7e3d0b, type: 3}
   m_Name: 
@@ -122,6 +123,33 @@ MonoBehaviour:
     m_Type: 0
     m_ExpectedControlType: 
     m_Id: 658d8ccb-edec-4596-b447-66efbfc3cecd
+    m_Processors: 
+    m_Interactions: 
+    m_SingletonActionBindings: []
+    m_Flags: 0
+--- !u!114 &-7679758710775808617
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1542429475282784854}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 70e0ccea979ee4760be132bed91796a0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  mainCamera: {fileID: 0}
+  layerMask:
+    serializedVersion: 2
+    m_Bits: 8
+  structure: {fileID: 11400000, guid: e592940146aa547438f2a7781829aa2e, type: 2}
+  raycastHitPoint: {x: 0, y: 0, z: 0}
+  placeBuildingAction:
+    m_Name: Place Building
+    m_Type: 0
+    m_ExpectedControlType: 
+    m_Id: 3e76b316-9e27-4854-bb2b-ed3e73e8a9e7
     m_Processors: 
     m_Interactions: 
     m_SingletonActionBindings: []

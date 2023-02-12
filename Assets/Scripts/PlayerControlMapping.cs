@@ -2,6 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using MoreMountains.Feedbacks;
+using MoreMountains.Tools;
 
 
 public class PlayerControlMapping : MonoBehaviour
@@ -12,7 +14,8 @@ public class PlayerControlMapping : MonoBehaviour
     public InputAction secondaryShootAction;
     public InputAction debugKillAll;
     private PlayerControls playerControls;
-
+    public GameObject buildCamera;
+    public Camera mainCamera;
 
     public Transform firePoint;
     public Transform secondaryFirePoint;
@@ -123,9 +126,29 @@ public class PlayerControlMapping : MonoBehaviour
 
     public void EditMode()
     {
+
         //change the game mode to building
         Debug.Log("Entered Build Mode");
-        GameManager.Instance.gameState = GameManager.GameState.building;
+
+        //toggle between edit/building and play mode
+       if(GameManager.Instance.gameState == GameManager.GameState.play)
+        {
+            buildCamera.SetActive(true);
+            MMTimeManager.Instance.SetTimeScaleTo(0.2f);
+            mainCamera = GameObject.Find("CameraRigBase").GetComponentInChildren<Camera>();
+
+            GameManager.Instance.gameState = GameManager.GameState.building;
+        }
+        else if(GameManager.Instance.gameState == GameManager.GameState.building)
+        {
+            buildCamera.SetActive(false);
+            MMTimeManager.Instance.SetTimeScaleTo(1f);
+            GameManager.Instance.gameState = GameManager.GameState.play;
+            mainCamera = GameObject.Find("MainCamera").GetComponent<Camera>();
+
+        }
+
+
 
     }
 }

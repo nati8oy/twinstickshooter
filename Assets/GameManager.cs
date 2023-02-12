@@ -4,9 +4,11 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using Cinemachine;
 
+using MoreMountains.Tools;
+using MoreMountains.Feedbacks;
+
 public class GameManager : Singleton<GameManager>
 {
-
     [SerializeField] private Transform enemySpawnPoint;
     [SerializeField] private LevelManager levelManager;
     [SerializeField] private UIManager uiManager;
@@ -55,9 +57,10 @@ public class GameManager : Singleton<GameManager>
     {
         //set the current state of the game to playing
         gameState = GameState.play;
-
+   
 
     }
+
 
 
     public void SpawnEnemy()
@@ -112,10 +115,10 @@ public class GameManager : Singleton<GameManager>
 
             //set the game state to build mode
             gameState = GameState.building;
-
-
+            
         }
     }
+
 
 
 }
