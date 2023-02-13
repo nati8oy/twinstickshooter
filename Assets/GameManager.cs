@@ -21,6 +21,8 @@ public class GameManager : Singleton<GameManager>
     [SerializeField] private GameObject feedbackPlayer;
     public GameObject player;
 
+    public Camera[] cameraList; 
+
     //public CinemachineVirtualCamera virtualCamera;
 
     public float divider = 0.1f;

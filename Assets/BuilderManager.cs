@@ -9,11 +9,30 @@ public class BuilderManager : Singleton<BuilderManager>
 
     Structure structure;
 
+
+
+
     public float itemXSpread = 10;
     public float itemYSpread = 0;
     public float itemZSpread = 10;
 
+    public void ReturnToGame()
+    {
+        GameManager.Instance.gameState = GameManager.GameState.play;
+        GameManager.levelComplete = false;
+        GameManager.maxEnemies = 5;
+        LevelManager.Instance.NextLevel();
+        structure.DestroyGhosts();
+        //GameManager.Instance.GetComponent<Camera>().enabled = true;
+    }
 
+
+    private void Update()
+    {
+        
+    }
+
+    /*
     public void SpawnBlock()
     {
         Debug.Log("new block");
@@ -27,17 +46,6 @@ public class BuilderManager : Singleton<BuilderManager>
             block.transform.position = randomPosition;
             block.SetActive(true);
         }
-    }
-
-    public void ReturnToGame()
-    {
-        GameManager.levelComplete = false;
-        GameManager.maxEnemies = 5;
-        LevelManager.Instance.NextLevel();
-        structure.DestroyGhosts();
-        //GameManager.Instance.GetComponent<Camera>().enabled = true;
-    }
-
-
+    }*/
 
 }

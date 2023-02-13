@@ -98,34 +98,6 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 2120237213019256377, guid: b6ddeeb50c8b54f9795394d1edf158b6, type: 3}
   m_PrefabInstance: {fileID: 4634509555958293731}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &-2888134500014889435
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6718681670861427418}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 16c76ab4122154e31b526233bb7e3d0b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  mainCamera: {fileID: 0}
-  layerMask:
-    serializedVersion: 2
-    m_Bits: 8
-  movementVector: {x: 0, y: 0}
-  structure: {fileID: 11400000, guid: c4c8e0a6ae6b242fcab6f05f52767ee1, type: 2}
-  raycastHitPoint: {x: 0, y: 0, z: 0}
-  placeBuildingAction:
-    m_Name: Place Building
-    m_Type: 0
-    m_ExpectedControlType: 
-    m_Id: 845ad7ba-6f30-4be7-bcc8-7de262d1f6c6
-    m_Processors: 
-    m_Interactions: 
-    m_SingletonActionBindings: []
-    m_Flags: 0
 --- !u!114 &-2380997123642483680
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -153,3 +125,4 @@ MonoBehaviour:
     m_Interactions: 
     m_SingletonActionBindings: []
     m_Flags: 0
+  cameraToPin: {fileID: 0}

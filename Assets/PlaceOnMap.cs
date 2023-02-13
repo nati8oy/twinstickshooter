@@ -24,22 +24,29 @@ public class PlaceOnMap : MonoBehaviour
 
     private void Awake()
     {
+        mainCamera = GameManager.Instance.cameraList[1];
+
         // playerControls = new PlayerControls();
 
         //if the game state == building then
         //set the main camera to the one in the camera rig object
 
+
+        /*
         if (GameManager.Instance.gameState == GameManager.GameState.building)
         {
-            mainCamera = GameObject.Find("CameraRigBase").GetComponentInChildren<Camera>();
+
+           // mainCamera = GameObject.Find("CameraRigBase").GetComponentInChildren<Camera>();
 
         }
         else
         {
             //set the main camera to the one in the default scene main camera
-            mainCamera = GameObject.Find("MainCamera").GetComponent<Camera>();
+            mainCamera = GameManager.Instance.cameraList[0];
 
-        }
+            //mainCamera = GameObject.Find("Main Camera").GetComponent<Camera>();
+
+        }*/
     }
 
     private void OnEnable()
@@ -108,6 +115,7 @@ public class PlaceOnMap : MonoBehaviour
 
     public void PlaceObject()
     {
+        Debug.Log("placed object");
 
         //instantiates and adds models based on what is in their structure data object
         Instantiate(structure.structureModel, new Vector3(raycastHitPoint.x, structureVertSize, raycastHitPoint.z), Quaternion.identity);
@@ -117,4 +125,6 @@ public class PlaceOnMap : MonoBehaviour
 
 
     }
+
+
 }
