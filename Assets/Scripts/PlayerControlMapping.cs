@@ -8,6 +8,7 @@ using MoreMountains.Tools;
 
 public class PlayerControlMapping : MonoBehaviour
 {
+    public CinemachineSwitcher cameraSwitcher;
     private PlayerInput playerInput;
     public InputAction shootAction;
     public InputAction editMode;
@@ -137,12 +138,13 @@ public class PlayerControlMapping : MonoBehaviour
         //toggle between edit/building and play mode
        if(GameManager.Instance.gameState == GameManager.GameState.play)
         {
-            buildCamera.SetActive(true);
+            //buildCamera.SetActive(true);
             MMTimeManager.Instance.SetTimeScaleTo(0.5f);
             structures[0].InstantiateObject();
 
+            cameraSwitcher.SwitchPriority();
 
-            mainCamera = GameManager.Instance.cameraList[1];
+            //mainCamera = GameManager.Instance.cameraList[1];
             //mainCamera = GameObject.Find("CameraRigBase").GetComponentInChildren<Camera>();
 
             GameManager.Instance.gameState = GameManager.GameState.building;
@@ -150,14 +152,14 @@ public class PlayerControlMapping : MonoBehaviour
         }
         else if(GameManager.Instance.gameState == GameManager.GameState.building)
         {
-            buildCamera.SetActive(false);
+            //buildCamera.SetActive(false);
             MMTimeManager.Instance.SetTimeScaleTo(1f);
             GameManager.Instance.gameState = GameManager.GameState.play;
 
-            mainCamera = GameManager.Instance.cameraList[0];
+            //mainCamera = GameManager.Instance.cameraList[0];
 
             //mainCamera = GameObject.Find("Main Camera").GetComponent<Camera>();
-
+            cameraSwitcher.SwitchPriority();
             structures[0].DestroyGhosts();
 
         }

@@ -256,6 +256,34 @@
                     "isPartOfComposite": false
                 }
             ]
+        },
+        {
+            "name": "EditMode",
+            "id": "707d3235-81a8-4143-8e9a-4fc83c5965a9",
+            "actions": [
+                {
+                    "name": "Camera Movement",
+                    "type": "PassThrough",
+                    "id": "67e01353-e0fb-4fae-afc9-26466dfe2c51",
+                    "expectedControlType": "Vector2",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "a462405e-d7b2-4389-a9fa-fd8329d11653",
+                    "path": "<Gamepad>/leftStick",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Gamepad",
+                    "action": "Camera Movement",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
         }
     ],
     "controlSchemes": [

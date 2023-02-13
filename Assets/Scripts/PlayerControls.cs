@@ -278,6 +278,34 @@ public partial class @PlayerControls : IInputActionCollection2, IDisposable
                     ""isPartOfComposite"": false
                 }
             ]
+        },
+        {
+            ""name"": ""EditMode"",
+            ""id"": ""707d3235-81a8-4143-8e9a-4fc83c5965a9"",
+            ""actions"": [
+                {
+                    ""name"": ""Camera Movement"",
+                    ""type"": ""PassThrough"",
+                    ""id"": ""67e01353-e0fb-4fae-afc9-26466dfe2c51"",
+                    ""expectedControlType"": ""Vector2"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                }
+            ],
+            ""bindings"": [
+                {
+                    ""name"": """",
+                    ""id"": ""a462405e-d7b2-4389-a9fa-fd8329d11653"",
+                    ""path"": ""<Gamepad>/leftStick"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Gamepad"",
+                    ""action"": ""Camera Movement"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                }
+            ]
         }
     ],
     ""controlSchemes"": [
@@ -325,6 +353,9 @@ public partial class @PlayerControls : IInputActionCollection2, IDisposable
         m_Controls_Point = m_Controls.FindAction("Point", throwIfNotFound: true);
         m_Controls_PlaceObject = m_Controls.FindAction("PlaceObject", throwIfNotFound: true);
         m_Controls_Editmode = m_Controls.FindAction("Edit mode", throwIfNotFound: true);
+        // EditMode
+        m_EditMode = asset.FindActionMap("EditMode", throwIfNotFound: true);
+        m_EditMode_CameraMovement = m_EditMode.FindAction("Camera Movement", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -469,6 +500,39 @@ public partial class @PlayerControls : IInputActionCollection2, IDisposable
         }
     }
     public ControlsActions @Controls => new ControlsActions(this);
+
+    // EditMode
+    private readonly InputActionMap m_EditMode;
+    private IEditModeActions m_EditModeActionsCallbackInterface;
+    private readonly InputAction m_EditMode_CameraMovement;
+    public struct EditModeActions
+    {
+        private @PlayerControls m_Wrapper;
+        public EditModeActions(@PlayerControls wrapper) { m_Wrapper = wrapper; }
+        public InputAction @CameraMovement => m_Wrapper.m_EditMode_CameraMovement;
+        public InputActionMap Get() { return m_Wrapper.m_EditMode; }
+        public void Enable() { Get().Enable(); }
+        public void Disable() { Get().Disable(); }
+        public bool enabled => Get().enabled;
+        public static implicit operator InputActionMap(EditModeActions set) { return set.Get(); }
+        public void SetCallbacks(IEditModeActions instance)
+        {
+            if (m_Wrapper.m_EditModeActionsCallbackInterface != null)
+            {
+                @CameraMovement.started -= m_Wrapper.m_EditModeActionsCallbackInterface.OnCameraMovement;
+                @CameraMovement.performed -= m_Wrapper.m_EditModeActionsCallbackInterface.OnCameraMovement;
+                @CameraMovement.canceled -= m_Wrapper.m_EditModeActionsCallbackInterface.OnCameraMovement;
+            }
+            m_Wrapper.m_EditModeActionsCallbackInterface = instance;
+            if (instance != null)
+            {
+                @CameraMovement.started += instance.OnCameraMovement;
+                @CameraMovement.performed += instance.OnCameraMovement;
+                @CameraMovement.canceled += instance.OnCameraMovement;
+            }
+        }
+    }
+    public EditModeActions @EditMode => new EditModeActions(this);
     private int m_GamepadSchemeIndex = -1;
     public InputControlScheme GamepadScheme
     {
@@ -497,5 +561,9 @@ public partial class @PlayerControls : IInputActionCollection2, IDisposable
         void OnPoint(InputAction.CallbackContext context);
         void OnPlaceObject(InputAction.CallbackContext context);
         void OnEditmode(InputAction.CallbackContext context);
+    }
+    public interface IEditModeActions
+    {
+        void OnCameraMovement(InputAction.CallbackContext context);
     }
 }

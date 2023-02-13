@@ -47,10 +47,7 @@ public class LevelManager : Singleton<LevelManager>
 
     public void LevelComplete()
     {
-        //set the game state to build mode
-        GameManager.Instance.gameState = GameManager.GameState.building;
-
-
+       
 
         switch (difficulty)
         {
@@ -68,18 +65,24 @@ public class LevelManager : Singleton<LevelManager>
                 maxEnemies += 20;
                 break;
         }
-      
-        SceneManager.LoadScene(2, LoadSceneMode.Additive);
 
+        //SceneManager.LoadScene(2, LoadSceneMode.Additive);
+
+        //load the next scene on top of the current scene.
+        SceneManager.LoadScene(currentLevel, LoadSceneMode.Additive);
+        //RandomEnemySpawn.Instance.maxEnemies = currentLevel * maxEnemies;
+
+        //set the game state back to play
+        GameManager.Instance.gameState = GameManager.GameState.play;
     }
 
     public void NextLevel()
     {
         //mainCamera.enabled = true;
 
-        SceneManager.UnloadScene(2);
+        //SceneManager.UnloadScene(2);
 
-        SceneManager.UnloadScene(1);
+        //SceneManager.UnloadScene(1);
 
         //load the next scene on top of the current scene.
         SceneManager.LoadScene(currentLevel, LoadSceneMode.Additive);
