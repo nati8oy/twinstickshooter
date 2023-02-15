@@ -35,7 +35,7 @@ public class Structure : ScriptableObject
     //the label for the tag of the object
     public string type;
 
-    public void InstantiateObject()
+    public void InstantiateObject(Vector3 spawnposition)
     {
         DestroyGhosts();
         //instantiate the object

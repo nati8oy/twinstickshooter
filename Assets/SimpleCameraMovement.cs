@@ -21,7 +21,7 @@ public class SimpleCameraMovement : MonoBehaviour
         cameraTransform = GetComponent<CinemachineVirtualCamera>().transform;
 
 
-
+        //CMinput = GetComponent<CinemachineInputProvider>();
 
     }
 

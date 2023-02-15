@@ -7,8 +7,8 @@ public class CinemachineSwitcher : MonoBehaviour
 {
     [SerializeField] private InputAction action;
     private bool followCam = true;
-    [SerializeField] private CinemachineVirtualCamera vcam1; // follow cam
-    [SerializeField] private CinemachineVirtualCamera vcam2; // edit mode
+    [SerializeField] public CinemachineVirtualCamera vcam1; // follow cam
+    [SerializeField] public CinemachineVirtualCamera vcam2; // edit mode
 
 
     // Start is called before the first frame update
@@ -18,6 +18,8 @@ public class CinemachineSwitcher : MonoBehaviour
         //animator = GetComponent<Animator>();
     }
 
+
+    
     private void OnEnable()
     {
         action.Enable();
@@ -31,7 +33,7 @@ public class CinemachineSwitcher : MonoBehaviour
     {
         action.performed += _ => SwitchPriority();
     }
-
+    
 
     public void SwitchPriority()
     {

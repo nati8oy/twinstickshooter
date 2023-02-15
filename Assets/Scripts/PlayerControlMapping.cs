@@ -139,10 +139,21 @@ public class PlayerControlMapping : MonoBehaviour
        if(GameManager.Instance.gameState == GameManager.GameState.play)
         {
             //buildCamera.SetActive(true);
+            //slow down the overall timescale
             MMTimeManager.Instance.SetTimeScaleTo(0.5f);
-            structures[0].InstantiateObject();
 
+            //add the ghost object to the screen
+            structures[0].InstantiateObject(GameObject.Find("Player Alt").transform.position);
+
+
+            
+
+            //change the virtual camera priority
             cameraSwitcher.SwitchPriority();
+
+            //set the follow target of the virtual camera to the ghost in edit mode
+            cameraSwitcher.vcam2.m_LookAt = GameObject.FindGameObjectWithTag("ghost").transform;
+            cameraSwitcher.vcam2.m_Follow = GameObject.FindGameObjectWithTag("ghost").transform;
 
             //mainCamera = GameManager.Instance.cameraList[1];
             //mainCamera = GameObject.Find("CameraRigBase").GetComponentInChildren<Camera>();
@@ -160,6 +171,8 @@ public class PlayerControlMapping : MonoBehaviour
 
             //mainCamera = GameObject.Find("Main Camera").GetComponent<Camera>();
             cameraSwitcher.SwitchPriority();
+
+            //remove the ghost object that is in the scene.
             structures[0].DestroyGhosts();
 
         }
