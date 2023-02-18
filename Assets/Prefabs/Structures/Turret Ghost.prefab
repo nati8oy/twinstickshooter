@@ -106,22 +106,6 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 2120237213019256377, guid: b6ddeeb50c8b54f9795394d1edf158b6, type: 3}
   m_PrefabInstance: {fileID: 4634509555958293731}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &-6374931972947589861
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6718681670861427418}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ec88431883639423e98efeb2bd154f6c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  cameraToPin: {fileID: 0}
-  layerMask:
-    serializedVersion: 2
-    m_Bits: 0
 --- !u!114 &-2380997123642483680
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -161,7 +145,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f7a48d3fd106843418cb6b5862f20b1b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  movementSpeed: 5
 --- !u!114 &6534212249355585343
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -169,7 +152,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6718681670861427418}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 62899f850307741f2a39c98a8b639597, type: 3}
   m_Name: 
@@ -189,6 +172,6 @@ MonoBehaviour:
   m_ActionEvents: []
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: 
-  m_DefaultActionMap: 707d3235-81a8-4143-8e9a-4fc83c5965a9
+  m_DefaultActionMap: EditMode
   m_SplitScreenIndex: -1
   m_Camera: {fileID: 0}

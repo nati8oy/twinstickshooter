@@ -5,43 +5,40 @@ using UnityEngine.InputSystem;
 
 public class SimpleMovement : MonoBehaviour
 {
-    private CharacterController controller;
-    private Vector2 movement;
-    [SerializeField] private float movementSpeed = 5f;
-    private Vector3 playerVelocity;
-    private PlayerControls playerControls;
-    private PlayerInput playerInput;
 
+    private float moveSpeed = 10f;
+    private PlayerControls playerControls;
+    private Vector2 movement;
+
+
+    public void MoveGamepad()
+    {
+        
+        Vector2 input = Gamepad.current.leftStick.ReadValue();
+        if (input.magnitude > 0.1f)
+        {
+            //just use the x and y inputs of the left stick controller do move the object
+            transform.Translate(new Vector3 (input.x, 0, input.y) * Time.deltaTime * moveSpeed);
+        }
+    }
+  
 
     private void Awake()
     {
-        gameObject.AddComponent<CharacterController>();
-        controller = GetComponent<CharacterController>();
         playerControls = new PlayerControls();
-        playerInput = GetComponent<PlayerInput>();
-    }
-
-
-    private void OnDisable()
-    {
-        playerControls.Disable();
-
     }
 
     void Update()
     {
-        HandleMovement();
+        if (Gamepad.current != null)
+        {
+            MoveGamepad();
+        }
     }
 
-    public void HandleMovement()
+     private void OnDisable()
     {
-        Vector3 move = new Vector3(movement.x, 0, movement.y);
-        controller.Move(move * Time.deltaTime * movementSpeed);
-
-
-       // playerVelocity.y += gravityValue * Time.deltaTime;
-        controller.Move(playerVelocity * Time.deltaTime);
-
-
+        playerControls.Disable();
+ 
     }
 }

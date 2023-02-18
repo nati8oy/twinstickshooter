@@ -2,11 +2,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
-
+using Cinemachine;
 
 public class PlaceOnMap : MonoBehaviour
 {
     [SerializeField] private Camera mainCamera;
+    
     [SerializeField] private LayerMask layerMask;
     private float structureVertSize;
     public Structure structure;
@@ -24,29 +25,7 @@ public class PlaceOnMap : MonoBehaviour
 
     private void Awake()
     {
-        mainCamera = GameManager.Instance.cameraList[1];
-
-        // playerControls = new PlayerControls();
-
-        //if the game state == building then
-        //set the main camera to the one in the camera rig object
-
-
-        /*
-        if (GameManager.Instance.gameState == GameManager.GameState.building)
-        {
-
-           // mainCamera = GameObject.Find("CameraRigBase").GetComponentInChildren<Camera>();
-
-        }
-        else
-        {
-            //set the main camera to the one in the default scene main camera
-            mainCamera = GameManager.Instance.cameraList[0];
-
-            //mainCamera = GameObject.Find("Main Camera").GetComponent<Camera>();
-
-        }*/
+       mainCamera = GameObject.Find("Main Camera").GetComponent<Camera>();
     }
 
     private void OnEnable()
@@ -77,18 +56,6 @@ public class PlaceOnMap : MonoBehaviour
         structureVertSize = m_Size.y / 2;
 
 
-
-    }
-
-    private void OnDisable()
-    {
-        // Start listening for control changes.
-        placeBuildingAction.Disable();
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
         if (mainCamera != null)
         {
 
@@ -110,6 +77,20 @@ public class PlaceOnMap : MonoBehaviour
         {
             Debug.LogError("Camera for Raycast reference is missing");
         }
+
+
+    }
+
+    private void OnDisable()
+    {
+        // Start listening for control changes.
+        placeBuildingAction.Disable();
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+        
     }
 
 
@@ -117,8 +98,11 @@ public class PlaceOnMap : MonoBehaviour
     {
         Debug.Log("placed object");
 
+
         //instantiates and adds models based on what is in their structure data object
-        Instantiate(structure.structureModel, new Vector3(raycastHitPoint.x, structureVertSize, raycastHitPoint.z), Quaternion.identity);
+        //sets it on the screen where the raycast hits
+        //Instantiate(structure.structureModel, new Vector3(raycastHitPoint.x, structureVertSize, raycastHitPoint.z), Quaternion.identity);
+        Instantiate(structure.structureModel, new Vector3(gameObject.transform.position.x, structureVertSize, gameObject.transform.position.z), Quaternion.identity);
 
 
         Destroy(GameObject.FindGameObjectWithTag("ghost"));

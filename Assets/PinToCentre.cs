@@ -17,6 +17,8 @@ public class PinToCentre : MonoBehaviour
     private float structureVertSize;
 
 
+
+
     private void Awake()
     {
         cameraToPin = GameManager.Instance.cameraList[1];

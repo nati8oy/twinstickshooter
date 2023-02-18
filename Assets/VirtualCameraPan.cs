@@ -30,18 +30,18 @@ public class VirtualCameraPan : MonoBehaviour
         }
     }
 
-    public Vector3 PanDirection(float x, float z)
+    public Vector3 PanDirection(float x, float y)
     {
 
         Vector3 direction = Vector3.zero;
-        if(z>= Screen.height*0.95f)
+        if(y>= Screen.height*0.95f)
         {
-            direction.z += 1;
+            direction.y += 1;
         }
 
-       else if (z <= Screen.height * 0.05f)
+       else if (y <= Screen.height * 0.05f)
         {
-            direction.z  -=1;
+            direction.y  -=1;
         }
 
 
