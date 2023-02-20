@@ -16,7 +16,7 @@ MonoBehaviour:
   - m_From: Follow Camera
     m_To: EditModecam
     m_Blend:
-      m_Style: 3
+      m_Style: 2
       m_Time: 0.25
       m_CustomCurve:
         serializedVersion: 2
@@ -27,7 +27,7 @@ MonoBehaviour:
   - m_From: EditModecam
     m_To: Follow Camera
     m_Blend:
-      m_Style: 3
+      m_Style: 2
       m_Time: 0.25
       m_CustomCurve:
         serializedVersion: 2

@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using MoreMountains.Feedbacks;
-
+using UnityEngine.Events;
 
 public class Grenade : MonoBehaviour
 {
@@ -14,13 +14,15 @@ public class Grenade : MonoBehaviour
     public float explosionForce = 500f;
     public int damageInflicted = 3;
 
-    public MMF_Player MyPlayer;
+    //public MMF_Player explosionFeedback;
+
+    public UnityEvent onExplode;
 
     //public GameObject explosionEffect;
     private void OnEnable()
     {
         // initializes the player and all its feedbacks, making sure everything's correctly setup before playing it
-        MyPlayer.Initialization();
+        //explosionFeedback.Initialization();
     }
 
     // Start is called before the first frame update
@@ -82,7 +84,12 @@ public class Grenade : MonoBehaviour
         {
             boom.transform.position = transform.position;
             boom.SetActive(true);
-            MyPlayer.PlayFeedbacks();
+
+            if (onExplode != null)
+            {
+                onExplode.Invoke();
+            }
+           // explosionFeedback?.PlayFeedbacks();
             hasExploded = true;
            // Debug.Log("Boom! HeadSHOT!");
             // asks the player to play its sequence of feedbacks

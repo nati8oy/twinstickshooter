@@ -133,14 +133,13 @@ public class PlayerControlMapping : MonoBehaviour
     {
 
         //change the game mode to building
-        Debug.Log("Entered Build Mode");
+        ///Debug.Log("Entered Build Mode");
 
         //toggle between edit/building and play mode
        if(GameManager.Instance.gameState == GameManager.GameState.play)
         {
-            //buildCamera.SetActive(true);
             //slow down the overall timescale
-            MMTimeManager.Instance.SetTimeScaleTo(0.5f);
+            //MMTimeManager.Instance.SetTimeScaleTo(0.5f);
 
             //add the ghost object to the screen
             structures[0].InstantiateObject(GameObject.Find("Player Alt").transform.position);

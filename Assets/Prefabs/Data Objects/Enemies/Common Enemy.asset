@@ -20,7 +20,7 @@ MonoBehaviour:
   shield: 0
   followPlayer: 0
   canAttack: 1
-  enemyMaterial: {fileID: 2100000, guid: 5c270a73328a99e439fec44a0cf3a17d, type: 2}
+  enemyMaterial: {fileID: 2100000, guid: 01763a1c279a5cd4d8f897f6b6cdbae5, type: 2}
   enemyModel: {fileID: 8208434519250324759, guid: b153d2bff063d43019d15f928a232a2d, type: 3}
   resourceDrop:
   - ammo

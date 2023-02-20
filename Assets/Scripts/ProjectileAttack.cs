@@ -43,6 +43,7 @@ public class ProjectileAttack : MonoBehaviour, IAttack
                 if (bullet != null)
                 {
                     bullet.transform.position = firePoint.position;
+                    bullet.transform.rotation = firePoint.transform.rotation;
                     bullet.SetActive(true);
                     Rigidbody rb = bullet.GetComponent<Rigidbody>();
                     rb.AddForce(firePoint.forward * shotSpeed, ForceMode.Impulse);

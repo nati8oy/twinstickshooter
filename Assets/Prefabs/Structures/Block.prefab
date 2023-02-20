@@ -125,7 +125,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   lootList:
-  - {fileID: 11400000, guid: 64ceacd9b157d408e8c988672162de09, type: 2}
+  - {fileID: 11400000, guid: 7bd818e0256e74f9b988000580e5e61c, type: 2}
+  - {fileID: 11400000, guid: 6c856c632a9b343de962c6b9d64c6650, type: 2}
   droppedItem: {fileID: 0}
 --- !u!65 &7445797438448348884
 BoxCollider:

@@ -79,6 +79,7 @@ GameObject:
   - component: {fileID: 3154581663302683126}
   - component: {fileID: 123755933}
   - component: {fileID: 1812333364360549038}
+  - component: {fileID: 123755940}
   m_Layer: 0
   m_Name: Player Alt
   m_TagString: Player
@@ -101,6 +102,7 @@ Transform:
   - {fileID: 3566868977290621469}
   - {fileID: 7856972378243762025}
   - {fileID: 5450850766826555495}
+  - {fileID: 4521746378033731522}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -255,6 +257,10 @@ MonoBehaviour:
       m_Calls: []
     m_ActionId: 6a69ef16-ac97-4aea-8a61-0fb1a35b27d8
     m_ActionName: Controls/Edit mode[/DualShock4GamepadHID/leftStickPress]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 67e01353-e0fb-4fae-afc9-26466dfe2c51
+    m_ActionName: EditMode/Camera Movement[/DualShock4GamepadHID/leftStick,/Mouse/delta]
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: 
   m_DefaultActionMap: Controls
@@ -288,33 +294,6 @@ MonoBehaviour:
   bulletForce: 20
   secondaryWeaponForce: 80
   isGamepad: 0
-  shootAction:
-    m_Name: Shoot
-    m_Type: 0
-    m_ExpectedControlType: 
-    m_Id: 29ccae44-53c2-40d1-b928-bb27376d211b
-    m_Processors: 
-    m_Interactions: 
-    m_SingletonActionBindings: []
-    m_Flags: 0
-  secondaryShootAction:
-    m_Name: Secondary Shoot
-    m_Type: 0
-    m_ExpectedControlType: 
-    m_Id: 09c3d592-d9b4-44f3-8bce-631b0d4c9670
-    m_Processors: 
-    m_Interactions: 
-    m_SingletonActionBindings: []
-    m_Flags: 0
-  debugKillAll:
-    m_Name: Debug Kill All
-    m_Type: 0
-    m_ExpectedControlType: 
-    m_Id: 023bc50e-e1db-4f9a-a58b-5dbaebe53c21
-    m_Processors: 
-    m_Interactions: 
-    m_SingletonActionBindings: []
-    m_Flags: 0
 --- !u!114 &123755933
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -353,6 +332,68 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   firePoint: {fileID: 3566868977290621469}
   weapon: {fileID: 11400000, guid: 6c7b293864beb45818f32654d492d288, type: 2}
+--- !u!114 &123755940
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3154581663302683125}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2215dd48f6c124bb988f4b0c3ebcb643, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  cameraSwitcher: {fileID: 0}
+  shootAction:
+    m_Name: Shoot
+    m_Type: 0
+    m_ExpectedControlType: 
+    m_Id: eeb9c72f-2aa8-4e3a-a04a-4b3e2d4d755e
+    m_Processors: 
+    m_Interactions: 
+    m_SingletonActionBindings: []
+    m_Flags: 0
+  editMode:
+    m_Name: Edit Mode
+    m_Type: 0
+    m_ExpectedControlType: 
+    m_Id: dcf1464b-afc7-4198-a0ac-6ca3f053ccf8
+    m_Processors: 
+    m_Interactions: 
+    m_SingletonActionBindings: []
+    m_Flags: 0
+  secondaryShootAction:
+    m_Name: Secondary Shoot
+    m_Type: 0
+    m_ExpectedControlType: 
+    m_Id: aa22ea85-8334-448b-88f4-e4593d416db8
+    m_Processors: 
+    m_Interactions: 
+    m_SingletonActionBindings: []
+    m_Flags: 0
+  debugKillAll:
+    m_Name: Debug Kill All
+    m_Type: 0
+    m_ExpectedControlType: 
+    m_Id: 1905201d-cfdb-4554-815a-1bcacfd8118a
+    m_Processors: 
+    m_Interactions: 
+    m_SingletonActionBindings: []
+    m_Flags: 0
+  buildCamera: {fileID: 0}
+  mainCamera: {fileID: 0}
+  firePoint: {fileID: 3566868977290621469}
+  secondaryFirePoint: {fileID: 5450850766826555495}
+  bulletPrefab: {fileID: 8128409212052658623, guid: c6bb4c01daf2f44f5b3053c7ea227be4, type: 3}
+  secondaryPrefab: {fileID: 3557350299342114084, guid: 775a120418ff5443cb0a5d57bacaafa5, type: 3}
+  weaponCooldown: 0
+  cooldownComplete: 0
+  bulletForce: 40
+  secondaryWeaponForce: 80
+  structures:
+  - {fileID: 11400000, guid: c4c8e0a6ae6b242fcab6f05f52767ee1, type: 2}
+  - {fileID: 11400000, guid: e592940146aa547438f2a7781829aa2e, type: 2}
 --- !u!1 &3676882435549570892
 GameObject:
   m_ObjectHideFlags: 0
@@ -450,3 +491,123 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!1 &4830903423526641735
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4521746378033731522}
+  - component: {fileID: 3813989938726499112}
+  m_Layer: 0
+  m_Name: Feedbacks
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4521746378033731522
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4830903423526641735}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -0.029963534, y: 0.000018119812, z: 0.43820396}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 3154581663302683132}
+  m_RootOrder: 3
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &3813989938726499112
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4830903423526641735}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6da43522623d4704e979466dc7650b65, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Feedbacks: []
+  InitializationMode: 2
+  SafeMode: 3
+  Direction: 0
+  AutoChangeDirectionOnEnd: 0
+  AutoPlayOnStart: 0
+  AutoPlayOnEnable: 0
+  ForceTimescaleMode: 0
+  ForcedTimescaleMode: 1
+  DurationMultiplier: 1
+  RandomizeDuration: 0
+  RandomDurationMultiplier: {x: 0.5, y: 1.5}
+  DisplayFullDurationDetails: 0
+  PlayerTimescaleMode: 1
+  OnlyPlayIfWithinRange: 0
+  RangeCenter: {fileID: 0}
+  RangeDistance: 5
+  UseRangeFalloff: 0
+  RangeFalloff:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  RemapRangeFalloff: {x: 0, y: 1}
+  IgnoreRangeEvents: 0
+  CooldownDuration: 0
+  InitialDelay: 0
+  CanPlay: 1
+  CanPlayWhileAlreadyPlaying: 1
+  ChanceToPlay: 100
+  FeedbacksIntensity: 1
+  Events:
+    TriggerMMFeedbacksEvents: 0
+    TriggerUnityEvents: 1
+    OnPlay:
+      m_PersistentCalls:
+        m_Calls: []
+    OnPause:
+      m_PersistentCalls:
+        m_Calls: []
+    OnResume:
+      m_PersistentCalls:
+        m_Calls: []
+    OnRevert:
+      m_PersistentCalls:
+        m_Calls: []
+    OnComplete:
+      m_PersistentCalls:
+        m_Calls: []
+  DebugActive: 0
+  FeedbacksList: []
+  KeepPlayModeChanges: 0
+  PerformanceMode: 0
+  ForceStopFeedbacksOnDisable: 1
+  references:
+    version: 2
+    RefIds: []
