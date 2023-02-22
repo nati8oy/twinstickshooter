@@ -291,6 +291,42 @@ public partial class @PlayerControls : IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Cycle Object Right"",
+                    ""type"": ""Button"",
+                    ""id"": ""3d2b4c7e-ba18-4890-8dc4-9c254e047029"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Cycle Object Left"",
+                    ""type"": ""Button"",
+                    ""id"": ""c22f4be7-bad2-42f3-a223-533c9dc836b4"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Rotate Left"",
+                    ""type"": ""Button"",
+                    ""id"": ""20860a46-7d81-4635-bbb8-960b10530027"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Rotate Right"",
+                    ""type"": ""Button"",
+                    ""id"": ""c255582d-5c39-4dec-906e-a458f3057048"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -313,6 +349,50 @@ public partial class @PlayerControls : IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""groups"": ""KBM"",
                     ""action"": ""Camera Movement"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""85785611-e553-404c-a094-acad1018c683"",
+                    ""path"": ""<DualShockGamepad>/rightTrigger"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Gamepad"",
+                    ""action"": ""Cycle Object Right"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""54a51727-5053-47e5-b13c-5e8c2578e2c7"",
+                    ""path"": ""<DualShockGamepad>/leftTrigger"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Gamepad"",
+                    ""action"": ""Cycle Object Left"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""b2b93d14-a299-4608-9a97-85bf2ad056c7"",
+                    ""path"": ""<DualShockGamepad>/buttonWest"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Rotate Left"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""7964bb17-297a-47b8-8dfe-244b865f94db"",
+                    ""path"": ""<DualShockGamepad>/buttonEast"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Rotate Right"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -367,6 +447,10 @@ public partial class @PlayerControls : IInputActionCollection2, IDisposable
         // EditMode
         m_EditMode = asset.FindActionMap("EditMode", throwIfNotFound: true);
         m_EditMode_CameraMovement = m_EditMode.FindAction("Camera Movement", throwIfNotFound: true);
+        m_EditMode_CycleObjectRight = m_EditMode.FindAction("Cycle Object Right", throwIfNotFound: true);
+        m_EditMode_CycleObjectLeft = m_EditMode.FindAction("Cycle Object Left", throwIfNotFound: true);
+        m_EditMode_RotateLeft = m_EditMode.FindAction("Rotate Left", throwIfNotFound: true);
+        m_EditMode_RotateRight = m_EditMode.FindAction("Rotate Right", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -516,11 +600,19 @@ public partial class @PlayerControls : IInputActionCollection2, IDisposable
     private readonly InputActionMap m_EditMode;
     private IEditModeActions m_EditModeActionsCallbackInterface;
     private readonly InputAction m_EditMode_CameraMovement;
+    private readonly InputAction m_EditMode_CycleObjectRight;
+    private readonly InputAction m_EditMode_CycleObjectLeft;
+    private readonly InputAction m_EditMode_RotateLeft;
+    private readonly InputAction m_EditMode_RotateRight;
     public struct EditModeActions
     {
         private @PlayerControls m_Wrapper;
         public EditModeActions(@PlayerControls wrapper) { m_Wrapper = wrapper; }
         public InputAction @CameraMovement => m_Wrapper.m_EditMode_CameraMovement;
+        public InputAction @CycleObjectRight => m_Wrapper.m_EditMode_CycleObjectRight;
+        public InputAction @CycleObjectLeft => m_Wrapper.m_EditMode_CycleObjectLeft;
+        public InputAction @RotateLeft => m_Wrapper.m_EditMode_RotateLeft;
+        public InputAction @RotateRight => m_Wrapper.m_EditMode_RotateRight;
         public InputActionMap Get() { return m_Wrapper.m_EditMode; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -533,6 +625,18 @@ public partial class @PlayerControls : IInputActionCollection2, IDisposable
                 @CameraMovement.started -= m_Wrapper.m_EditModeActionsCallbackInterface.OnCameraMovement;
                 @CameraMovement.performed -= m_Wrapper.m_EditModeActionsCallbackInterface.OnCameraMovement;
                 @CameraMovement.canceled -= m_Wrapper.m_EditModeActionsCallbackInterface.OnCameraMovement;
+                @CycleObjectRight.started -= m_Wrapper.m_EditModeActionsCallbackInterface.OnCycleObjectRight;
+                @CycleObjectRight.performed -= m_Wrapper.m_EditModeActionsCallbackInterface.OnCycleObjectRight;
+                @CycleObjectRight.canceled -= m_Wrapper.m_EditModeActionsCallbackInterface.OnCycleObjectRight;
+                @CycleObjectLeft.started -= m_Wrapper.m_EditModeActionsCallbackInterface.OnCycleObjectLeft;
+                @CycleObjectLeft.performed -= m_Wrapper.m_EditModeActionsCallbackInterface.OnCycleObjectLeft;
+                @CycleObjectLeft.canceled -= m_Wrapper.m_EditModeActionsCallbackInterface.OnCycleObjectLeft;
+                @RotateLeft.started -= m_Wrapper.m_EditModeActionsCallbackInterface.OnRotateLeft;
+                @RotateLeft.performed -= m_Wrapper.m_EditModeActionsCallbackInterface.OnRotateLeft;
+                @RotateLeft.canceled -= m_Wrapper.m_EditModeActionsCallbackInterface.OnRotateLeft;
+                @RotateRight.started -= m_Wrapper.m_EditModeActionsCallbackInterface.OnRotateRight;
+                @RotateRight.performed -= m_Wrapper.m_EditModeActionsCallbackInterface.OnRotateRight;
+                @RotateRight.canceled -= m_Wrapper.m_EditModeActionsCallbackInterface.OnRotateRight;
             }
             m_Wrapper.m_EditModeActionsCallbackInterface = instance;
             if (instance != null)
@@ -540,6 +644,18 @@ public partial class @PlayerControls : IInputActionCollection2, IDisposable
                 @CameraMovement.started += instance.OnCameraMovement;
                 @CameraMovement.performed += instance.OnCameraMovement;
                 @CameraMovement.canceled += instance.OnCameraMovement;
+                @CycleObjectRight.started += instance.OnCycleObjectRight;
+                @CycleObjectRight.performed += instance.OnCycleObjectRight;
+                @CycleObjectRight.canceled += instance.OnCycleObjectRight;
+                @CycleObjectLeft.started += instance.OnCycleObjectLeft;
+                @CycleObjectLeft.performed += instance.OnCycleObjectLeft;
+                @CycleObjectLeft.canceled += instance.OnCycleObjectLeft;
+                @RotateLeft.started += instance.OnRotateLeft;
+                @RotateLeft.performed += instance.OnRotateLeft;
+                @RotateLeft.canceled += instance.OnRotateLeft;
+                @RotateRight.started += instance.OnRotateRight;
+                @RotateRight.performed += instance.OnRotateRight;
+                @RotateRight.canceled += instance.OnRotateRight;
             }
         }
     }
@@ -576,5 +692,9 @@ public partial class @PlayerControls : IInputActionCollection2, IDisposable
     public interface IEditModeActions
     {
         void OnCameraMovement(InputAction.CallbackContext context);
+        void OnCycleObjectRight(InputAction.CallbackContext context);
+        void OnCycleObjectLeft(InputAction.CallbackContext context);
+        void OnRotateLeft(InputAction.CallbackContext context);
+        void OnRotateRight(InputAction.CallbackContext context);
     }
 }

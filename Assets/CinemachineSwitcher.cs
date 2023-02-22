@@ -39,8 +39,6 @@ public class CinemachineSwitcher : MonoBehaviour
     {
         if (followCam)
         {
-            Debug.Log("vcam 1 priority: " + vcam1.Priority);
-            Debug.Log("vcam 2 priority: " + vcam2.Priority);
 
             vcam1.Priority = 0;
             vcam2.Priority = 1;
@@ -48,13 +46,10 @@ public class CinemachineSwitcher : MonoBehaviour
         }
         else
         {
-            Debug.Log("swapped back");
 
             vcam1.Priority = 1;
             vcam2.Priority = 0;
 
-            Debug.Log("vcam 1 priority: " + vcam1.Priority);
-            Debug.Log("vcam 2 priority: " + vcam2.Priority);
         }
 
         followCam = !followCam;

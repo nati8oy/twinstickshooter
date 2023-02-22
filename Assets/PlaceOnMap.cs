@@ -17,6 +17,8 @@ public class PlaceOnMap : MonoBehaviour
 
     public InputAction placeBuildingAction;
 
+    //checks if the object is blocked by another object
+    public bool objectBlocked;
 
     private Collider objectCollider;
     private Vector3 colliderCentrePoint;
@@ -81,13 +83,14 @@ public class PlaceOnMap : MonoBehaviour
 
     }
 
+   
+
     private void OnDisable()
     {
         // Start listening for control changes.
         placeBuildingAction.Disable();
     }
 
-    // Update is called once per frame
     void Update()
     {
         
@@ -96,19 +99,32 @@ public class PlaceOnMap : MonoBehaviour
 
     public void PlaceObject()
     {
-        Debug.Log("placed object");
+
+        if (objectBlocked == false)
+        {
+            Debug.Log("placed object");
 
 
-        //instantiates and adds models based on what is in their structure data object
-        //sets it on the screen where the raycast hits
-        //Instantiate(structure.structureModel, new Vector3(raycastHitPoint.x, structureVertSize, raycastHitPoint.z), Quaternion.identity);
-        Instantiate(structure.structureModel, new Vector3(gameObject.transform.position.x, structureVertSize, gameObject.transform.position.z), Quaternion.identity);
+
+            //instantiates and adds models based on what is in their structure data object
+            //sets it on the screen where the raycast hits
+            //Instantiate(structure.structureModel, new Vector3(raycastHitPoint.x, structureVertSize, raycastHitPoint.z), Quaternion.identity);
+            Instantiate(structure.structureModel, new Vector3(gameObject.transform.position.x, structureVertSize, gameObject.transform.position.z), gameObject.transform.rotation);
 
 
-        Destroy(GameObject.FindGameObjectWithTag("ghost"));
-
-
+            Destroy(GameObject.FindGameObjectWithTag("ghost"));
+        }
+      
+    }
+    private void OnTriggerEnter(Collider other)
+    {
+        Debug.Log("blocked = " + objectBlocked);
     }
 
+    private void OnTriggerExit(Collider other)
+    {
+        Debug.Log("blocked = " + objectBlocked);
+
+    }
 
 }

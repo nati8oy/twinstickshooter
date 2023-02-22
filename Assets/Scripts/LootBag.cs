@@ -52,7 +52,7 @@ public class LootBag : MonoBehaviour
             float randX = Random.Range(-0.5f, 0.5f);
             float randZ = Random.Range(0.5f, 1f);
 
-            Debug.Log(droppedItem);
+            //Debug.Log(droppedItem);
             lootGameObject = ObjectPooler.SharedInstance.GetPooledObject(droppedItem.lootName.ToString());
             lootGameObject.transform.position = new Vector3(gameObject.transform.position.x + randX, gameObject.transform.position.y + 1, gameObject.transform.position.z + randZ);
             lootGameObject.SetActive(true);

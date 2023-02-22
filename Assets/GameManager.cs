@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using Cinemachine;
+using UnityEngine.Events;
 
 using MoreMountains.Tools;
 using MoreMountains.Feedbacks;
@@ -36,9 +37,11 @@ public class GameManager : Singleton<GameManager>
 
     public int enemyCount;
 
-    public bool gameOver; 
+    public bool gameOver;
 
     //test
+
+
 
     public static int maxEnemies;
 
@@ -59,7 +62,6 @@ public class GameManager : Singleton<GameManager>
     {
         //set the current state of the game to playing
         gameState = GameState.play;
-   
 
     }
 
@@ -121,6 +123,9 @@ public class GameManager : Singleton<GameManager>
         }
     }
 
+    public void GameStateManager()
+    {
 
+    }
 
 }
