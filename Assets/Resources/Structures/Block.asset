@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Block
   m_EditorClassIdentifier: 
   structureModel: {fileID: 3178024937860737915, guid: 28f275e16e54f4652bbecab99ab8d126, type: 3}
-  ghostModel: {fileID: 1542429475282784854, guid: 8b00f0f6622de434694c882eca398a7f, type: 3}
+  ghostModel: {fileID: 5428341119787458954, guid: 8b00f0f6622de434694c882eca398a7f, type: 3}
   shopThumnail: {fileID: 0}
   candyIcon: {fileID: 0}
   candy: 10

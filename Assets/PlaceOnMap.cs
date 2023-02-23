@@ -105,11 +105,20 @@ public class PlaceOnMap : MonoBehaviour
             Debug.Log("placed object");
 
 
+            // Get the transform of the child game object
+            Transform rotationTransform = transform.Find("RotationTarget");
+
+            // Get the rotation of the child game object
+            Quaternion rotation = rotationTransform.rotation;
+
+            // You can then use the rotation as needed, for example:
+            // Rotate the parent object based on the child object's rotation
+            transform.rotation = rotation;
 
             //instantiates and adds models based on what is in their structure data object
             //sets it on the screen where the raycast hits
             //Instantiate(structure.structureModel, new Vector3(raycastHitPoint.x, structureVertSize, raycastHitPoint.z), Quaternion.identity);
-            Instantiate(structure.structureModel, new Vector3(gameObject.transform.position.x, structureVertSize, gameObject.transform.position.z), gameObject.transform.rotation);
+            Instantiate(structure.structureModel, new Vector3(gameObject.transform.position.x, structureVertSize, gameObject.transform.position.z), rotation) ;
 
 
             Destroy(GameObject.FindGameObjectWithTag("ghost"));

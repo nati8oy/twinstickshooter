@@ -186,9 +186,9 @@ MonoBehaviour:
         RemapRangeFalloff: {x: 0, y: 1}
         Owner: {fileID: 7562234839888886864}
         DebugActive: 0
-        AnimateRotationTarget: {fileID: 6718681670861427420}
+        AnimateRotationTarget: {fileID: 2514193037208866460}
         Mode: 1
-        RotationSpace: 0
+        RotationSpace: 1
         AnimateRotationDuration: 0.25
         RemapCurveZero: 0
         RemapCurveOne: 90
@@ -364,6 +364,10 @@ PrefabInstance:
       propertyPath: m_Materials.Array.data[0]
       value: 
       objectReference: {fileID: 2100000, guid: 4d217f608a726411a82a4f553a5b691d, type: 2}
+    - target: {fileID: 1938274065311719186, guid: b6ddeeb50c8b54f9795394d1edf158b6, type: 3}
+      propertyPath: m_RootOrder
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 2120237213019256376, guid: b6ddeeb50c8b54f9795394d1edf158b6, type: 3}
       propertyPath: m_Enabled
       value: 0
@@ -398,19 +402,19 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2120237213019256383, guid: b6ddeeb50c8b54f9795394d1edf158b6, type: 3}
       propertyPath: m_LocalRotation.w
-      value: 0.7071068
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2120237213019256383, guid: b6ddeeb50c8b54f9795394d1edf158b6, type: 3}
       propertyPath: m_LocalRotation.x
-      value: -0
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2120237213019256383, guid: b6ddeeb50c8b54f9795394d1edf158b6, type: 3}
       propertyPath: m_LocalRotation.y
-      value: -0.7071068
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2120237213019256383, guid: b6ddeeb50c8b54f9795394d1edf158b6, type: 3}
       propertyPath: m_LocalRotation.z
-      value: -0
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2120237213019256383, guid: b6ddeeb50c8b54f9795394d1edf158b6, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -454,6 +458,11 @@ PrefabInstance:
       objectReference: {fileID: 2100000, guid: 4d217f608a726411a82a4f553a5b691d, type: 2}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: b6ddeeb50c8b54f9795394d1edf158b6, type: 3}
+--- !u!4 &2514193037208866460 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 7112627324097686143, guid: b6ddeeb50c8b54f9795394d1edf158b6, type: 3}
+  m_PrefabInstance: {fileID: 4634509555958293731}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &6718681670861427418 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 2120237213019256377, guid: b6ddeeb50c8b54f9795394d1edf158b6, type: 3}
