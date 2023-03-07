@@ -1,0 +1,6 @@
+# Created by Kenney (www.kenney.nl)
+
+newmtl quad-high
+Kd 1 1 1
+map_Kd Textures/quad-high.png
+

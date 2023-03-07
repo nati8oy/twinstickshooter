@@ -165,7 +165,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   movePositionTransform: {fileID: 0}
   navPoints: []
-  isFollower: 0
+  isFollower: 1
+  chasePlayer: 0
   interval: 20
 --- !u!195 &1619187982
 NavMeshAgent:

@@ -11,7 +11,8 @@ public class Structure : ScriptableObject
     public GameObject ghostModel;
     public Sprite shopThumnail;
 
-    
+
+
     [Header("Resource Cost")]
     public Sprite candyIcon;
     public int candy;

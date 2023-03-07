@@ -55,7 +55,8 @@ public class EnemyBehaviour : MonoBehaviour
 
     private void Awake()
     {
-        state = State.Roaming; 
+         state = State.Roaming;
+
     }
 
     private void OnEnable()
@@ -72,11 +73,6 @@ public class EnemyBehaviour : MonoBehaviour
 
     }
 
-    private void OnDisable()
-    {
-        CancelInvoke();
-    }
-
     private void Update()
     {
 
@@ -86,9 +82,10 @@ public class EnemyBehaviour : MonoBehaviour
             case State.Roaming:
                 //Debug.Log("Roaming");
                 enemyNavMesh.isFollower = false;
-                FindTarget();
 
-            break;
+                FindTarget();
+                    
+                break;
             case State.ChaseTarget:
                 //Debug.Log("Chasing");
                 enemyNavMesh.isFollower = true;
@@ -125,9 +122,6 @@ public class EnemyBehaviour : MonoBehaviour
 
                 break;
             case State.Attack:
-
-
-      
 
 
                 break;
@@ -191,8 +185,9 @@ public class EnemyBehaviour : MonoBehaviour
             state = State.ChaseTarget;
             Debug.DrawLine(transform.position, GameManager.Instance.player.transform.position, color:Color.red);
         }
-
     }
+
+    
 
 
     public void Damage(int damageAmount)

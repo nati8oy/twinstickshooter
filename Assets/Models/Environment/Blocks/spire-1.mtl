@@ -1,0 +1,6 @@
+# Created by Kenney (www.kenney.nl)
+
+newmtl spire-1
+Kd 1 1 1
+map_Kd Textures/spire-1.png
+

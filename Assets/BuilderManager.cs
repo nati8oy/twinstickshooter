@@ -35,7 +35,7 @@ public class BuilderManager : Singleton<BuilderManager>
         GameManager.Instance.gameState = GameManager.GameState.play;
         GameManager.levelComplete = false;
         GameManager.maxEnemies = 5;
-        LevelManager.Instance.NextLevel();
+        //LevelManager.Instance.NextLevel();
         structure.DestroyGhosts();
         //GameManager.Instance.GetComponent<Camera>().enabled = true;
     }

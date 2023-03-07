@@ -46,7 +46,6 @@ public class EnemyNavMesh : MonoBehaviour
 
         }
 
-
         navPoints = GameObject.FindGameObjectsWithTag("nav point");
 
     }

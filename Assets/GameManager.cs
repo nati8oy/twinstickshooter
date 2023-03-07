@@ -15,6 +15,8 @@ public class GameManager : Singleton<GameManager>
     [SerializeField] private UIManager uiManager;
     public CharacterController characterController;
 
+    //this is used for the target tha the enemies are trying to get to
+    public Transform endPoint;
 
     [SerializeField] private GameObject builderHUD;
     [SerializeField] private GameObject gameHUD;
@@ -27,7 +29,6 @@ public class GameManager : Singleton<GameManager>
     //public CinemachineVirtualCamera virtualCamera;
 
     public float divider = 0.1f;
-    public float timeInterval = 3f;
 
     public static bool levelComplete;
 
@@ -35,7 +36,6 @@ public class GameManager : Singleton<GameManager>
     public static float resourceCount = 0f;
     private int randomNumber;
 
-    public int enemyCount;
 
     public bool gameOver;
 
@@ -56,7 +56,6 @@ public class GameManager : Singleton<GameManager>
         dead,
     }
 
-    [SerializeField] private GameObject[] spawnPoints;
 
     void Start()
     {
@@ -66,46 +65,6 @@ public class GameManager : Singleton<GameManager>
     }
 
 
-
-    public void SpawnEnemy()
-    {
-
-        randomNumber = Random.Range(0,6);
-
-        GameObject enemy = ObjectPooler.SharedInstance.GetPooledObject("enemy");
-
-        if (enemy != null)
-        {
-            enemy.transform.position = spawnPoints[randomNumber].transform.position;
-            enemy.SetActive(true);
-        }
-
-    }
-
-    IEnumerator EnemySpawn()
-    {
-        SpawnEnemy();
-        //yield on a new YieldInstruction that waits for 5 seconds.
-        yield return new WaitForSeconds(timeInterval);
-
-
-        if (gameState == GameState.play && enemyCount < maxEnemies)
-        {
-            StartCoroutine(EnemySpawn());
-            enemyCount += 1;
-        }
-    }
-    public void StartEnemySpawn()
-    {
-        enemyCount = 1;
-        //check the game mode is tws before starting the coroutine.
-        //tws means twin stick shooter. The other mode is building mode. 
-        if (gameState == GameState.play && enemyCount < maxEnemies)
-        {
-            StartCoroutine(EnemySpawn());
-
-        }
-    }
 
     public void EnemyCheck()
     {
