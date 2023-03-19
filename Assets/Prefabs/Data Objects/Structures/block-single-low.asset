@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e5bb70da5a905444aab1e3c818aacd9f, type: 3}
-  m_Name: Single Block (low)
+  m_Name: block-single-low
   m_EditorClassIdentifier: 
   structureModel: {fileID: 7537329818903851736, guid: 0323c2251c2f14f7c859f3d94d753ca2, type: 3}
   ghostModel: {fileID: 4866135755546616307, guid: bf435fadedce74d22b87a61d86b1b11e, type: 3}

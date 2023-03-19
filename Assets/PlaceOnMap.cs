@@ -8,10 +8,14 @@ public class PlaceOnMap : MonoBehaviour
 {
     [SerializeField] private Camera mainCamera;
     
-    [SerializeField] private LayerMask layerMask;
-    private float structureVertSize;
+    public LayerMask layerMask;
     public Structure structure;
 
+    //use this to reference the collider height
+    private float structureVertSize;
+
+    //use this to reference the mesh object for height
+    private float vertMeshSize;
 
     public Vector3 raycastHitPoint;
 
@@ -32,6 +36,20 @@ public class PlaceOnMap : MonoBehaviour
 
     private void OnEnable()
     {
+        /*
+        GameObject meshObject = transform.Find("mesh").gameObject;
+
+        // Get the Mesh component from the child object
+        Mesh mesh = meshObject.GetComponent<MeshFilter>().mesh;
+
+        // Get the bounds of the mesh in world space
+        Bounds bounds = mesh.bounds;
+
+        // Get the height of the mesh by accessing the bounds size along the y-axis
+        vertMeshSize = bounds.size.y/2;
+
+        */
+
 
         //set the RMB to place the structure
         placeBuildingAction = new InputAction(binding: "<DualShockGamepad>/buttonSouth");
@@ -50,12 +68,14 @@ public class PlaceOnMap : MonoBehaviour
         colliderCentrePoint = objectCollider.bounds.center;
         //Fetch the size of the Collider volume
         m_Size = objectCollider.bounds.size;
+        Debug.Log("collider size is: " + m_Size);
         //Fetch the minimum and maximum bounds of the Collider volume
         m_Min = objectCollider.bounds.min;
         m_Max = objectCollider.bounds.max;
 
-        //this gets the vertical size of the object and divides it by 2 so that it is level with the ground layer
-        structureVertSize = m_Size.y / 2;
+        //this gets the vertical size of the object and subtracts it from itself to give us 0 so that it is level with the ground layer
+        structureVertSize = m_Size.y - m_Size.y;
+        Debug.Log("structureVertSize is: " + structureVertSize);
 
 
         if (mainCamera != null)

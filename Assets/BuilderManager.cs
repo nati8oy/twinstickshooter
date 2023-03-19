@@ -95,7 +95,19 @@ public class BuilderManager : Singleton<BuilderManager>
     private void AddGhostToScreen(int index)
     {
         //add the ghost object to the screen
-        structures[index].InstantiateObject(GameObject.Find("Player Alt").transform.position);
+        //check if there is a ghost on screen from which the transform can be taken
+
+        if (currentStructure != null)
+        {
+            structures[index].InstantiateObject(currentStructure.transform.position);
+        }
+
+        else
+        {
+            //if there is no ghost on screen when clicked, just add the object where the player is posiitoned
+            structures[index].InstantiateObject(GameObject.Find("Player Alt").transform.position);
+
+        }
     }
 
     public void Cycle(string direction)
