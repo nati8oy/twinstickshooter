@@ -41,7 +41,7 @@ public class Grenade : MonoBehaviour
         {
             Explode();
             hasExploded = true;
-            Debug.Log("Boom! Timed out!");
+           // Debug.Log("Boom! Timed out!");
         }
     }
 

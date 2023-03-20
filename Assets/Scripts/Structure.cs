@@ -52,7 +52,7 @@ public class Structure : ScriptableObject
         foreach (GameObject ghost in ghosts)
         {
             Destroy(ghost);
-            Debug.Log("ghosts killed");
+            //Debug.Log("ghosts killed");
         }
     }
 

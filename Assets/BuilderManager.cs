@@ -29,6 +29,15 @@ public class BuilderManager : Singleton<BuilderManager>
         currentItem = 0;
     }
 
+    
+    private void Update()
+    {
+        if (GameManager.Instance.gameState == GameManager.GameState.building)
+        {
+            CameraFollowCheck();
+        }
+
+    }
 
     public void ReturnToGame()
     {
@@ -60,13 +69,10 @@ public class BuilderManager : Singleton<BuilderManager>
             //add the ghost object to the screen
             AddGhostToScreen(currentItem);
 
-
             //change the virtual camera priority
             cameraSwitcher.SwitchPriority();
 
-            //set the follow target of the virtual camera to the ghost in edit mode
-            cameraSwitcher.vcam2.m_LookAt = GameObject.FindGameObjectWithTag("ghost").transform;
-            cameraSwitcher.vcam2.m_Follow = GameObject.FindGameObjectWithTag("ghost").transform;
+            CameraFollowCheck();
 
             //mainCamera = GameManager.Instance.cameraList[1];
             //mainCamera = GameObject.Find("CameraRigBase").GetComponentInChildren<Camera>();
@@ -112,6 +118,8 @@ public class BuilderManager : Singleton<BuilderManager>
 
     public void Cycle(string direction)
     {
+       
+
         //remove the previous ghost
 
         if (direction == "right")
@@ -129,7 +137,8 @@ public class BuilderManager : Singleton<BuilderManager>
 
             structures[currentItem].DestroyGhosts();
             AddGhostToScreen(currentItem);
-            Debug.Log("right: current = " + currentItem);
+            //check each time you cycle through the items that the camera is still following the ghost.
+            CameraFollowCheck();
 
 
         }
@@ -146,11 +155,12 @@ public class BuilderManager : Singleton<BuilderManager>
             {
                 currentItem -= 1;
             }
-
+         
             structures[currentItem].DestroyGhosts();
             AddGhostToScreen(currentItem);
+            //check each time you cycle through the items that the camera is still following the ghost.
+            CameraFollowCheck();
 
-            Debug.Log("left: current = " + currentItem);
         }
     }
 
@@ -165,6 +175,13 @@ public class BuilderManager : Singleton<BuilderManager>
             }
         }
 
+    }
 
+    public void CameraFollowCheck()
+    {
+        //check each time you cycle through the items that the camera is still following the ghost.
+        //set the follow target of the virtual camera to the ghost in edit mode
+        cameraSwitcher.vcam2.m_LookAt = GameObject.FindGameObjectWithTag("ghost").transform;
+        cameraSwitcher.vcam2.m_Follow = GameObject.FindGameObjectWithTag("ghost").transform;
     }
 }

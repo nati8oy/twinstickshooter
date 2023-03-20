@@ -45,4 +45,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   gameManager: {fileID: 0}
-  characterController: {fileID: 0}
+  levelComplete: 0
+  currentLevel: 0
+  enemyCount: 0
+  spawnRate: 0.25
+  spawnPoints:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}

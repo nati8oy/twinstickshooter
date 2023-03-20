@@ -191,7 +191,7 @@ MonoBehaviour:
         RotationSpace: 1
         AnimateRotationDuration: 0.2
         RemapCurveZero: 0
-        RemapCurveOne: 360
+        RemapCurveOne: 90
         AnimateX: 0
         AnimateRotationTweenX:
           MMTweenDefinitionType: 1
@@ -433,6 +433,34 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 7903279555464591644, guid: 1c7cadfd8ebfd4831a136121416727c5, type: 3}
   m_PrefabInstance: {fileID: 1960292534392050338}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &146946802033782812
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8546228237747563454}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 70e0ccea979ee4760be132bed91796a0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  mainCamera: {fileID: 0}
+  layerMask:
+    serializedVersion: 2
+    m_Bits: 8
+  structure: {fileID: 11400000, guid: 9f9d8ec52a3e04be9907b30c9997fec2, type: 2}
+  raycastHitPoint: {x: 0, y: 0, z: 0}
+  placeBuildingAction:
+    m_Name: Place Building
+    m_Type: 0
+    m_ExpectedControlType: 
+    m_Id: 7e0b5b09-c28e-45c3-88cf-f6fac85d391c
+    m_Processors: 
+    m_Interactions: 
+    m_SingletonActionBindings: []
+    m_Flags: 0
+  objectBlocked: 0
 --- !u!114 &1840230618497611025
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -484,31 +512,3 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f7a48d3fd106843418cb6b5862f20b1b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &146946802033782812
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8546228237747563454}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 70e0ccea979ee4760be132bed91796a0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  mainCamera: {fileID: 0}
-  layerMask:
-    serializedVersion: 2
-    m_Bits: 8
-  structure: {fileID: 11400000, guid: 9f9d8ec52a3e04be9907b30c9997fec2, type: 2}
-  raycastHitPoint: {x: 0, y: 0, z: 0}
-  placeBuildingAction:
-    m_Name: Place Building
-    m_Type: 0
-    m_ExpectedControlType: 
-    m_Id: 7e0b5b09-c28e-45c3-88cf-f6fac85d391c
-    m_Processors: 
-    m_Interactions: 
-    m_SingletonActionBindings: []
-    m_Flags: 0
-  objectBlocked: 0
