@@ -18,7 +18,7 @@ public class GameManager : Singleton<GameManager>
     //this is used for the target tha the enemies are trying to get to
     public Transform endPoint;
 
-    [SerializeField] private GameObject builderHUD;
+    //[SerializeField] private GameObject builderHUD;
     [SerializeField] private GameObject gameHUD;
 
     [SerializeField] private GameObject feedbackPlayer;

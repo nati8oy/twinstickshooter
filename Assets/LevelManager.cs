@@ -7,8 +7,9 @@ using Cinemachine;
 public class LevelManager : Singleton<LevelManager>
 {
     [SerializeField] private GameManager gameManager;
+    public LayerMask layerMask;
 
-    
+
     public static int enemyKillCount;
     public static int maxEnemies;
 
@@ -32,6 +33,9 @@ public class LevelManager : Singleton<LevelManager>
 
     void Start()
     {
+
+        
+
         //start spawning enemies
         StartCoroutine(EnemySpawn());
         //manually set difficulty level
@@ -41,7 +45,7 @@ public class LevelManager : Singleton<LevelManager>
         //SceneManager.LoadScene(currentLevel, LoadSceneMode.Additive);
 
         enemyKillCount = 0;
-        maxEnemies = 5;
+        maxEnemies = 20;
         GameManager.maxEnemies = maxEnemies;
 
     }
@@ -118,6 +122,7 @@ public class LevelManager : Singleton<LevelManager>
 
         GameObject enemy = ObjectPooler.SharedInstance.GetPooledObject("enemy");
 
+
         if (enemy != null)
         {
             //spawn enemies at a random location from the number of spawn points in this array
@@ -133,25 +138,8 @@ public class LevelManager : Singleton<LevelManager>
         //yield on a new YieldInstruction that waits for 5 seconds.
         yield return new WaitForSeconds(spawnRate);
 
-
-        if (GameManager.Instance.gameState == GameManager.GameState.play)
-        {
-            StartCoroutine(EnemySpawn());
-            enemyCount += 1;
-        }
+        StartCoroutine(EnemySpawn());
+     
     }
-
-    public void StartEnemySpawn()
-    {
-        enemyCount = 1;
-        //check that the game mode is play first
-        if (GameManager.Instance.gameState == GameManager.GameState.play && enemyCount < maxEnemies)
-        {
-            StartCoroutine(EnemySpawn());
-
-        }
-    }
-
-
 
 }

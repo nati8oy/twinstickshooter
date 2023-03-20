@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 265456949988174746}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: fire point
   m_TagString: fire point
   m_Icon: {fileID: 0}
@@ -49,7 +49,7 @@ GameObject:
   - component: {fileID: 6853809552740297122}
   - component: {fileID: 7398218133560367885}
   - component: {fileID: 1024757884507381662}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Enemy
   m_TagString: enemy
   m_Icon: {fileID: 0}
@@ -166,7 +166,6 @@ MonoBehaviour:
   movePositionTransform: {fileID: 0}
   navPoints: []
   isFollower: 1
-  chasePlayer: 0
   interval: 20
 --- !u!195 &1619187982
 NavMeshAgent:
@@ -225,7 +224,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8208434519250324759}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 83e37030b31fc475ab0347f41449cbf3, type: 3}
   m_Name: 
