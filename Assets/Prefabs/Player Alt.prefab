@@ -261,6 +261,22 @@ MonoBehaviour:
       m_Calls: []
     m_ActionId: 67e01353-e0fb-4fae-afc9-26466dfe2c51
     m_ActionName: EditMode/Camera Movement[/DualShock4GamepadHID/leftStick,/Mouse/delta]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 3d2b4c7e-ba18-4890-8dc4-9c254e047029
+    m_ActionName: EditMode/Cycle Object Right[/DualShock4GamepadHID/rightTrigger,/DualShock4GamepadHID1/rightTrigger,/DualShock4GamepadHID2/rightTrigger,/DualShock4GamepadHID3/rightTrigger,/DualShock4GamepadHID4/rightTrigger]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: c22f4be7-bad2-42f3-a223-533c9dc836b4
+    m_ActionName: EditMode/Cycle Object Left[/DualShock4GamepadHID/leftTrigger,/DualShock4GamepadHID1/leftTrigger,/DualShock4GamepadHID2/leftTrigger,/DualShock4GamepadHID3/leftTrigger,/DualShock4GamepadHID4/leftTrigger]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 20860a46-7d81-4635-bbb8-960b10530027
+    m_ActionName: EditMode/Rotate Left[/DualShock4GamepadHID/buttonWest,/DualShock4GamepadHID1/buttonWest,/DualShock4GamepadHID2/buttonWest,/DualShock4GamepadHID3/buttonWest,/DualShock4GamepadHID4/buttonWest]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: c255582d-5c39-4dec-906e-a458f3057048
+    m_ActionName: EditMode/Rotate Right[/DualShock4GamepadHID/buttonEast,/DualShock4GamepadHID1/buttonEast,/DualShock4GamepadHID2/buttonEast,/DualShock4GamepadHID3/buttonEast,/DualShock4GamepadHID4/buttonEast]
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: 
   m_DefaultActionMap: Controls
@@ -344,7 +360,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2215dd48f6c124bb988f4b0c3ebcb643, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  cameraSwitcher: {fileID: 0}
   shootAction:
     m_Name: Shoot
     m_Type: 0
@@ -381,6 +396,42 @@ MonoBehaviour:
     m_Interactions: 
     m_SingletonActionBindings: []
     m_Flags: 0
+  cycleRight:
+    m_Name: Cycle Right
+    m_Type: 0
+    m_ExpectedControlType: 
+    m_Id: 91c8a5bd-daae-4947-8d26-9540b21322c0
+    m_Processors: 
+    m_Interactions: 
+    m_SingletonActionBindings: []
+    m_Flags: 0
+  cycleLeft:
+    m_Name: Cycle Left
+    m_Type: 0
+    m_ExpectedControlType: 
+    m_Id: 39548778-5008-4c63-8084-e20ca56700d6
+    m_Processors: 
+    m_Interactions: 
+    m_SingletonActionBindings: []
+    m_Flags: 0
+  rotateLeft:
+    m_Name: Rotate Left
+    m_Type: 0
+    m_ExpectedControlType: 
+    m_Id: d24538a5-c3a9-4777-ba99-74f3b6c94317
+    m_Processors: 
+    m_Interactions: 
+    m_SingletonActionBindings: []
+    m_Flags: 0
+  rotateRight:
+    m_Name: Rotate Right
+    m_Type: 0
+    m_ExpectedControlType: 
+    m_Id: bc39c8f6-7e5f-435d-837d-3bdfe21d3dd6
+    m_Processors: 
+    m_Interactions: 
+    m_SingletonActionBindings: []
+    m_Flags: 0
   buildCamera: {fileID: 0}
   mainCamera: {fileID: 0}
   firePoint: {fileID: 3566868977290621469}
@@ -391,9 +442,6 @@ MonoBehaviour:
   cooldownComplete: 0
   bulletForce: 40
   secondaryWeaponForce: 80
-  structures:
-  - {fileID: 11400000, guid: c4c8e0a6ae6b242fcab6f05f52767ee1, type: 2}
-  - {fileID: 11400000, guid: e592940146aa547438f2a7781829aa2e, type: 2}
 --- !u!1 &3676882435549570892
 GameObject:
   m_ObjectHideFlags: 0

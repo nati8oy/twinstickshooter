@@ -202,7 +202,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   gameManager: {fileID: 4584910975332766569, guid: 6e2dea56f26834476be2fd87ceacc9f3, type: 3}
-  enemyData: {fileID: 11400000, guid: ef4c2c81a2eb845bd8732bc40319c907, type: 2}
+  enemyData: {fileID: 11400000, guid: eafe96d6925734207ae9ecfe106d2f9a, type: 2}
   enemyNavMesh: {fileID: 1619187981}
   hp: 0
   moveSpeed: 0
