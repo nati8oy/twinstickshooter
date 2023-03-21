@@ -19,8 +19,12 @@ MonoBehaviour:
   moveSpeed: 0
   shield: 0
   followPlayer: 1
-  shooter: 1
-  enemyLevel: 1
+  canAttack: 0
   enemyMaterial: {fileID: 2100000, guid: 5c270a73328a99e439fec44a0cf3a17d, type: 2}
   enemyModel: {fileID: 8208434519250324759, guid: b153d2bff063d43019d15f928a232a2d, type: 3}
-  resourceType: fire
+  resourceDrop:
+  - ammo
+  - health
+  - fire
+  - none
+  XP: 0

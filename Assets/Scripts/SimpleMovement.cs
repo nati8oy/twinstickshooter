@@ -6,7 +6,7 @@ using UnityEngine.InputSystem;
 public class SimpleMovement : MonoBehaviour
 {
 
-    private float moveSpeed = 10f;
+    private float moveSpeed = 30f;
     private PlayerControls playerControls;
     private Vector2 movement;
 

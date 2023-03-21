@@ -32,11 +32,11 @@ public class BuilderManager : Singleton<BuilderManager>
     
     private void Update()
     {
+        //this ensures that the edit mode camera is always locked to the ghost object
         if (GameManager.Instance.gameState == GameManager.GameState.building)
         {
             CameraFollowCheck();
         }
-
     }
 
     public void ReturnToGame()
@@ -44,9 +44,7 @@ public class BuilderManager : Singleton<BuilderManager>
         GameManager.Instance.gameState = GameManager.GameState.play;
         GameManager.levelComplete = false;
         GameManager.maxEnemies = 5;
-        //LevelManager.Instance.NextLevel();
         structure.DestroyGhosts();
-        //GameManager.Instance.GetComponent<Camera>().enabled = true;
     }
 
 
@@ -57,14 +55,12 @@ public class BuilderManager : Singleton<BuilderManager>
 
     public void EditMode()
     {
-        //change the game mode to building
-        ///Debug.Log("Entered Build Mode");
 
         //toggle between edit/building and play mode
         if (GameManager.Instance.gameState == GameManager.GameState.play)
         {
             //slow down the overall timescale
-            //MMTimeManager.Instance.SetTimeScaleTo(0.5f);
+            MMTimeManager.Instance.SetTimeScaleTo(0.3f);
 
             //add the ghost object to the screen
             AddGhostToScreen(currentItem);
@@ -73,9 +69,6 @@ public class BuilderManager : Singleton<BuilderManager>
             cameraSwitcher.SwitchPriority();
 
             CameraFollowCheck();
-
-            //mainCamera = GameManager.Instance.cameraList[1];
-            //mainCamera = GameObject.Find("CameraRigBase").GetComponentInChildren<Camera>();
 
             GameManager.Instance.gameState = GameManager.GameState.building;
 
@@ -120,7 +113,6 @@ public class BuilderManager : Singleton<BuilderManager>
     {
        
 
-        //remove the previous ghost
 
         if (direction == "right")
         {
