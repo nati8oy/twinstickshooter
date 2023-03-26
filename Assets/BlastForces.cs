@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using MoreMountains.Feedbacks;
+using UnityEngine.Events;
 
 public class BlastForces : MonoBehaviour
 {
@@ -9,7 +11,11 @@ public class BlastForces : MonoBehaviour
     public LayerMask layerMask;
     public float detectionRange = 5f;
     public float operationInterval;
-    public bool canPush; 
+    public bool canPush;
+    public ParticleSystem particleSystem;
+    public UnityEvent onBlastForcePlay;
+
+    public MMFeedbacks feedbacks;
 
     // See Order of Execution for Event Functions for information on FixedUpdate() and Update() related to physics queries
     void FixedUpdate()
@@ -32,7 +38,7 @@ public class BlastForces : MonoBehaviour
                 hitObject.GetComponent<Rigidbody>().AddForce(pushDirection * pushForce, ForceMode.Impulse);
                 Debug.Log("pushing");
                 StartCoroutine(PushCooldown());
-
+                onBlastForcePlay.Invoke();
             }
         }
         

@@ -32,11 +32,12 @@ public class BuilderManager : Singleton<BuilderManager>
     
     private void Update()
     {
+        /*
         //this ensures that the edit mode camera is always locked to the ghost object
         if (GameManager.Instance.gameState == GameManager.GameState.building)
         {
             CameraFollowCheck();
-        }
+        }*/
     }
 
     public void ReturnToGame()
@@ -68,9 +69,9 @@ public class BuilderManager : Singleton<BuilderManager>
             //change the virtual camera priority
             cameraSwitcher.SwitchPriority();
 
-            CameraFollowCheck();
 
             GameManager.Instance.gameState = GameManager.GameState.building;
+            CameraFollowCheck();
 
         }
         else if (GameManager.Instance.gameState == GameManager.GameState.building)

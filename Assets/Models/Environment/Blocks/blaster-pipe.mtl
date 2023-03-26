@@ -1,0 +1,6 @@
+# Created by Kenney (www.kenney.nl)
+
+newmtl blaster-pipe
+Kd 1 1 1
+map_Kd Textures/blaster-pipe.png
+

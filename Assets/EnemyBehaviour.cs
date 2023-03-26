@@ -2,6 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
+using MoreMountains.Feedbacks;
+using UnityEngine.Events;
 
 
 public class EnemyBehaviour : MonoBehaviour
@@ -13,6 +15,10 @@ public class EnemyBehaviour : MonoBehaviour
     [SerializeField] EnemyData enemyData;
 
     [SerializeField] EnemyNavMesh enemyNavMesh;
+
+    [SerializeField] MMFeedbacks feedback;
+
+    public UnityEvent onEnemyHit;
 
     public float hp;
     public float moveSpeed;
@@ -192,7 +198,8 @@ public class EnemyBehaviour : MonoBehaviour
 
     public void Damage(int damageAmount)
     {
-
+        //invokes the hit flicker from the MMFeedbacks plugin.
+        onEnemyHit.Invoke();
         resource = ObjectPooler.SharedInstance.GetPooledObject(resourceDrop);
 
         //GameObject explosion = ObjectPooler.SharedInstance.GetPooledObject("explosion");
