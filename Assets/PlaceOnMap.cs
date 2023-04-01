@@ -85,7 +85,7 @@ public class PlaceOnMap : MonoBehaviour
 
             Physics.Raycast(ray, out RaycastHit raycastHit, float.MaxValue, layerMask);
             {
-                transform.position = new Vector3(raycastHit.point.x, structureVertSize, raycastHit.point.z);
+                //transform.position = new Vector3(raycastHit.point.x, structureVertSize, raycastHit.point.z);
                 raycastHitPoint = raycastHit.point;
             }
 
@@ -109,18 +109,12 @@ public class PlaceOnMap : MonoBehaviour
         placeBuildingAction.Disable();
     }
 
-    void Update()
-    {
-        
-    }
-
 
     public void PlaceObject()
     {
 
         if (objectBlocked == false)
         {
-            Debug.Log("placed object");
 
 
             // Get the transform of the child game object

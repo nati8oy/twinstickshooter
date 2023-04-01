@@ -40,7 +40,7 @@ public class Structure : ScriptableObject
     {
         DestroyGhosts();
         //instantiate the object
-        Instantiate(ghostModel);
+        Instantiate(ghostModel,spawnposition, Quaternion.identity);
         
     }
 

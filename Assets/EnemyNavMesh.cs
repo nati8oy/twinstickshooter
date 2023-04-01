@@ -13,39 +13,49 @@ public class EnemyNavMesh : MonoBehaviour
    // [SerializeField] EnemyData enemyData;
 
     public GameObject[] navPoints;
-    public bool isFollower;
+    public bool followPlayer;
     public int interval = 20;
 
 
     private Vector3 startingPosition;
     private Vector3 roamPosition;
 
+    /*
+    private Behaviour behaviour;
+    private enum Behaviour
+    {
+        Free,
+        FollowPlayer,
+        FollowEndPoint,
+    }
+    */
 
     private void OnEnable()
     {
-        movePositionTransform = GameManager.Instance.player.transform;
+        //movePositionTransform = GameManager.Instance.player.transform;
+        movePositionTransform = GameObject.Find("EndPoint").transform;
         roamPosition = navPoints[Random.Range(0, 5)].transform.position;
-        //roamPosition = GetRoamingPosition();
 
-        //Invoke(nameof(SetNewRandomPosition), positionChange);
     }
 
     private void Start()
     {
         startingPosition = gameObject.transform.position;
-        //Debug.Log("first random location is: " + roamPosition);
     }
 
     private void Awake()
     {
         navMeshAgent = GetComponent<NavMeshAgent>();
 
-        if (isFollower)
+        if (followPlayer)
         {
-            movePositionTransform = GameManager.Instance.player.transform;
+            movePositionTransform = GameObject.Find("EndPoint").transform;
+
+            //movePositionTransform = GameManager.Instance.player.transform;
 
         }
 
+        //fill the array with the nav points that are tagged with "nav point"
         navPoints = GameObject.FindGameObjectsWithTag("nav point");
 
     }
@@ -57,16 +67,16 @@ public class EnemyNavMesh : MonoBehaviour
 
     private void Update()
     {
-        //Debug.DrawLine(startingPosition, roamPosition, color: Color.blue);
 
-        
-        if (isFollower)
+        //this is defaulted to whatever movePositionTransform.position is. It can be a stationary point or the player
+        if (followPlayer)
         {
             navMeshAgent.destination = movePositionTransform.position;
              
         }
-        
-        else if(isFollower==false)
+
+        //this returns to roaming behaviour if followPlayer is false
+        else if(followPlayer==false)
         {
 
             navMeshAgent.destination = roamPosition;
@@ -75,35 +85,13 @@ public class EnemyNavMesh : MonoBehaviour
             float reachedPositionDistance = 10f;
             if (Vector3.Distance(transform.position, roamPosition) < reachedPositionDistance)
             {
-                //Debug.Log("position reached! " + roamPosition);
-
                 //reach roam position
                 roamPosition = navPoints[Random.Range(0, 5)].transform.position;
-                //Debug.Log("new destination is: " + roamPosition);
 
             }
-
-            /*
-            float reachedPositionDistance = 10f;
-            if (Vector3.Distance(transform.position, roamPosition) < reachedPositionDistance)
-            {
-                Debug.Log("position reached! " + roamPosition);
-
-                //reach roam position
-                roamPosition = GetRoamingPosition();
-                Debug.Log("new destination is: " + roamPosition);
-
-            }*/
-
-            //navMeshAgent.destination = navPoints[Random.Range(0, 5)].transform.position;
 
         }
     }
 
-    public void SetNewRandomPosition()
-    {
-        roamPosition = GetRoamingPosition();
-        Debug.Log("roam point changed");
-    }
 
 }

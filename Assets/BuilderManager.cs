@@ -12,13 +12,18 @@ public class BuilderManager : Singleton<BuilderManager>
 
     public List<Structure> structures = new List<Structure>();
 
-    Structure structure;
     public int currentItem;
+
+    private Vector3 prevGhostPosition;
+
+
+    public GameObject placeholderObj;
 
     private GameObject currentStructure;
 
     public CinemachineSwitcher cameraSwitcher;
 
+    private Vector3 playerPositionOnMap;
 
     public float itemXSpread = 10;
     public float itemYSpread = 0;
@@ -32,12 +37,11 @@ public class BuilderManager : Singleton<BuilderManager>
     
     private void Update()
     {
-        /*
         //this ensures that the edit mode camera is always locked to the ghost object
         if (GameManager.Instance.gameState == GameManager.GameState.building)
         {
             CameraFollowCheck();
-        }*/
+        }
     }
 
     public void ReturnToGame()
@@ -45,7 +49,6 @@ public class BuilderManager : Singleton<BuilderManager>
         GameManager.Instance.gameState = GameManager.GameState.play;
         GameManager.levelComplete = false;
         GameManager.maxEnemies = 5;
-        structure.DestroyGhosts();
     }
 
 
@@ -56,12 +59,16 @@ public class BuilderManager : Singleton<BuilderManager>
 
     public void EditMode()
     {
+       playerPositionOnMap = GameObject.Find("Player Alt").transform.position;
+
+        //change the game mode to building
+        ///Debug.Log("Entered Build Mode");
 
         //toggle between edit/building and play mode
         if (GameManager.Instance.gameState == GameManager.GameState.play)
         {
             //slow down the overall timescale
-            MMTimeManager.Instance.SetTimeScaleTo(0.3f);
+            //MMTimeManager.Instance.SetTimeScaleTo(0.5f);
 
             //add the ghost object to the screen
             AddGhostToScreen(currentItem);
@@ -69,9 +76,12 @@ public class BuilderManager : Singleton<BuilderManager>
             //change the virtual camera priority
             cameraSwitcher.SwitchPriority();
 
+            CameraFollowCheck();
+
+            //mainCamera = GameManager.Instance.cameraList[1];
+            //mainCamera = GameObject.Find("CameraRigBase").GetComponentInChildren<Camera>();
 
             GameManager.Instance.gameState = GameManager.GameState.building;
-            CameraFollowCheck();
 
         }
         else if (GameManager.Instance.gameState == GameManager.GameState.building)
@@ -94,26 +104,15 @@ public class BuilderManager : Singleton<BuilderManager>
 
     private void AddGhostToScreen(int index)
     {
-        //add the ghost object to the screen
-        //check if there is a ghost on screen from which the transform can be taken
 
-        if (currentStructure != null)
-        {
-            structures[index].InstantiateObject(currentStructure.transform.position);
-        }
+        structures[index].InstantiateObject(playerPositionOnMap);
 
-        else
-        {
-            //if there is no ghost on screen when clicked, just add the object where the player is posiitoned
-            structures[index].InstantiateObject(GameObject.Find("Player Alt").transform.position);
-
-        }
     }
 
     public void Cycle(string direction)
     {
-       
 
+        //remove the previous ghost
 
         if (direction == "right")
         {
@@ -130,6 +129,7 @@ public class BuilderManager : Singleton<BuilderManager>
 
             structures[currentItem].DestroyGhosts();
             AddGhostToScreen(currentItem);
+
             //check each time you cycle through the items that the camera is still following the ghost.
             CameraFollowCheck();
 
@@ -148,9 +148,10 @@ public class BuilderManager : Singleton<BuilderManager>
             {
                 currentItem -= 1;
             }
-         
+
             structures[currentItem].DestroyGhosts();
             AddGhostToScreen(currentItem);
+
             //check each time you cycle through the items that the camera is still following the ghost.
             CameraFollowCheck();
 

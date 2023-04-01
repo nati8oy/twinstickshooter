@@ -32,7 +32,7 @@ public class EnemyBehaviour : MonoBehaviour
     public Renderer renderer;
     public Material enemyMaterial;
 
-    private bool followPlayer;
+    private bool findEndPoint;
 
     private bool canAttack;
 
@@ -75,71 +75,82 @@ public class EnemyBehaviour : MonoBehaviour
         resourceDrop = enemyData.resourceDrop[Random.Range(0,4)].ToString();
         enemyMaterial = enemyData.enemyMaterial;
         XPdrop = enemyData.XP;
-        //set the resource object up using the right tag so it can be switched in the switch statement later on.
 
+
+        findEndPoint = enemyData.followPlayer;
+
+
+        //find the bool in the enemyNav Mesh and fill it with whatever has been set in the data object
+        enemyNavMesh.followPlayer = findEndPoint;
     }
 
     private void Update()
     {
-
-        switch (state)
+        //if the object is not set to find an end point it will do its regular roaming behaviour
+        if (!findEndPoint)
         {
-            default:
-            case State.Roaming:
-                //Debug.Log("Roaming");
-                enemyNavMesh.isFollower = false;
 
-                FindTarget();
-                    
-                break;
-            case State.ChaseTarget:
-                //Debug.Log("Chasing");
-                enemyNavMesh.isFollower = true;
+            switch (state)
+            {
+                default:
+                case State.Roaming:
+                    //Debug.Log("Roaming");
+                    enemyNavMesh.followPlayer = false;
 
-                Debug.DrawLine(transform.position, GameManager.Instance.player.transform.position, color: Color.red);
+                    FindTarget();
+
+                    break;
+                case State.ChaseTarget:
+                    //Debug.Log("Chasing");
+                    enemyNavMesh.followPlayer = true;
+
+                    Debug.DrawLine(transform.position, GameManager.Instance.player.transform.position, color: Color.red);
 
 
-                float exitRangeDistance = 15f;
-                if (Vector3.Distance(transform.position, GameManager.Instance.player.transform.position) > exitRangeDistance)
-                {
-                    //player within range
-                    state = State.Roaming;
-                }
-
-                float attackRange = 10f;
-                if (Vector3.Distance(transform.position, GameManager.Instance.player.transform.position) < attackRange)
-                {
-                    //Debug.Log("In attack range!");
-                    //state = State.Attack;
-
-                }
-
-                //player within attack range and has canAttack enabled
-                if (canAttack)
-                {
-                    if (Time.time > cooldown)
+                    float exitRangeDistance = 15f;
+                    if (Vector3.Distance(transform.position, GameManager.Instance.player.transform.position) > exitRangeDistance)
                     {
-                        //triggers attack by going through the interface IAttack
-                        gameObject.GetComponent<IAttack>().TimedAttack();
-                        //cooldown = Time.time + rateOfFire;
+                        //player within range
+                        state = State.Roaming;
                     }
-                }
+
+                    float attackRange = 10f;
+                    if (Vector3.Distance(transform.position, GameManager.Instance.player.transform.position) < attackRange)
+                    {
+                        //Debug.Log("In attack range!");
+                        //state = State.Attack;
+
+                    }
+
+                    //player within attack range and has canAttack enabled
+                    if (canAttack)
+                    {
+                        if (Time.time > cooldown)
+                        {
+                            //triggers attack by going through the interface IAttack
+                            gameObject.GetComponent<IAttack>().TimedAttack();
+                            //cooldown = Time.time + rateOfFire;
+                        }
+                    }
+
+                    break;
+                case State.Attack:
+
+                    break;
+
+            }
 
 
-                break;
-            case State.Attack:
-
-
-                break;
-           
         }
+
+
+
+           
+
     }
 
-    // Start is called before the first frame update
     void Start()
     {
-       // resource = ObjectPooler.SharedInstance.GetPooledObject(resourceDrop);
-
 
         currentHealth = maxHealth;
 
@@ -162,23 +173,7 @@ public class EnemyBehaviour : MonoBehaviour
             damagable.Damage(1);
 
         }
-
-       
-
-
     }
-
-    /*
-    private void OnCollisionExit(Collision collision)
-    {
-        
-            gameObject.GetComponent<EnemyNavMesh>().enabled = true;
-            gameObject.GetComponent<EnemyBehaviour>().enabled = true;
-        gameObject.GetComponent<EnemyNavMesh>().isFollower = true;
-        gameObject.GetComponent<NavMeshAgent>().enabled = true;
-
-
-    }*/
 
 
     public void FindTarget()
@@ -202,8 +197,6 @@ public class EnemyBehaviour : MonoBehaviour
         onEnemyHit.Invoke();
         resource = ObjectPooler.SharedInstance.GetPooledObject(resourceDrop);
 
-        //GameObject explosion = ObjectPooler.SharedInstance.GetPooledObject("explosion");
-
         maxHealth -= damageAmount;
         currentHealth = maxHealth;
 
@@ -223,38 +216,7 @@ public class EnemyBehaviour : MonoBehaviour
             gameManager.EnemyCheck();
             //set enemy to inactive
             gameObject.SetActive(false);
-            //check the type of enemy and select the right type of resource to drop
-
-            /*
-            //set the probability range for a drop of any kind
-            int probability = Random.Range(1, 101);
-
-
-            //probability of dropping anything at all is 25% using this formula
-            if (Random.Range(1, 101) <= 25)
-            {
-                //pull the resourceDrop type from the data object and put it here
-                switch (resourceDrop)
-                {
-                    case "fire":
-                        resource.transform.position = gameObject.transform.position;
-                        resource.SetActive(true);
-                        break;
-
-                    case "health":
-                        resource.transform.position = gameObject.transform.position;
-                        resource.SetActive(true);
-                        break;
-                    case "ammo":
-                        resource.transform.position = gameObject.transform.position;
-                        resource.SetActive(true);
-                        break;
-                    case "none":
-                        resource.transform.position = gameObject.transform.position;
-                        resource.SetActive(true);
-                        break;
-                }
-            }*/
+           
         }
 
     }

@@ -4,10 +4,13 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using Cinemachine;
 
+
+
 public class LevelManager : Singleton<LevelManager>
 {
     [SerializeField] private GameManager gameManager;
     public LayerMask layerMask;
+
 
 
     public static int enemyKillCount;
@@ -125,8 +128,8 @@ public class LevelManager : Singleton<LevelManager>
 
         if (enemy != null)
         {
-            //spawn enemies at a random location from the number of spawn points in this array
-            enemy.transform.position = spawnPoints[randomNumber].transform.position;
+            //spawn enemies at the first location from the number of spawn points in this array
+            enemy.transform.position = spawnPoints[0].transform.position;
             enemy.SetActive(true);
         }
 
