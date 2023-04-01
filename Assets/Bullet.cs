@@ -7,6 +7,8 @@ public class Bullet : MonoBehaviour
     public float lifespan = 5f;
     public int bulletDamage;
 
+    public LayerMask environmentCollisionLayer;
+
     //[SerializeField] private ParticleSystem hitParticle;
 
     public void OnCollisionEnter(Collision collision)
@@ -35,11 +37,13 @@ public class Bullet : MonoBehaviour
             
         }
 
-        if (collision.gameObject.tag == "environment")
+
+        if (environmentCollisionLayer == (environmentCollisionLayer | (1 << collision.gameObject.layer)))
         {
             gameObject.GetComponent<Rigidbody>().velocity = Vector3.zero;
             gameObject.SetActive(false);
         }
+
         if (collision.gameObject.tag == "player")
         {
             gameObject.GetComponent<Rigidbody>().velocity = Vector3.zero;

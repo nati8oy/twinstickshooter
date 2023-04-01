@@ -116,12 +116,80 @@ MonoBehaviour:
   FeedbacksList:
   - rid: 8112698360046026766
   - rid: 8112698360046026767
+  - rid: 3809329535983026180
   KeepPlayModeChanges: 0
   PerformanceMode: 0
   ForceStopFeedbacksOnDisable: 1
   references:
     version: 2
     RefIds:
+    - rid: 3809329535983026180
+      type: {class: MMF_FreezeFrame, ns: MoreMountains.Feedbacks, asm: MoreMountains.Feedbacks}
+      data:
+        Active: 1
+        UniqueID: -1472977080
+        Label: Freeze Frame
+        ChannelMode: 0
+        Channel: 0
+        MMChannelDefinition: {fileID: 0}
+        Chance: 100
+        DisplayColor: {r: 0, g: 0, b: 0, a: 1}
+        Timing:
+          TimescaleMode: 0
+          ExcludeFromHoldingPauses: 0
+          ContributeToTotalDuration: 1
+          InitialDelay: 0
+          CooldownDuration: 0
+          InterruptsOnStop: 1
+          NumberOfRepeats: 0
+          RepeatForever: 0
+          DelayBetweenRepeats: 1
+          MMFeedbacksDirectionCondition: 0
+          PlayDirection: 0
+          ConstantIntensity: 0
+          UseIntensityInterval: 0
+          IntensityIntervalMin: 0
+          IntensityIntervalMax: 0
+          Sequence: {fileID: 0}
+          TrackID: 0
+          Quantized: 0
+          TargetBPM: 120
+        RandomizeOutput: 0
+        RandomMultiplier: {x: 0.8, y: 1}
+        RandomizeDuration: 0
+        RandomDurationMultiplier: {x: 0.5, y: 2}
+        UseRange: 0
+        RangeDistance: 5
+        UseRangeFalloff: 0
+        RangeFalloff:
+          serializedVersion: 2
+          m_Curve:
+          - serializedVersion: 3
+            time: 0
+            value: 1
+            inSlope: 0
+            outSlope: 0
+            tangentMode: 0
+            weightedMode: 0
+            inWeight: 0
+            outWeight: 0
+          - serializedVersion: 3
+            time: 1
+            value: 0
+            inSlope: 0
+            outSlope: 0
+            tangentMode: 0
+            weightedMode: 0
+            inWeight: 0
+            outWeight: 0
+          m_PreInfinity: 2
+          m_PostInfinity: 2
+          m_RotationOrder: 4
+        RemapRangeFalloff: {x: 0, y: 1}
+        Owner: {fileID: 5066850756531338703}
+        DebugActive: 0
+        FreezeFrameDuration: 0.03
+        MinimumTimescaleThreshold: 0.1
     - rid: 8112698360046026766
       type: {class: MMF_Flicker, ns: MoreMountains.Feedbacks, asm: MoreMountains.Feedbacks}
       data:
@@ -264,9 +332,9 @@ MonoBehaviour:
         SquashAndStretchTarget: {fileID: 8208434519250324778}
         Mode: 0
         Axis: 6
-        AnimateScaleDuration: 0.2
+        AnimateScaleDuration: 0.4
         RemapCurveZero: 1
-        RemapCurveOne: 1.75
+        RemapCurveOne: 1.4
         Offset: 0
         AnimateCurve:
           serializedVersion: 2
@@ -281,8 +349,8 @@ MonoBehaviour:
             inWeight: 0
             outWeight: 0
           - serializedVersion: 3
-            time: 0.3
-            value: 1.5
+            time: 0.12314382
+            value: -0.99922705
             inSlope: 0
             outSlope: 0
             tangentMode: 0
@@ -290,37 +358,46 @@ MonoBehaviour:
             inWeight: 0
             outWeight: 0
           - serializedVersion: 3
-            time: 0.49906585
-            value: 0.48347336
-            inSlope: -3.0774934
-            outSlope: -3.0774934
+            time: 0.25508228
+            value: 1.0390507
+            inSlope: 2.8190482
+            outSlope: 2.8190482
             tangentMode: 0
             weightedMode: 0
             inWeight: 0.33333334
             outWeight: 0.33333334
           - serializedVersion: 3
-            time: 0.71258473
-            value: 0.69243836
-            inSlope: -1.0998346
-            outSlope: -1.0998346
+            time: 0.4470894
+            value: -0.53901064
+            inSlope: 0.0036140734
+            outSlope: 0.0036140734
             tangentMode: 0
             weightedMode: 0
             inWeight: 0.33333334
             outWeight: 0.33333334
           - serializedVersion: 3
-            time: 0.81081605
-            value: 0.122965366
-            inSlope: -3.2808843
-            outSlope: -3.2808843
+            time: 0.6409262
+            value: 0.49787748
+            inSlope: 4.620454
+            outSlope: 4.620454
             tangentMode: 0
             weightedMode: 0
             inWeight: 0.33333334
             outWeight: 0.33333334
           - serializedVersion: 3
-            time: 0.9259528
-            value: 0.12426526
-            inSlope: 0.1188726
-            outSlope: 0.1188726
+            time: 0.7868408
+            value: -0.26380616
+            inSlope: 0
+            outSlope: 0
+            tangentMode: 0
+            weightedMode: 0
+            inWeight: 0
+            outWeight: 0
+          - serializedVersion: 3
+            time: 0.9014592
+            value: 0.13793975
+            inSlope: 1.80238
+            outSlope: 1.80238
             tangentMode: 0
             weightedMode: 0
             inWeight: 0.33333334
@@ -337,8 +414,8 @@ MonoBehaviour:
           m_PreInfinity: 2
           m_PostInfinity: 2
           m_RotationOrder: 4
-        AllowAdditivePlays: 1
-        DetermineScaleOnPlay: 1
+        AllowAdditivePlays: 0
+        DetermineScaleOnPlay: 0
         DestinationScale: 2
 --- !u!1 &2706752202133517977
 GameObject:
@@ -506,7 +583,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   movePositionTransform: {fileID: 0}
   navPoints: []
-  isFollower: 1
+  followPlayer: 0
   interval: 20
 --- !u!195 &1619187982
 NavMeshAgent:

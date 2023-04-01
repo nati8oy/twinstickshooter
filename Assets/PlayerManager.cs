@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.Events;
 
 public class PlayerManager : Singleton<PlayerManager>
 {
@@ -13,6 +14,8 @@ public class PlayerManager : Singleton<PlayerManager>
     public bool playerDead;
     public PlayerInput playerInput;
 
+
+    public UnityEvent onPlayerHit; 
 
     //player XP related
     public HealthBar levelBar;
@@ -79,10 +82,12 @@ public class PlayerManager : Singleton<PlayerManager>
             if (collision.gameObject.tag == "enemy")        
             {
                 TakeDamage(10);
+                onPlayerHit.Invoke();
             }
             if (collision.gameObject.tag == "enemy bullet")
             {
                 TakeDamage(10);
+                onPlayerHit.Invoke();
             }
             if (collision.gameObject.tag == "XP")
             {
