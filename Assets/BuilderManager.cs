@@ -15,7 +15,7 @@ public class BuilderManager : Singleton<BuilderManager>
     public int currentItem;
 
     private Vector3 prevGhostPosition;
-
+    private Vector3 playerPos;
 
     public GameObject placeholderObj;
 
@@ -32,6 +32,9 @@ public class BuilderManager : Singleton<BuilderManager>
     private void OnEnable()
     {
         currentItem = 0;
+        playerPos = GameObject.Find("Player Alt").transform.position;
+
+        prevGhostPosition = new Vector3(playerPos.x, 0, playerPos.z);
     }
 
     
@@ -67,11 +70,15 @@ public class BuilderManager : Singleton<BuilderManager>
         //toggle between edit/building and play mode
         if (GameManager.Instance.gameState == GameManager.GameState.play)
         {
+
+            structures[currentItem].InstantiateObject(playerPositionOnMap);
+
+
             //slow down the overall timescale
             //MMTimeManager.Instance.SetTimeScaleTo(0.5f);
 
             //add the ghost object to the screen
-            AddGhostToScreen(currentItem);
+            //AddGhostToScreen(currentItem);
 
             //change the virtual camera priority
             cameraSwitcher.SwitchPriority();
@@ -86,6 +93,8 @@ public class BuilderManager : Singleton<BuilderManager>
         }
         else if (GameManager.Instance.gameState == GameManager.GameState.building)
         {
+            //reset the player pos value for when the player re-enters building mode. 
+            prevGhostPosition = new Vector3(playerPos.x, 0, playerPos.z); 
             //buildCamera.SetActive(false);
             MMTimeManager.Instance.SetTimeScaleTo(1f);
             GameManager.Instance.gameState = GameManager.GameState.play;
@@ -105,8 +114,21 @@ public class BuilderManager : Singleton<BuilderManager>
     private void AddGhostToScreen(int index)
     {
 
-        structures[index].InstantiateObject(playerPositionOnMap);
+        structures[index].InstantiateObject(prevGhostPosition);
 
+        /*
+        Debug.Log("prev position: " + prevGhostPosition);
+        if (currentStructure == null)
+        {
+            structures[index].InstantiateObject(playerPositionOnMap);
+            Debug.Log("no prev");
+
+        }
+
+        else if(currentStructure!=null)
+        {
+            Debug.Log("using prev");
+        }*/
     }
 
     public void Cycle(string direction)
@@ -126,6 +148,7 @@ public class BuilderManager : Singleton<BuilderManager>
             {
                 currentItem += 1;
             }
+            prevGhostPosition = GameObject.FindGameObjectWithTag("ghost").transform.position;
 
             structures[currentItem].DestroyGhosts();
             AddGhostToScreen(currentItem);
@@ -149,6 +172,7 @@ public class BuilderManager : Singleton<BuilderManager>
                 currentItem -= 1;
             }
 
+            prevGhostPosition = GameObject.FindGameObjectWithTag("ghost").transform.position;
             structures[currentItem].DestroyGhosts();
             AddGhostToScreen(currentItem);
 
