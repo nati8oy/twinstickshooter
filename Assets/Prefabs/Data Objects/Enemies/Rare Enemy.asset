@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Rare Enemy
   m_EditorClassIdentifier: 
   health: 3
-  damage: 1
+  damage: 3
   attackSpeed: 0
   objectPoolerTag: enemy
   moveSpeed: 0

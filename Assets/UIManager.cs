@@ -12,6 +12,8 @@ public class UIManager : Singleton<UIManager>
    // public GameObject builderHUD;
     public GameObject gameHUD;
     public GameObject gameoverUI;
+    [SerializeField] private PlayerManager playerManager;
+    [SerializeField] private EndPoint endPoint;
     //public bool enableUI;
 
     [SerializeField] private GameManager gameManager;
@@ -19,35 +21,25 @@ public class UIManager : Singleton<UIManager>
 
     private void OnEnable()
     {
-        //builderHUD.SetActive(false);
         gameHUD.SetActive(true);
+
+        //subscribes to an event called PlayerDeath that is inside od the playerManager script
+        playerManager.PlayerDeath += GameOver;
+        //endPoint.BaseDeath += GameOver;
+
     }
 
-    // Start is called before the first frame update
-    void Start()
+    public void GameOver()
     {
-       // resourceInput.SetText(GameManager.resourceCount.ToString());
-
-
+        //show the game over UI screen 
+        gameoverUI.SetActive(true);
     }
-    
-    // Update is called once per frame
-    void Update()
+
+    private void OnDestroy()
     {
-        //resourceInput.SetText(GameManager.resourceCount.ToString());
+        //ubsubscribe on destroy
+        playerManager.PlayerDeath -= GameOver;
+       // endPoint.BaseDeath -= GameOver;
 
-
-        /*
-        if (GameManager.levelComplete ==true)
-        {
-            builderHUD.SetActive(true);
-            gameHUD.SetActive(false);
-        }
-        else
-        {
-            builderHUD.SetActive(false);
-            gameHUD.SetActive(true);
-        }*/
     }
-
 }

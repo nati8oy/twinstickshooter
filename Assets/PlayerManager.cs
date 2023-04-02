@@ -8,6 +8,9 @@ public class PlayerManager : Singleton<PlayerManager>
 {
     public HealthBar healthBar;
 
+    //set an action for the player death for other scripts to subscribe to
+    public event System.Action PlayerDeath;
+
     //health related
     public int maxHealth = 100;
     public int currentHealth;
@@ -38,7 +41,7 @@ public class PlayerManager : Singleton<PlayerManager>
         playerLevelMax = playerLevels.level1;
         levelBar.SetAmount(currentXPLevel);
 
-
+        
 
 
     }
@@ -69,8 +72,6 @@ public class PlayerManager : Singleton<PlayerManager>
             characterController.enabled = true;
         }
     }
-
-
     
 
     private void OnCollisionEnter(Collision collision)
@@ -109,8 +110,9 @@ public class PlayerManager : Singleton<PlayerManager>
             playerDead = true;
             GameManager.Instance.gameState = GameManager.GameState.dead;
 
+            //invoke the action here so that other scripts can know when to call their own functions.
+            PlayerDeath();
 
-            UIManager.Instance.gameoverUI.SetActive(true);
   
             gameObject.SetActive(false);
             Instantiate(playerDeath, gameObject.transform);

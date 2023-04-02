@@ -170,8 +170,9 @@ public class EnemyBehaviour : MonoBehaviour
 
         if (damagable != null)
         {
-            damagable.Damage(1);
-
+            //deals the amount of damage from the actual enemy data object
+            damagable.Damage(damage);
+            //Debug.Log("damage dealt: " + damage);
         }
     }
 

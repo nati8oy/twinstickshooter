@@ -4,8 +4,8 @@ using UnityEngine;
 
 public class Destructible : MonoBehaviour, IDamagable
 {
-    private float HPTotal = 2f;
-    private float currentHP;
+    public int HPTotal = 2;
+    public int currentHP;
     private bool itemDestroyed;
 
     private void OnEnable()
