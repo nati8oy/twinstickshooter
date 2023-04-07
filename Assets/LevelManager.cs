@@ -3,15 +3,16 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using Cinemachine;
-
-
+using UnityEngine.UI;
 
 public class LevelManager : Singleton<LevelManager>
 {
     [SerializeField] private GameManager gameManager;
     public LayerMask layerMask;
 
-
+    public float enemiesPerIncrease = 10;
+    public bool increaseSpawnRate;
+    public float spawnRateCounter = 5;
 
     public static int enemyKillCount;
     public static int maxEnemies;
@@ -19,7 +20,10 @@ public class LevelManager : Singleton<LevelManager>
     public bool levelComplete;
     public int currentLevel;
     public int enemyCount;
-    public float spawnRate = 3f; 
+    public float spawnRate = 3f;
+
+    private float minimumSpawnRate = 1.25f;
+
 
     [SerializeField] private GameObject[] spawnPoints;
 
@@ -37,7 +41,8 @@ public class LevelManager : Singleton<LevelManager>
     void Start()
     {
 
-        
+
+        spawnRateCounter = spawnRate;
 
         //start spawning enemies
         StartCoroutine(EnemySpawn());
@@ -53,8 +58,8 @@ public class LevelManager : Singleton<LevelManager>
 
     }
 
-
-    public void UpdateKillCount()
+ 
+public void UpdateKillCount()
     {
         //update the tracker for the number of enemies killed
         enemyKillCount += 1;
@@ -120,8 +125,20 @@ public class LevelManager : Singleton<LevelManager>
 
     public void SpawnEnemy()
     {
+        if (increaseSpawnRate)
+        {
+            spawnRateCounter++;
 
-        randomNumber = Random.Range(0, 5);
+            if ((spawnRateCounter % enemiesPerIncrease == 0) && (spawnRateCounter > minimumSpawnRate))
+            {
+                Debug.Log("spawn rate increased");
+                spawnRate-=0.25f;
+            }
+        }
+
+        
+
+        randomNumber = Random.Range(0, 3);
 
         GameObject enemy = ObjectPooler.SharedInstance.GetPooledObject("enemy");
 
@@ -129,7 +146,7 @@ public class LevelManager : Singleton<LevelManager>
         if (enemy != null)
         {
             //spawn enemies at the first location from the number of spawn points in this array
-            enemy.transform.position = spawnPoints[0].transform.position;
+            enemy.transform.position = spawnPoints[randomNumber].transform.position;
             enemy.SetActive(true);
         }
 

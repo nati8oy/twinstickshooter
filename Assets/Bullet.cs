@@ -9,13 +9,11 @@ public class Bullet : MonoBehaviour
 
     public LayerMask environmentCollisionLayer;
 
-    //[SerializeField] private ParticleSystem hitParticle;
 
     public void OnCollisionEnter(Collision collision)
     {
-        //hitParticle = new ParticleSystem();
 
-//        Debug.Log("bullet power is: " + bulletDamage);
+
         IDamagable damagable = collision.gameObject.GetComponent<IDamagable>();
 
         if (damagable != null)
@@ -36,6 +34,7 @@ public class Bullet : MonoBehaviour
             }
             
         }
+
 
 
         if (environmentCollisionLayer == (environmentCollisionLayer | (1 << collision.gameObject.layer)))

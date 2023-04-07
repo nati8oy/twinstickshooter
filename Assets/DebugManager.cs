@@ -4,8 +4,8 @@ using UnityEngine;
 
 public class DebugManager : Singleton<DebugManager>
 {
-    public   bool godMode = false;
-
+    public bool godMode = false;
+    public bool infiniteAmmo = true;
 
 
     // Start is called before the first frame update

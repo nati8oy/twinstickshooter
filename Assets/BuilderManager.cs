@@ -47,14 +47,6 @@ public class BuilderManager : Singleton<BuilderManager>
         }
     }
 
-    public void ReturnToGame()
-    {
-        GameManager.Instance.gameState = GameManager.GameState.play;
-        GameManager.levelComplete = false;
-        GameManager.maxEnemies = 5;
-    }
-
-
 
     /// <summary>
     /// all of the edit mode stuff is handled here but the actual controls to trigger it are back in the playercontroller script

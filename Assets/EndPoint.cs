@@ -5,6 +5,7 @@ using UnityEngine;
 public class EndPoint : MonoBehaviour
 {
     public HealthBar healthBar;
+    public GameObject gameoverUI;
 
     private int maxHealth;
     //private int currentHealth;
@@ -23,5 +24,9 @@ public class EndPoint : MonoBehaviour
         healthBar.SetAmount(GetComponent<Destructible>().currentHP);
     }
 
-
+    private void OnDisable()
+    {
+        gameoverUI.SetActive(true);
+        GameManager.Instance.gameState = GameManager.GameState.dead;
+    }
 }

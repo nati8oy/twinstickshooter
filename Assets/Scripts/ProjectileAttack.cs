@@ -38,6 +38,7 @@ public class ProjectileAttack : MonoBehaviour, IAttack
 
         if(gameObject.tag == "Player")
         {
+            //check if the debug infinite ammo is on or not.
             if (AmmoManager.ammoPrimary > 0)
             {
                 if (bullet != null)
@@ -49,7 +50,13 @@ public class ProjectileAttack : MonoBehaviour, IAttack
                     rb.AddForce(firePoint.forward * shotSpeed, ForceMode.Impulse);
                 }
             }
-            AmmoManager.ammoPrimary -= 1;
+
+            if(DebugManager.Instance.infiniteAmmo != true)
+            {
+                //reduce ammo amount if infinite ammo is not on in Debug Manager
+                AmmoManager.ammoPrimary -= 1;
+
+            }
 
         }
 

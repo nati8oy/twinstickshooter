@@ -12,14 +12,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 013bb16fb9e7b4384b235d3788e709de, type: 3}
   m_Name: Common Enemy
   m_EditorClassIdentifier: 
-  health: 1
+  health: 3
   damage: 1
   attackSpeed: 1
   objectPoolerTag: enemy
   moveSpeed: 20
   shield: 0
   followPlayer: 1
-  canAttack: 1
+  canAttack: 0
   enemyMaterial: {fileID: 2100000, guid: 01763a1c279a5cd4d8f897f6b6cdbae5, type: 2}
   enemyModel: {fileID: 8208434519250324759, guid: b153d2bff063d43019d15f928a232a2d, type: 3}
   resourceDrop:

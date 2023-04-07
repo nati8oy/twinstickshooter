@@ -47,7 +47,7 @@ public class EnemyNavMesh : MonoBehaviour
     {
         navMeshAgent = GetComponent<NavMeshAgent>();
 
-        if (followPlayer)
+        if (followPlayer && movePositionTransform!=null)
         {
             movePositionTransform = GameObject.Find("EndPoint").transform;
 

@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   damage: 2
   shotSpeed: 40
-  attackRate: 0.1
+  attackRate: 0.3
   bulletLifespan: 3
   ammoType: bullet
   ammo: 0

@@ -116,6 +116,9 @@ MonoBehaviour:
   environmentCollisionLayer:
     serializedVersion: 2
     m_Bits: 256
+  ignoreLayer:
+    serializedVersion: 2
+    m_Bits: 512
 --- !u!54 &2169746697617145735
 Rigidbody:
   m_ObjectHideFlags: 0

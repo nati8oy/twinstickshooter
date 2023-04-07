@@ -117,7 +117,6 @@ public class PlayerManager : Singleton<PlayerManager>
             gameObject.SetActive(false);
             Instantiate(playerDeath, gameObject.transform);
             playerDeath.Play();
-
         }
     }
 

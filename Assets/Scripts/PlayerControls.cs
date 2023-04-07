@@ -98,6 +98,15 @@ public partial class @PlayerControls : IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Dash"",
+                    ""type"": ""Button"",
+                    ""id"": ""ef3c02c8-9d0a-4dbf-b0a9-77c99116afdb"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -276,6 +285,17 @@ public partial class @PlayerControls : IInputActionCollection2, IDisposable
                     ""action"": ""Edit mode"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""e10294cb-6044-486e-9fe4-5759f2f0e8c0"",
+                    ""path"": ""<Gamepad>/buttonEast"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Gamepad"",
+                    ""action"": ""Dash"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         },
@@ -444,6 +464,7 @@ public partial class @PlayerControls : IInputActionCollection2, IDisposable
         m_Controls_Point = m_Controls.FindAction("Point", throwIfNotFound: true);
         m_Controls_PlaceObject = m_Controls.FindAction("PlaceObject", throwIfNotFound: true);
         m_Controls_Editmode = m_Controls.FindAction("Edit mode", throwIfNotFound: true);
+        m_Controls_Dash = m_Controls.FindAction("Dash", throwIfNotFound: true);
         // EditMode
         m_EditMode = asset.FindActionMap("EditMode", throwIfNotFound: true);
         m_EditMode_CameraMovement = m_EditMode.FindAction("Camera Movement", throwIfNotFound: true);
@@ -518,6 +539,7 @@ public partial class @PlayerControls : IInputActionCollection2, IDisposable
     private readonly InputAction m_Controls_Point;
     private readonly InputAction m_Controls_PlaceObject;
     private readonly InputAction m_Controls_Editmode;
+    private readonly InputAction m_Controls_Dash;
     public struct ControlsActions
     {
         private @PlayerControls m_Wrapper;
@@ -530,6 +552,7 @@ public partial class @PlayerControls : IInputActionCollection2, IDisposable
         public InputAction @Point => m_Wrapper.m_Controls_Point;
         public InputAction @PlaceObject => m_Wrapper.m_Controls_PlaceObject;
         public InputAction @Editmode => m_Wrapper.m_Controls_Editmode;
+        public InputAction @Dash => m_Wrapper.m_Controls_Dash;
         public InputActionMap Get() { return m_Wrapper.m_Controls; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -563,6 +586,9 @@ public partial class @PlayerControls : IInputActionCollection2, IDisposable
                 @Editmode.started -= m_Wrapper.m_ControlsActionsCallbackInterface.OnEditmode;
                 @Editmode.performed -= m_Wrapper.m_ControlsActionsCallbackInterface.OnEditmode;
                 @Editmode.canceled -= m_Wrapper.m_ControlsActionsCallbackInterface.OnEditmode;
+                @Dash.started -= m_Wrapper.m_ControlsActionsCallbackInterface.OnDash;
+                @Dash.performed -= m_Wrapper.m_ControlsActionsCallbackInterface.OnDash;
+                @Dash.canceled -= m_Wrapper.m_ControlsActionsCallbackInterface.OnDash;
             }
             m_Wrapper.m_ControlsActionsCallbackInterface = instance;
             if (instance != null)
@@ -591,6 +617,9 @@ public partial class @PlayerControls : IInputActionCollection2, IDisposable
                 @Editmode.started += instance.OnEditmode;
                 @Editmode.performed += instance.OnEditmode;
                 @Editmode.canceled += instance.OnEditmode;
+                @Dash.started += instance.OnDash;
+                @Dash.performed += instance.OnDash;
+                @Dash.canceled += instance.OnDash;
             }
         }
     }
@@ -688,6 +717,7 @@ public partial class @PlayerControls : IInputActionCollection2, IDisposable
         void OnPoint(InputAction.CallbackContext context);
         void OnPlaceObject(InputAction.CallbackContext context);
         void OnEditmode(InputAction.CallbackContext context);
+        void OnDash(InputAction.CallbackContext context);
     }
     public interface IEditModeActions
     {
