@@ -33,7 +33,17 @@ public class EnemyNavMesh : MonoBehaviour
     private void OnEnable()
     {
         //movePositionTransform = GameManager.Instance.player.transform;
-        movePositionTransform = GameObject.Find("EndPoint").transform;
+        if (GameObject.Find("EndPoint"))
+        {
+            movePositionTransform = GameObject.Find("EndPoint").transform;
+
+        }
+
+        else
+        {
+            Debug.LogError("There is no EndPoint available");
+        }
+
         roamPosition = navPoints[Random.Range(0, 5)].transform.position;
 
     }
@@ -47,7 +57,7 @@ public class EnemyNavMesh : MonoBehaviour
     {
         navMeshAgent = GetComponent<NavMeshAgent>();
 
-        if (followPlayer && movePositionTransform!=null)
+        if (followPlayer)
         {
             movePositionTransform = GameObject.Find("EndPoint").transform;
 

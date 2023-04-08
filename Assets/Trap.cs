@@ -13,6 +13,11 @@ public class Trap : MonoBehaviour
     public float attackCooldown;
     public LayerMask enemyLayer;
 
+
+    public bool knockback = true;
+    public float knockbackRadius = 1f;
+    public float knockbackForce = 500f;
+
     private Collider enemyCollider;
 
     // Start is called before the first frame update
@@ -31,11 +36,26 @@ public class Trap : MonoBehaviour
                 hasAttacked = false;
             }
         }
+        
+    }
+
+    void OnDrawGizmosSelected()
+    {
+        // Draw a yellow sphere at the transform's position
+        Gizmos.color = Color.yellow;
+        Gizmos.DrawWireSphere(transform.position, 2f);
     }
 
     private void OnTriggerEnter(Collider other)
     {
         enemyCollider = other;
+        enemyCollider.gameObject.GetComponent<EnemyBehaviour>().Damage(DPS);
+        if (knockback)
+        {
+            enemyCollider.GetComponent<Rigidbody>().AddExplosionForce(1000f, transform.position, 2f);
+            Debug.Log("knockback applied");
+
+        }
     }
 
     void OnTriggerStay(Collider other)
@@ -56,6 +76,14 @@ public class Trap : MonoBehaviour
             if (enemyLayer == (enemyLayer | (1 << enemyCollider.gameObject.layer)))
             {
                 enemyCollider.gameObject.GetComponent<EnemyBehaviour>().Damage(DPS);
+                if (knockback)
+                {
+                    enemyCollider.GetComponent<Rigidbody>().AddExplosionForce(1000f, transform.position, 2f);
+                    Debug.Log("knockback applied");
+
+                }
+
+
 
                 if (!hasAttacked)
                 {

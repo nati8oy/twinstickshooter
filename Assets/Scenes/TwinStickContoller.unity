@@ -6703,13 +6703,33 @@ PrefabInstance:
       value: 7
       objectReference: {fileID: 0}
     - target: {fileID: 5385436195101719782, guid: 52561bd0c72704e0b99f8ebd02b1c010, type: 3}
+      propertyPath: structures.Array.data[0]
+      value: 
+      objectReference: {fileID: 11400000, guid: 37c1b06a97af24b379d003885d54897a, type: 2}
+    - target: {fileID: 5385436195101719782, guid: 52561bd0c72704e0b99f8ebd02b1c010, type: 3}
+      propertyPath: structures.Array.data[1]
+      value: 
+      objectReference: {fileID: 11400000, guid: c4c8e0a6ae6b242fcab6f05f52767ee1, type: 2}
+    - target: {fileID: 5385436195101719782, guid: 52561bd0c72704e0b99f8ebd02b1c010, type: 3}
+      propertyPath: structures.Array.data[2]
+      value: 
+      objectReference: {fileID: 11400000, guid: 7ee2f342b8099451c92975f2b9b2cd9a, type: 2}
+    - target: {fileID: 5385436195101719782, guid: 52561bd0c72704e0b99f8ebd02b1c010, type: 3}
+      propertyPath: structures.Array.data[3]
+      value: 
+      objectReference: {fileID: 11400000, guid: 6a05a71b1059e46f688351b0c27699af, type: 2}
+    - target: {fileID: 5385436195101719782, guid: 52561bd0c72704e0b99f8ebd02b1c010, type: 3}
+      propertyPath: structures.Array.data[4]
+      value: 
+      objectReference: {fileID: 11400000, guid: 83ba34812dd8e46c9993177f4856ea64, type: 2}
+    - target: {fileID: 5385436195101719782, guid: 52561bd0c72704e0b99f8ebd02b1c010, type: 3}
       propertyPath: structures.Array.data[5]
       value: 
-      objectReference: {fileID: 11400000, guid: d3b057ff8318840a887e7d251bbd422f, type: 2}
+      objectReference: {fileID: 11400000, guid: 9f9d8ec52a3e04be9907b30c9997fec2, type: 2}
     - target: {fileID: 5385436195101719782, guid: 52561bd0c72704e0b99f8ebd02b1c010, type: 3}
       propertyPath: structures.Array.data[6]
       value: 
-      objectReference: {fileID: 11400000, guid: 37c1b06a97af24b379d003885d54897a, type: 2}
+      objectReference: {fileID: 11400000, guid: d3b057ff8318840a887e7d251bbd422f, type: 2}
     - target: {fileID: 8170423984364122764, guid: 52561bd0c72704e0b99f8ebd02b1c010, type: 3}
       propertyPath: m_Name
       value: BuilderManager
