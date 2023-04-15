@@ -12,14 +12,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 013bb16fb9e7b4384b235d3788e709de, type: 3}
   m_Name: Rare Enemy
   m_EditorClassIdentifier: 
-  health: 3
-  damage: 3
+  health: 10
+  damage: 4
   attackSpeed: 0
   objectPoolerTag: enemy
   moveSpeed: 0
   shield: 0
   followPlayer: 1
-  canAttack: 0
+  canAttack: 1
   enemyMaterial: {fileID: 2100000, guid: 5c270a73328a99e439fec44a0cf3a17d, type: 2}
   enemyModel: {fileID: 8208434519250324759, guid: b153d2bff063d43019d15f928a232a2d, type: 3}
   resourceDrop:

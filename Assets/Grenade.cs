@@ -47,9 +47,11 @@ public class Grenade : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
-        
 
-        
+        //set the enemy layer up so the bullet knows when it collides with it.
+        int enemyLayerIndex = LayerMask.NameToLayer("Enemies");
+        int environmentLayerIndex = LayerMask.NameToLayer("Environment");
+
         IDamagable damagable = collision.gameObject.GetComponent<IDamagable>();
 
         if (damagable != null)
@@ -59,14 +61,8 @@ public class Grenade : MonoBehaviour
 
         }
 
-        
-        if (collision.gameObject.tag == "enemy")
-        {
-            Explode();
-            hasExploded = true;
-        }
-
-        if (collision.gameObject.tag == "environment")
+        //check the layers and see if they are the enemy or environment layers
+        if (collision.gameObject.layer == environmentLayerIndex  || collision.gameObject.layer == enemyLayerIndex)
         {
             Explode();
             hasExploded = true;

@@ -7,11 +7,14 @@ public class Bullet : MonoBehaviour
     public float lifespan = 5f;
     public int bulletDamage;
 
-    public LayerMask environmentCollisionLayer;
 
 
     public void OnCollisionEnter(Collision collision)
     {
+        //set the enemy layer up so the bullet knows when it collides with it.
+        int enemyLayerIndex = LayerMask.NameToLayer("Enemies");
+        int environmentLayerIndex = LayerMask.NameToLayer("Environment");
+
 
 
         IDamagable damagable = collision.gameObject.GetComponent<IDamagable>();
@@ -22,26 +25,22 @@ public class Bullet : MonoBehaviour
             gameObject.GetComponent<Rigidbody>().velocity = Vector3.zero;
             gameObject.SetActive(false);
         }
-        
-        
-        if(collision.gameObject.tag == "enemy")
-        {
-            if (collision.gameObject.GetComponent<EnemyBehaviour>()!=null)
-            {
-                collision.gameObject.GetComponent<EnemyBehaviour>().Damage(bulletDamage);
-                gameObject.GetComponent<Rigidbody>().velocity = Vector3.zero;
-                gameObject.SetActive(false);
-            }
-            
-        }
 
 
-
-        if (environmentCollisionLayer == (environmentCollisionLayer | (1 << collision.gameObject.layer)))
+        if (collision.gameObject.layer == environmentLayerIndex)
         {
             gameObject.GetComponent<Rigidbody>().velocity = Vector3.zero;
             gameObject.SetActive(false);
         }
+
+
+        if (collision.gameObject.layer == enemyLayerIndex)
+        {
+            collision.gameObject.GetComponent<EnemyBehaviour>().Damage(bulletDamage);
+            gameObject.GetComponent<Rigidbody>().velocity = Vector3.zero;
+            gameObject.SetActive(false);
+        }
+
 
         if (collision.gameObject.tag == "player")
         {
@@ -54,13 +53,6 @@ public class Bullet : MonoBehaviour
             gameObject.GetComponent<Rigidbody>().velocity = Vector3.zero;
             gameObject.SetActive(false);
         }
-
-        /*
-        if (collision.gameObject.tag != null)
-        {
-            gameObject.GetComponent<Rigidbody>().velocity = Vector3.zero;
-            gameObject.SetActive(false);
-        }*/
     }
 
 

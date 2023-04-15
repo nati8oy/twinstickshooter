@@ -10,9 +10,7 @@ public class LevelManager : Singleton<LevelManager>
     [SerializeField] private GameManager gameManager;
     public LayerMask layerMask;
 
-    public float enemiesPerIncrease = 10;
-    public bool increaseSpawnRate;
-    public float spawnRateCounter = 5;
+    
 
     public static int enemyKillCount;
     public static int maxEnemies;
@@ -20,12 +18,18 @@ public class LevelManager : Singleton<LevelManager>
     public bool levelComplete;
     public int currentLevel;
     public int enemyCount;
-    public float spawnRate = 3f;
+    [SerializeField] private GameObject[] spawnPoints;
 
+
+    [Header("Spawn Rate Controllers")]
+    public float enemiesPerIncrease = 10;
+    public bool increaseSpawnRate;
+    public float spawnRateCounter = 5;
+    public float spawnRateIncrease = 0.1f;
+    public float spawnRate = 3f;
     private float minimumSpawnRate = 1.25f;
 
 
-    [SerializeField] private GameObject[] spawnPoints;
 
 
     public enum Difficulty
@@ -132,7 +136,16 @@ public void UpdateKillCount()
             if ((spawnRateCounter % enemiesPerIncrease == 0) && (spawnRateCounter > minimumSpawnRate))
             {
                 Debug.Log("spawn rate increased");
-                spawnRate-=0.25f;
+                spawnRate-= spawnRateIncrease;
+
+                //creates a rare enemy when the spawn speed increases
+                GameObject rareEnemy = ObjectPooler.SharedInstance.GetPooledObject("enemy_lvl2");
+                rareEnemy.transform.position = spawnPoints[randomNumber].transform.position;
+                rareEnemy.SetActive(true);
+                int layerIndex = LayerMask.NameToLayer("Enemies");
+                rareEnemy.layer = layerIndex;
+
+
             }
         }
 

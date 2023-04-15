@@ -53,7 +53,6 @@ public class Trap : MonoBehaviour
         if (knockback)
         {
             enemyCollider.GetComponent<Rigidbody>().AddExplosionForce(1000f, transform.position, 2f);
-            Debug.Log("knockback applied");
 
         }
     }
@@ -79,7 +78,6 @@ public class Trap : MonoBehaviour
                 if (knockback)
                 {
                     enemyCollider.GetComponent<Rigidbody>().AddExplosionForce(1000f, transform.position, 2f);
-                    Debug.Log("knockback applied");
 
                 }
 

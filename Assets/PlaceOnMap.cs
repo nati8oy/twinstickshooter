@@ -132,8 +132,8 @@ public class PlaceOnMap : MonoBehaviour
             //Instantiate(structure.structureModel, new Vector3(raycastHitPoint.x, structureVertSize, raycastHitPoint.z), Quaternion.identity);
             Instantiate(structure.structureModel, new Vector3(gameObject.transform.position.x, structureVertSize, gameObject.transform.position.z), rotation) ;
 
-
-            Destroy(GameObject.FindGameObjectWithTag("ghost"));
+            //destroys ghosts
+            //Destroy(GameObject.FindGameObjectWithTag("ghost"));
         }
       
     }

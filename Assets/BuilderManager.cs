@@ -75,12 +75,13 @@ public class BuilderManager : Singleton<BuilderManager>
             //change the virtual camera priority
             cameraSwitcher.SwitchPriority();
 
-            CameraFollowCheck();
 
             //mainCamera = GameManager.Instance.cameraList[1];
             //mainCamera = GameObject.Find("CameraRigBase").GetComponentInChildren<Camera>();
 
             GameManager.Instance.gameState = GameManager.GameState.building;
+            CameraFollowCheck();
+
 
         }
         else if (GameManager.Instance.gameState == GameManager.GameState.building)
@@ -142,7 +143,7 @@ public class BuilderManager : Singleton<BuilderManager>
             }
             prevGhostPosition = GameObject.FindGameObjectWithTag("ghost").transform.position;
 
-            structures[currentItem].DestroyGhosts();
+            //structures[currentItem].DestroyGhosts();
             AddGhostToScreen(currentItem);
 
             //check each time you cycle through the items that the camera is still following the ghost.
@@ -165,7 +166,7 @@ public class BuilderManager : Singleton<BuilderManager>
             }
 
             prevGhostPosition = GameObject.FindGameObjectWithTag("ghost").transform.position;
-            structures[currentItem].DestroyGhosts();
+            //structures[currentItem].DestroyGhosts();
             AddGhostToScreen(currentItem);
 
             //check each time you cycle through the items that the camera is still following the ghost.

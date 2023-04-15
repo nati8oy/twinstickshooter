@@ -28,6 +28,7 @@ TagManager:
   - candy
   - resource
   - turret
+  - enemy_lvl2
   layers:
   - Default
   - TransparentFX
