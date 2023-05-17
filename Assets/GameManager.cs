@@ -64,7 +64,15 @@ public class GameManager : Singleton<GameManager>
 
     }
 
-
+    private void Update()
+    {
+        /*
+        if (gameState == GameState.dead)
+        {
+            MMTimeManager.Instance.SetTimeScaleTo(0f);
+        }
+        */
+    }
 
     public void EnemyCheck()
     {

@@ -57,6 +57,7 @@ public class PlayerControlMapping : MonoBehaviour
         shootAction.performed += _ => GetComponent<IAttack>().Attack();
         shootAction.Enable();
 
+
         secondaryShootAction = new InputAction(binding: "<DualShockGamepad>/leftShoulder");
         secondaryShootAction.performed += _ => SecondaryWeapon();
         secondaryShootAction.Enable();

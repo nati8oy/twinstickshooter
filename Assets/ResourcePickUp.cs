@@ -5,16 +5,26 @@ using UnityEngine;
 public class ResourcePickUp : MonoBehaviour
 {
     //[SerializeField] GameManager gameManager;
-    public float lifespan;
+    private float lifespan;
+    private string pickupType;
+    private bool hasLifespan; 
             
     [SerializeField] Pickup pickup;
 
 
     private void OnEnable()
     {
-        lifespan = pickup.lifespan;
+        hasLifespan = pickup.hasLifespan;
 
-        StartCoroutine(LifepspanTimer());
+       //check if there is a lifespan or not that is set in the scriptable object
+        if (hasLifespan)
+        {
+            lifespan = pickup.lifespan;
+            StartCoroutine(LifepspanTimer());
+        }
+
+        pickupType = pickup.type;
+       
 
     }
 
@@ -22,10 +32,9 @@ public class ResourcePickUp : MonoBehaviour
     private void OnCollisionEnter(Collision collision)
     {
       
-
         if (collision.gameObject.tag == pickup.collidesWithTag.ToString())
         {
-            if (pickup.type == "ammo1" && (AmmoManager.ammoPrimary < AmmoManager.maxAmmoPrimary) && (AmmoManager.ammoPrimary != AmmoManager.maxAmmoPrimary))
+            if (pickupType == "ammo1" && (AmmoManager.ammoPrimary < AmmoManager.maxAmmoPrimary) && (AmmoManager.ammoPrimary != AmmoManager.maxAmmoPrimary))
             {
                 AmmoManager.ammoPrimary += pickup.strength;
                 MaxAmmoCheck(AmmoManager.ammoPrimary, AmmoManager.maxAmmoPrimary);
@@ -35,7 +44,7 @@ public class ResourcePickUp : MonoBehaviour
 
             //check that the ammo is the correct type, and that the current amount is less than the max
             // also check if the ammo amount is at max. If it is, don't collect the pickup.
-            if (pickup.type == "ammo2" && (AmmoManager.ammoSecondary < AmmoManager.maxAmmoSecondary) &&(AmmoManager.ammoSecondary != AmmoManager.maxAmmoSecondary))
+            if (pickupType == "ammo2" && (AmmoManager.ammoSecondary < AmmoManager.maxAmmoSecondary) &&(AmmoManager.ammoSecondary != AmmoManager.maxAmmoSecondary))
             {
                 AmmoManager.ammoSecondary += pickup.strength;
 
@@ -44,25 +53,32 @@ public class ResourcePickUp : MonoBehaviour
 
             }
 
-            if (pickup.type == "health")
+            if (pickupType == "health")
             {
                 PlayerManager.Instance.Heal(pickup.strength);
                 gameObject.SetActive(false);
 
             }
 
-            if (pickup.type == "XP")
+            if (pickupType == "XP")
             {
                 //PlayerManager.Instance.Heal(pickup.strength);
                 gameObject.SetActive(false);
 
             }
 
-            if (pickup.type == "resource")
+            if (pickupType == "resource")
             {
                 //PlayerManager.Instance.Heal(pickup.strength);
                 gameObject.SetActive(false);
 
+            }
+
+            if (pickupType == "goal")
+            {
+                //PlayerManager.Instance.Heal(pickup.strength);
+                gameObject.SetActive(false);
+                Debug.Log("collected via resource script");
             }
         }
     }

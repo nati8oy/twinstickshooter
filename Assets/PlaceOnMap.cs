@@ -11,6 +11,8 @@ public class PlaceOnMap : MonoBehaviour
     public LayerMask layerMask;
     public Structure structure;
 
+     
+
     //use this to reference the collider height
     private float structureVertSize;
 
@@ -125,12 +127,15 @@ public class PlaceOnMap : MonoBehaviour
 
             // You can then use the rotation as needed, for example:
             // Rotate the parent object based on the child object's rotation
-            transform.rotation = rotation;
+            //transform.rotation = rotation;
 
             //instantiates and adds models based on what is in their structure data object
             //sets it on the screen where the raycast hits
             //Instantiate(structure.structureModel, new Vector3(raycastHitPoint.x, structureVertSize, raycastHitPoint.z), Quaternion.identity);
+           
             Instantiate(structure.structureModel, new Vector3(gameObject.transform.position.x, structureVertSize, gameObject.transform.position.z), rotation) ;
+
+           
 
             //destroys ghosts
             //Destroy(GameObject.FindGameObjectWithTag("ghost"));

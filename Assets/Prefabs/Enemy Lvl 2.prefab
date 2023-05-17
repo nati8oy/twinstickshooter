@@ -11,6 +11,14 @@ PrefabInstance:
       propertyPath: enemyData
       value: 
       objectReference: {fileID: 11400000, guid: eafe96d6925734207ae9ecfe106d2f9a, type: 2}
+    - target: {fileID: 7398218133560367885, guid: b153d2bff063d43019d15f928a232a2d, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8208434519250324758, guid: b153d2bff063d43019d15f928a232a2d, type: 3}
+      propertyPath: m_Mass
+      value: 10
+      objectReference: {fileID: 0}
     - target: {fileID: 8208434519250324759, guid: b153d2bff063d43019d15f928a232a2d, type: 3}
       propertyPath: m_Name
       value: Enemy Lvl 2

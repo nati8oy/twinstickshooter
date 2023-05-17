@@ -13,6 +13,6 @@ public class Pickup : ScriptableObject
     public string type;
     public int strength;
     public float lifespan;
-    
+    public bool hasLifespan;
 
 }

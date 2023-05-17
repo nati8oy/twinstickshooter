@@ -585,8 +585,8 @@ BoxCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 1, y: 1, z: 1}
-  m_Center: {x: 0, y: 0, z: 0}
+  m_Size: {x: 1, y: 1, z: 1.2380424}
+  m_Center: {x: 0, y: 0, z: 0.11902118}
 --- !u!143 &3154581663302683128
 CharacterController:
   m_ObjectHideFlags: 0
@@ -695,6 +695,10 @@ MonoBehaviour:
       m_Calls: []
     m_ActionId: c255582d-5c39-4dec-906e-a458f3057048
     m_ActionName: EditMode/Rotate Right[/DualShock4GamepadHID/buttonEast,/DualShock4GamepadHID1/buttonEast,/DualShock4GamepadHID2/buttonEast,/DualShock4GamepadHID3/buttonEast,/DualShock4GamepadHID4/buttonEast]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: ef3c02c8-9d0a-4dbf-b0a9-77c99116afdb
+    m_ActionName: Controls/Dash[/DualShock4GamepadHID/buttonEast,/DualShock4GamepadHID1/buttonEast,/DualShock4GamepadHID2/buttonEast]
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: 
   m_DefaultActionMap: Controls

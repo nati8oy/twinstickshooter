@@ -56,6 +56,10 @@ public class EnemyNavMesh : MonoBehaviour
     private void Awake()
     {
         navMeshAgent = GetComponent<NavMeshAgent>();
+        //fill the array with the nav points that are tagged with "nav point"
+        navPoints = GameObject.FindGameObjectsWithTag("nav point");
+
+
 
         if (followPlayer)
         {
@@ -65,8 +69,13 @@ public class EnemyNavMesh : MonoBehaviour
 
         }
 
-        //fill the array with the nav points that are tagged with "nav point"
-        navPoints = GameObject.FindGameObjectsWithTag("nav point");
+        else
+        {
+            movePositionTransform = navPoints[Random.Range(0,5)].transform;
+        }
+
+       
+
 
     }
 

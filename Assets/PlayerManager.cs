@@ -96,8 +96,21 @@ public class PlayerManager : Singleton<PlayerManager>
                 levelBar.SetAmount(currentXPLevel);
             }
 
+            /*
+            //set any object it collides with on this layer to false
+            int collectibleLayer = LayerMask.NameToLayer("Collectible");
+            if (collision.gameObject.layer == collectibleLayer)
+            {
+                Debug.Log("object collected");
+                collision.gameObject.SetActive(false);
+            }
+
+            */
         }
+
+       
     }
+
 
     public void TakeDamage(int damage)
     {
