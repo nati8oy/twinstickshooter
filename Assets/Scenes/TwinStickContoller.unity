@@ -5647,7 +5647,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4db4fa62d85114d3aab57640bf73c6a2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  godMode: 0
+  godMode: 1
   infiniteAmmo: 1
 --- !u!4 &1730246149 stripped
 Transform:

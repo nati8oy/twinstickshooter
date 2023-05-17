@@ -82,15 +82,6 @@ public partial class @PlayerControls : IInputActionCollection2, IDisposable
                     ""initialStateCheck"": true
                 },
                 {
-                    ""name"": ""PlaceObject"",
-                    ""type"": ""Button"",
-                    ""id"": ""42398fa9-971f-48a1-9be9-82de5064307d"",
-                    ""expectedControlType"": ""Button"",
-                    ""processors"": """",
-                    ""interactions"": """",
-                    ""initialStateCheck"": false
-                },
-                {
                     ""name"": ""Edit mode"",
                     ""type"": ""Button"",
                     ""id"": ""6a69ef16-ac97-4aea-8a61-0fb1a35b27d8"",
@@ -266,17 +257,6 @@ public partial class @PlayerControls : IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": """",
-                    ""id"": ""9c4f60bb-2157-4a48-bab9-65b397525798"",
-                    ""path"": ""<DualShockGamepad>/buttonSouth"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""PlaceObject"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
                     ""id"": ""a8b363a3-75c8-4502-b7e0-45394df005aa"",
                     ""path"": ""<DualShockGamepad>/leftStickPress"",
                     ""interactions"": """",
@@ -343,6 +323,15 @@ public partial class @PlayerControls : IInputActionCollection2, IDisposable
                     ""name"": ""Rotate Right"",
                     ""type"": ""Button"",
                     ""id"": ""c255582d-5c39-4dec-906e-a458f3057048"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""PlaceObject"",
+                    ""type"": ""Button"",
+                    ""id"": ""d9dc5299-19b1-4f96-9f66-29268c899d0a"",
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": """",
@@ -415,6 +404,45 @@ public partial class @PlayerControls : IInputActionCollection2, IDisposable
                     ""action"": ""Rotate Right"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""05bcc18e-bfa5-4bc4-b4eb-9a5bd3a00b42"",
+                    ""path"": ""<DualShockGamepad>/buttonSouth"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""PlaceObject"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                }
+            ]
+        },
+        {
+            ""name"": ""Abilities"",
+            ""id"": ""8e1d3089-79b3-4506-8e2d-84e4188b8dc3"",
+            ""actions"": [
+                {
+                    ""name"": ""Activate Special"",
+                    ""type"": ""Button"",
+                    ""id"": ""9502e2a3-8b9d-4c3a-9823-23419207e998"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                }
+            ],
+            ""bindings"": [
+                {
+                    ""name"": """",
+                    ""id"": ""f393283d-0ec9-4d38-bab5-0c734f071bf3"",
+                    ""path"": ""<Gamepad>/buttonSouth"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Gamepad"",
+                    ""action"": ""Activate Special"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -462,7 +490,6 @@ public partial class @PlayerControls : IInputActionCollection2, IDisposable
         m_Controls_ShootSecondary = m_Controls.FindAction("Shoot Secondary", throwIfNotFound: true);
         m_Controls_Debug = m_Controls.FindAction("Debug", throwIfNotFound: true);
         m_Controls_Point = m_Controls.FindAction("Point", throwIfNotFound: true);
-        m_Controls_PlaceObject = m_Controls.FindAction("PlaceObject", throwIfNotFound: true);
         m_Controls_Editmode = m_Controls.FindAction("Edit mode", throwIfNotFound: true);
         m_Controls_Dash = m_Controls.FindAction("Dash", throwIfNotFound: true);
         // EditMode
@@ -472,6 +499,10 @@ public partial class @PlayerControls : IInputActionCollection2, IDisposable
         m_EditMode_CycleObjectLeft = m_EditMode.FindAction("Cycle Object Left", throwIfNotFound: true);
         m_EditMode_RotateLeft = m_EditMode.FindAction("Rotate Left", throwIfNotFound: true);
         m_EditMode_RotateRight = m_EditMode.FindAction("Rotate Right", throwIfNotFound: true);
+        m_EditMode_PlaceObject = m_EditMode.FindAction("PlaceObject", throwIfNotFound: true);
+        // Abilities
+        m_Abilities = asset.FindActionMap("Abilities", throwIfNotFound: true);
+        m_Abilities_ActivateSpecial = m_Abilities.FindAction("Activate Special", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -537,7 +568,6 @@ public partial class @PlayerControls : IInputActionCollection2, IDisposable
     private readonly InputAction m_Controls_ShootSecondary;
     private readonly InputAction m_Controls_Debug;
     private readonly InputAction m_Controls_Point;
-    private readonly InputAction m_Controls_PlaceObject;
     private readonly InputAction m_Controls_Editmode;
     private readonly InputAction m_Controls_Dash;
     public struct ControlsActions
@@ -550,7 +580,6 @@ public partial class @PlayerControls : IInputActionCollection2, IDisposable
         public InputAction @ShootSecondary => m_Wrapper.m_Controls_ShootSecondary;
         public InputAction @Debug => m_Wrapper.m_Controls_Debug;
         public InputAction @Point => m_Wrapper.m_Controls_Point;
-        public InputAction @PlaceObject => m_Wrapper.m_Controls_PlaceObject;
         public InputAction @Editmode => m_Wrapper.m_Controls_Editmode;
         public InputAction @Dash => m_Wrapper.m_Controls_Dash;
         public InputActionMap Get() { return m_Wrapper.m_Controls; }
@@ -580,9 +609,6 @@ public partial class @PlayerControls : IInputActionCollection2, IDisposable
                 @Point.started -= m_Wrapper.m_ControlsActionsCallbackInterface.OnPoint;
                 @Point.performed -= m_Wrapper.m_ControlsActionsCallbackInterface.OnPoint;
                 @Point.canceled -= m_Wrapper.m_ControlsActionsCallbackInterface.OnPoint;
-                @PlaceObject.started -= m_Wrapper.m_ControlsActionsCallbackInterface.OnPlaceObject;
-                @PlaceObject.performed -= m_Wrapper.m_ControlsActionsCallbackInterface.OnPlaceObject;
-                @PlaceObject.canceled -= m_Wrapper.m_ControlsActionsCallbackInterface.OnPlaceObject;
                 @Editmode.started -= m_Wrapper.m_ControlsActionsCallbackInterface.OnEditmode;
                 @Editmode.performed -= m_Wrapper.m_ControlsActionsCallbackInterface.OnEditmode;
                 @Editmode.canceled -= m_Wrapper.m_ControlsActionsCallbackInterface.OnEditmode;
@@ -611,9 +637,6 @@ public partial class @PlayerControls : IInputActionCollection2, IDisposable
                 @Point.started += instance.OnPoint;
                 @Point.performed += instance.OnPoint;
                 @Point.canceled += instance.OnPoint;
-                @PlaceObject.started += instance.OnPlaceObject;
-                @PlaceObject.performed += instance.OnPlaceObject;
-                @PlaceObject.canceled += instance.OnPlaceObject;
                 @Editmode.started += instance.OnEditmode;
                 @Editmode.performed += instance.OnEditmode;
                 @Editmode.canceled += instance.OnEditmode;
@@ -633,6 +656,7 @@ public partial class @PlayerControls : IInputActionCollection2, IDisposable
     private readonly InputAction m_EditMode_CycleObjectLeft;
     private readonly InputAction m_EditMode_RotateLeft;
     private readonly InputAction m_EditMode_RotateRight;
+    private readonly InputAction m_EditMode_PlaceObject;
     public struct EditModeActions
     {
         private @PlayerControls m_Wrapper;
@@ -642,6 +666,7 @@ public partial class @PlayerControls : IInputActionCollection2, IDisposable
         public InputAction @CycleObjectLeft => m_Wrapper.m_EditMode_CycleObjectLeft;
         public InputAction @RotateLeft => m_Wrapper.m_EditMode_RotateLeft;
         public InputAction @RotateRight => m_Wrapper.m_EditMode_RotateRight;
+        public InputAction @PlaceObject => m_Wrapper.m_EditMode_PlaceObject;
         public InputActionMap Get() { return m_Wrapper.m_EditMode; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -666,6 +691,9 @@ public partial class @PlayerControls : IInputActionCollection2, IDisposable
                 @RotateRight.started -= m_Wrapper.m_EditModeActionsCallbackInterface.OnRotateRight;
                 @RotateRight.performed -= m_Wrapper.m_EditModeActionsCallbackInterface.OnRotateRight;
                 @RotateRight.canceled -= m_Wrapper.m_EditModeActionsCallbackInterface.OnRotateRight;
+                @PlaceObject.started -= m_Wrapper.m_EditModeActionsCallbackInterface.OnPlaceObject;
+                @PlaceObject.performed -= m_Wrapper.m_EditModeActionsCallbackInterface.OnPlaceObject;
+                @PlaceObject.canceled -= m_Wrapper.m_EditModeActionsCallbackInterface.OnPlaceObject;
             }
             m_Wrapper.m_EditModeActionsCallbackInterface = instance;
             if (instance != null)
@@ -685,10 +713,46 @@ public partial class @PlayerControls : IInputActionCollection2, IDisposable
                 @RotateRight.started += instance.OnRotateRight;
                 @RotateRight.performed += instance.OnRotateRight;
                 @RotateRight.canceled += instance.OnRotateRight;
+                @PlaceObject.started += instance.OnPlaceObject;
+                @PlaceObject.performed += instance.OnPlaceObject;
+                @PlaceObject.canceled += instance.OnPlaceObject;
             }
         }
     }
     public EditModeActions @EditMode => new EditModeActions(this);
+
+    // Abilities
+    private readonly InputActionMap m_Abilities;
+    private IAbilitiesActions m_AbilitiesActionsCallbackInterface;
+    private readonly InputAction m_Abilities_ActivateSpecial;
+    public struct AbilitiesActions
+    {
+        private @PlayerControls m_Wrapper;
+        public AbilitiesActions(@PlayerControls wrapper) { m_Wrapper = wrapper; }
+        public InputAction @ActivateSpecial => m_Wrapper.m_Abilities_ActivateSpecial;
+        public InputActionMap Get() { return m_Wrapper.m_Abilities; }
+        public void Enable() { Get().Enable(); }
+        public void Disable() { Get().Disable(); }
+        public bool enabled => Get().enabled;
+        public static implicit operator InputActionMap(AbilitiesActions set) { return set.Get(); }
+        public void SetCallbacks(IAbilitiesActions instance)
+        {
+            if (m_Wrapper.m_AbilitiesActionsCallbackInterface != null)
+            {
+                @ActivateSpecial.started -= m_Wrapper.m_AbilitiesActionsCallbackInterface.OnActivateSpecial;
+                @ActivateSpecial.performed -= m_Wrapper.m_AbilitiesActionsCallbackInterface.OnActivateSpecial;
+                @ActivateSpecial.canceled -= m_Wrapper.m_AbilitiesActionsCallbackInterface.OnActivateSpecial;
+            }
+            m_Wrapper.m_AbilitiesActionsCallbackInterface = instance;
+            if (instance != null)
+            {
+                @ActivateSpecial.started += instance.OnActivateSpecial;
+                @ActivateSpecial.performed += instance.OnActivateSpecial;
+                @ActivateSpecial.canceled += instance.OnActivateSpecial;
+            }
+        }
+    }
+    public AbilitiesActions @Abilities => new AbilitiesActions(this);
     private int m_GamepadSchemeIndex = -1;
     public InputControlScheme GamepadScheme
     {
@@ -715,7 +779,6 @@ public partial class @PlayerControls : IInputActionCollection2, IDisposable
         void OnShootSecondary(InputAction.CallbackContext context);
         void OnDebug(InputAction.CallbackContext context);
         void OnPoint(InputAction.CallbackContext context);
-        void OnPlaceObject(InputAction.CallbackContext context);
         void OnEditmode(InputAction.CallbackContext context);
         void OnDash(InputAction.CallbackContext context);
     }
@@ -726,5 +789,10 @@ public partial class @PlayerControls : IInputActionCollection2, IDisposable
         void OnCycleObjectLeft(InputAction.CallbackContext context);
         void OnRotateLeft(InputAction.CallbackContext context);
         void OnRotateRight(InputAction.CallbackContext context);
+        void OnPlaceObject(InputAction.CallbackContext context);
+    }
+    public interface IAbilitiesActions
+    {
+        void OnActivateSpecial(InputAction.CallbackContext context);
     }
 }

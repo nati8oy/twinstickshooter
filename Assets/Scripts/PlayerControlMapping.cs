@@ -18,6 +18,8 @@ public class PlayerControlMapping : MonoBehaviour
     public InputAction rotateLeft;
     public InputAction rotateRight;
 
+    public InputAction special;
+
     private PlayerControls playerControls;
     public GameObject buildCamera;
     public Camera mainCamera;
@@ -82,6 +84,12 @@ public class PlayerControlMapping : MonoBehaviour
 
         rotateLeft = new InputAction(binding: "<DualShockGamepad>/buttonEast");
         rotateLeft.performed += _ => BuilderManager.Instance.RotateObject("left");
+
+
+        special = new InputAction(binding: "<Gamepad>/buttonSouth");
+        special.performed += _ => UseSpecial();
+
+
     }
 
     private void OnDisable()
@@ -113,6 +121,7 @@ public class PlayerControlMapping : MonoBehaviour
             playerControls.Enable();
             shootAction.Enable();
             secondaryShootAction.Enable();
+            special.Enable();
 
             //disable the edit mode controls for cycling left and right
             cycleRight.Disable();
@@ -142,7 +151,11 @@ public class PlayerControlMapping : MonoBehaviour
         }
     }
 
-   
+   public void UseSpecial()
+    {
+        Debug.Log("special activated");
+      
+    }
     
 
    

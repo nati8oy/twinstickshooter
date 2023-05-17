@@ -187,8 +187,8 @@ MonoBehaviour:
         Owner: {fileID: 1097336785534369172}
         DebugActive: 0
         AnimateRotationTarget: {fileID: 5273492548664053501}
-        Mode: 0
-        RotationSpace: 0
+        Mode: 1
+        RotationSpace: 1
         AnimateRotationDuration: 0.2
         RemapCurveZero: 0
         RemapCurveOne: 90
@@ -886,11 +886,11 @@ PrefabInstance:
       objectReference: {fileID: 2100000, guid: 4d217f608a726411a82a4f553a5b691d, type: 2}
     - target: {fileID: 5213027156668151456, guid: 52c9a023a97e341c89740c180fad991c, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0.5
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5213027156668151456, guid: 52c9a023a97e341c89740c180fad991c, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -0.5
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6462825852480707371, guid: 52c9a023a97e341c89740c180fad991c, type: 3}
       propertyPath: m_Materials.Array.data[0]

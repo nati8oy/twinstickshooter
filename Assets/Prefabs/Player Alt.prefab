@@ -669,10 +669,6 @@ MonoBehaviour:
     m_ActionName: Controls/Point[/VirtualMouse/delta,/VirtualMouse1/delta,/VirtualMouse2/delta,/VirtualMouse3/delta,/VirtualMouse4/delta,/VirtualMouse5/delta,/VirtualMouse6/delta,/VirtualMouse7/delta,/VirtualMouse8/delta]
   - m_PersistentCalls:
       m_Calls: []
-    m_ActionId: 42398fa9-971f-48a1-9be9-82de5064307d
-    m_ActionName: Controls/PlaceObject[/DualShock4GamepadHID/buttonSouth]
-  - m_PersistentCalls:
-      m_Calls: []
     m_ActionId: 6a69ef16-ac97-4aea-8a61-0fb1a35b27d8
     m_ActionName: Controls/Edit mode[/DualShock4GamepadHID/leftStickPress]
   - m_PersistentCalls:
@@ -699,6 +695,14 @@ MonoBehaviour:
       m_Calls: []
     m_ActionId: ef3c02c8-9d0a-4dbf-b0a9-77c99116afdb
     m_ActionName: Controls/Dash[/DualShock4GamepadHID/buttonEast,/DualShock4GamepadHID1/buttonEast,/DualShock4GamepadHID2/buttonEast]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: d9dc5299-19b1-4f96-9f66-29268c899d0a
+    m_ActionName: EditMode/PlaceObject[/DualShock4GamepadHID/buttonSouth]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 9502e2a3-8b9d-4c3a-9823-23419207e998
+    m_ActionName: Abilities/Activate Special[/DualShock4GamepadHID/buttonSouth]
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: 
   m_DefaultActionMap: Controls
@@ -865,6 +869,15 @@ MonoBehaviour:
     m_Type: 0
     m_ExpectedControlType: 
     m_Id: e282a854-2945-4626-b161-07b730160382
+    m_Processors: 
+    m_Interactions: 
+    m_SingletonActionBindings: []
+    m_Flags: 0
+  special:
+    m_Name: 
+    m_Type: 0
+    m_ExpectedControlType: 
+    m_Id: 2ac239f5-9f34-40df-8b6c-a0188ed60332
     m_Processors: 
     m_Interactions: 
     m_SingletonActionBindings: []

@@ -60,15 +60,6 @@
                     "initialStateCheck": true
                 },
                 {
-                    "name": "PlaceObject",
-                    "type": "Button",
-                    "id": "42398fa9-971f-48a1-9be9-82de5064307d",
-                    "expectedControlType": "Button",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
-                },
-                {
                     "name": "Edit mode",
                     "type": "Button",
                     "id": "6a69ef16-ac97-4aea-8a61-0fb1a35b27d8",
@@ -244,17 +235,6 @@
                 },
                 {
                     "name": "",
-                    "id": "9c4f60bb-2157-4a48-bab9-65b397525798",
-                    "path": "<DualShockGamepad>/buttonSouth",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "PlaceObject",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
                     "id": "a8b363a3-75c8-4502-b7e0-45394df005aa",
                     "path": "<DualShockGamepad>/leftStickPress",
                     "interactions": "",
@@ -325,6 +305,15 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
+                },
+                {
+                    "name": "PlaceObject",
+                    "type": "Button",
+                    "id": "d9dc5299-19b1-4f96-9f66-29268c899d0a",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -391,6 +380,45 @@
                     "processors": "",
                     "groups": "",
                     "action": "Rotate Right",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "05bcc18e-bfa5-4bc4-b4eb-9a5bd3a00b42",
+                    "path": "<DualShockGamepad>/buttonSouth",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "PlaceObject",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        },
+        {
+            "name": "Abilities",
+            "id": "8e1d3089-79b3-4506-8e2d-84e4188b8dc3",
+            "actions": [
+                {
+                    "name": "Activate Special",
+                    "type": "Button",
+                    "id": "9502e2a3-8b9d-4c3a-9823-23419207e998",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "f393283d-0ec9-4d38-bab5-0c734f071bf3",
+                    "path": "<Gamepad>/buttonSouth",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Gamepad",
+                    "action": "Activate Special",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
