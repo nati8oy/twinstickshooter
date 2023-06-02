@@ -73,6 +73,12 @@ public class ProjectileAttack : MonoBehaviour, IAttack
         }
 
 
+        //play feedbacks for shooting
+        if (GetComponent<PlayFeedbacksGeneric>())
+        {
+            GetComponent<PlayFeedbacksGeneric>().ShootFeedback();
+        }
+
     }
 
     //timed attack set by using nextAttackTime as a cooldown

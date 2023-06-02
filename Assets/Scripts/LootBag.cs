@@ -11,12 +11,6 @@ public class LootBag : MonoBehaviour
     public Loot droppedItem;
     //public int itemAmount;
 
-    // Start is called before the first frame update
-    void Start()
-    {
-
-    }
-
     Loot GetDroppedItem()
     {
         //set the probability range for a drop of any kind of loot

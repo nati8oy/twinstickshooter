@@ -642,6 +642,7 @@ GameObject:
   - component: {fileID: 1486746018625958942}
   - component: {fileID: 4499230084087405927}
   - component: {fileID: 1387289489966203552}
+  - component: {fileID: 4325124139474682356}
   m_Layer: 0
   m_Name: block-single-low
   m_TagString: environment
@@ -722,6 +723,9 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+  onShoot:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!114 &1387289489966203552
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -736,6 +740,23 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   HPTotal: 2
   currentHP: 0
+--- !u!114 &4325124139474682356
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7537329818903851736}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6dab9b6d45a7d477a9f88396ec084dfc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  lootList:
+  - {fileID: 11400000, guid: 6c856c632a9b343de962c6b9d64c6650, type: 2}
+  - {fileID: 11400000, guid: 7bd818e0256e74f9b988000580e5e61c, type: 2}
+  - {fileID: 11400000, guid: d49f3feab68c2434aa4cf5bb50cb4b2a, type: 2}
+  droppedItem: {fileID: 0}
 --- !u!1 &8585317525184751570
 GameObject:
   m_ObjectHideFlags: 0

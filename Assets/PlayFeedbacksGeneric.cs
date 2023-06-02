@@ -7,6 +7,7 @@ public class PlayFeedbacksGeneric : MonoBehaviour
 {
     public UnityEvent onStart;
     public UnityEvent onHit;
+    public UnityEvent onShoot;
 
     [Tooltip("Feedbacks that play when the object appears")]
 
@@ -22,5 +23,11 @@ public class PlayFeedbacksGeneric : MonoBehaviour
     {
         onHit.Invoke();
     }
+
+    public void ShootFeedback()
+    {
+        onShoot.Invoke();
+    }
+
 
 }

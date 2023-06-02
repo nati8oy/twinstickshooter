@@ -49,7 +49,8 @@ public class LevelManager : Singleton<LevelManager>
         spawnRateCounter = spawnRate;
 
         //start spawning enemies
-        StartCoroutine(EnemySpawn());
+        //StartCoroutine(EnemySpawn());
+
         //manually set difficulty level
         difficulty = Difficulty.Hard;
 

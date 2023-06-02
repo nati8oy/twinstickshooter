@@ -33,6 +33,12 @@ public class Destructible : MonoBehaviour, IDamagable
         {
             itemDestroyed = true;
             gameObject.SetActive(false);
+
+            //on destructible items if there is a loot bag, drop the loot! 
+            if (gameObject.GetComponent<LootBag>())
+            {
+                gameObject.GetComponent<LootBag>().DropLoot();
+            }
         }
     }
 }
