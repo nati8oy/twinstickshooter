@@ -22,6 +22,7 @@ public class Bullet : MonoBehaviour
         if (damagable != null)
         {
             damagable.Damage(bulletDamage);
+            Debug.Log("damage taken by " + collision.gameObject.name + bulletDamage);
             gameObject.GetComponent<Rigidbody>().velocity = Vector3.zero;
             gameObject.SetActive(false);
         }
