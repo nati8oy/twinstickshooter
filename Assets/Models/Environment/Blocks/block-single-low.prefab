@@ -400,7 +400,7 @@ MonoBehaviour:
     - rid: 977591230092279808
       type: {class: MMF_Sound, ns: MoreMountains.Feedbacks, asm: MoreMountains.Feedbacks.MMTools}
       data:
-        Active: 0
+        Active: 1
         UniqueID: -1142029286
         Label: Sound
         ChannelMode: 0

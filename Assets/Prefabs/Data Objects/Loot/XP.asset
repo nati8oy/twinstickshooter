@@ -13,4 +13,4 @@ MonoBehaviour:
   m_Name: XP
   m_EditorClassIdentifier: 
   lootName: XP
-  dropChance: 50
+  dropChance: 40

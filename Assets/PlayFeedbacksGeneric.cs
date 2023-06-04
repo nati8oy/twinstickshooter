@@ -8,6 +8,7 @@ public class PlayFeedbacksGeneric : MonoBehaviour
     public UnityEvent onStart;
     public UnityEvent onHit;
     public UnityEvent onShoot;
+    public UnityEvent onDisable;
 
     [Tooltip("Feedbacks that play when the object appears")]
 
@@ -29,5 +30,10 @@ public class PlayFeedbacksGeneric : MonoBehaviour
         onShoot.Invoke();
     }
 
+    public void OnDisable()
+    {
+        onDisable.Invoke();
+        Debug.Log("Disabled object");
+    }
 
 }

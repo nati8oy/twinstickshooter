@@ -63,9 +63,11 @@ public class EnemyNavMesh : MonoBehaviour
 
         if (followPlayer)
         {
-            movePositionTransform = GameObject.Find("EndPoint").transform;
 
-            //movePositionTransform = GameManager.Instance.player.transform;
+
+            //movePositionTransform = GameObject.Find("EndPoint").transform;
+
+            movePositionTransform = GameManager.Instance.player.transform;
 
         }
 
@@ -87,15 +89,8 @@ public class EnemyNavMesh : MonoBehaviour
     private void Update()
     {
 
-        //this is defaulted to whatever movePositionTransform.position is. It can be a stationary point or the player
-        if (followPlayer)
-        {
-            navMeshAgent.destination = movePositionTransform.position;
-             
-        }
-
         //this returns to roaming behaviour if followPlayer is false
-        else if(followPlayer==false)
+         if (followPlayer == false)
         {
 
             navMeshAgent.destination = roamPosition;
@@ -110,6 +105,10 @@ public class EnemyNavMesh : MonoBehaviour
             }
 
         }
+
+      
+
+        
     }
 
 

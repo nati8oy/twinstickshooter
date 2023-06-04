@@ -13,4 +13,4 @@ MonoBehaviour:
   m_Name: Donut
   m_EditorClassIdentifier: 
   lootName: resource
-  dropChance: 50
+  dropChance: 20

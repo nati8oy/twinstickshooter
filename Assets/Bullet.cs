@@ -37,7 +37,8 @@ public class Bullet : MonoBehaviour
 
         if (collision.gameObject.layer == enemyLayerIndex)
         {
-            collision.gameObject.GetComponent<EnemyBehaviour>().Damage(bulletDamage);
+           // collision.gameObject.GetComponent<EnemyBehaviour>().Damage(bulletDamage);
+            collision.gameObject.GetComponent<EnemyAttributes>().Damage(bulletDamage);
             gameObject.GetComponent<Rigidbody>().velocity = Vector3.zero;
             gameObject.SetActive(false);
         }

@@ -77,72 +77,65 @@ public class EnemyBehaviour : MonoBehaviour
         XPdrop = enemyData.XP;
 
 
-        findEndPoint = enemyData.followPlayer;
+       // findEndPoint = enemyData.followPlayer;
 
 
         //find the bool in the enemyNav Mesh and fill it with whatever has been set in the data object
-        enemyNavMesh.followPlayer = findEndPoint;
+       // enemyNavMesh.followPlayer = findEndPoint;
     }
 
     private void Update()
     {
-        //if the object is not set to find an end point it will do its regular roaming behaviour
-        if (!findEndPoint)
+
+        switch (state)
         {
+            default:
+            case State.Roaming:
+                //Debug.Log("Roaming");
+                enemyNavMesh.followPlayer = true;
 
-            switch (state)
-            {
-                default:
-                case State.Roaming:
-                    //Debug.Log("Roaming");
-                    enemyNavMesh.followPlayer = false;
+                FindTarget();
 
-                    FindTarget();
+                break;
+            case State.ChaseTarget:
+                //Debug.Log("Chasing");
+                enemyNavMesh.followPlayer = true;
 
-                    break;
-                case State.ChaseTarget:
-                    //Debug.Log("Chasing");
-                    enemyNavMesh.followPlayer = true;
-
-                    Debug.DrawLine(transform.position, GameManager.Instance.player.transform.position, color: Color.red);
+                Debug.DrawLine(transform.position, GameManager.Instance.player.transform.position, color: Color.red);
 
 
-                    float exitRangeDistance = 15f;
-                    if (Vector3.Distance(transform.position, GameManager.Instance.player.transform.position) > exitRangeDistance)
+                float exitRangeDistance = 15f;
+                if (Vector3.Distance(transform.position, GameManager.Instance.player.transform.position) > exitRangeDistance)
+                {
+                    //player within range
+                    state = State.Roaming;
+                }
+
+                float attackRange = 10f;
+                if (Vector3.Distance(transform.position, GameManager.Instance.player.transform.position) < attackRange)
+                {
+                    //Debug.Log("In attack range!");
+                    //state = State.Attack;
+
+                }
+
+                //player within attack range and has canAttack enabled
+                if (canAttack)
+                {
+                    if (Time.time > cooldown)
                     {
-                        //player within range
-                        state = State.Roaming;
+                        //triggers attack by going through the interface IAttack
+                        gameObject.GetComponent<IAttack>().TimedAttack();
+                        //cooldown = Time.time + rateOfFire;
                     }
+                }
 
-                    float attackRange = 10f;
-                    if (Vector3.Distance(transform.position, GameManager.Instance.player.transform.position) < attackRange)
-                    {
-                        //Debug.Log("In attack range!");
-                        //state = State.Attack;
+                break;
+            case State.Attack:
 
-                    }
-
-                    //player within attack range and has canAttack enabled
-                    if (canAttack)
-                    {
-                        if (Time.time > cooldown)
-                        {
-                            //triggers attack by going through the interface IAttack
-                            gameObject.GetComponent<IAttack>().TimedAttack();
-                            //cooldown = Time.time + rateOfFire;
-                        }
-                    }
-
-                    break;
-                case State.Attack:
-
-                    break;
-
-            }
-
+                break;
 
         }
-
 
 
            

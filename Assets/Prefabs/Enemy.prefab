@@ -583,7 +583,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   movePositionTransform: {fileID: 0}
   navPoints: []
-  followPlayer: 0
+  followPlayer: 1
   interval: 20
 --- !u!195 &1619187982
 NavMeshAgent:
@@ -658,7 +658,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8208434519250324759}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 83e37030b31fc475ab0347f41449cbf3, type: 3}
   m_Name: 
