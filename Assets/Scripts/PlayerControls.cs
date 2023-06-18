@@ -430,6 +430,15 @@ public partial class @PlayerControls : IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Cancel"",
+                    ""type"": ""Button"",
+                    ""id"": ""62b613e5-70a5-4237-8b2f-cb18e949a87e"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -441,6 +450,28 @@ public partial class @PlayerControls : IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""groups"": ""Gamepad"",
                     ""action"": ""Activate Special"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""8a8a458b-f91c-4bca-a504-4c29a3486c76"",
+                    ""path"": ""<Mouse>/leftButton"",
+                    ""interactions"": ""Press"",
+                    ""processors"": """",
+                    ""groups"": ""KBM"",
+                    ""action"": ""Activate Special"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""ee816d48-7ead-456e-b595-58ee1eb433ae"",
+                    ""path"": ""<Mouse>/rightButton"",
+                    ""interactions"": ""Press"",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Cancel"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -503,6 +534,7 @@ public partial class @PlayerControls : IInputActionCollection2, IDisposable
         // Abilities
         m_Abilities = asset.FindActionMap("Abilities", throwIfNotFound: true);
         m_Abilities_ActivateSpecial = m_Abilities.FindAction("Activate Special", throwIfNotFound: true);
+        m_Abilities_Cancel = m_Abilities.FindAction("Cancel", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -725,11 +757,13 @@ public partial class @PlayerControls : IInputActionCollection2, IDisposable
     private readonly InputActionMap m_Abilities;
     private IAbilitiesActions m_AbilitiesActionsCallbackInterface;
     private readonly InputAction m_Abilities_ActivateSpecial;
+    private readonly InputAction m_Abilities_Cancel;
     public struct AbilitiesActions
     {
         private @PlayerControls m_Wrapper;
         public AbilitiesActions(@PlayerControls wrapper) { m_Wrapper = wrapper; }
         public InputAction @ActivateSpecial => m_Wrapper.m_Abilities_ActivateSpecial;
+        public InputAction @Cancel => m_Wrapper.m_Abilities_Cancel;
         public InputActionMap Get() { return m_Wrapper.m_Abilities; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -742,6 +776,9 @@ public partial class @PlayerControls : IInputActionCollection2, IDisposable
                 @ActivateSpecial.started -= m_Wrapper.m_AbilitiesActionsCallbackInterface.OnActivateSpecial;
                 @ActivateSpecial.performed -= m_Wrapper.m_AbilitiesActionsCallbackInterface.OnActivateSpecial;
                 @ActivateSpecial.canceled -= m_Wrapper.m_AbilitiesActionsCallbackInterface.OnActivateSpecial;
+                @Cancel.started -= m_Wrapper.m_AbilitiesActionsCallbackInterface.OnCancel;
+                @Cancel.performed -= m_Wrapper.m_AbilitiesActionsCallbackInterface.OnCancel;
+                @Cancel.canceled -= m_Wrapper.m_AbilitiesActionsCallbackInterface.OnCancel;
             }
             m_Wrapper.m_AbilitiesActionsCallbackInterface = instance;
             if (instance != null)
@@ -749,6 +786,9 @@ public partial class @PlayerControls : IInputActionCollection2, IDisposable
                 @ActivateSpecial.started += instance.OnActivateSpecial;
                 @ActivateSpecial.performed += instance.OnActivateSpecial;
                 @ActivateSpecial.canceled += instance.OnActivateSpecial;
+                @Cancel.started += instance.OnCancel;
+                @Cancel.performed += instance.OnCancel;
+                @Cancel.canceled += instance.OnCancel;
             }
         }
     }
@@ -794,5 +834,6 @@ public partial class @PlayerControls : IInputActionCollection2, IDisposable
     public interface IAbilitiesActions
     {
         void OnActivateSpecial(InputAction.CallbackContext context);
+        void OnCancel(InputAction.CallbackContext context);
     }
 }
