@@ -4,6 +4,7 @@ using UnityEngine.AI;
 public class ObjectGridSpawner : MonoBehaviour
 {
 
+
     public GameObject prefab; // The prefab of the game object you want to spawn
     public int gridSize = 10; // Number of grids in the larger grid
     public int rows = 5; // Number of rows in each grid

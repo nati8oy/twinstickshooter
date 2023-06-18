@@ -38,10 +38,10 @@ public class TwinStickMovement : MonoBehaviour
 
     private CharacterController controller;
 
-    private Vector2 movement;
+    private Vector2 movement { get; set; }
     private Vector2 aim;
 
-    private Vector3 playerVelocity;
+    public Vector3 playerVelocity;
 
     private PlayerControls playerControls;
     private PlayerInput playerInput;
@@ -55,6 +55,10 @@ public class TwinStickMovement : MonoBehaviour
     }
 
 
+    private void OnEnable()
+    {
+        transform.position = gameObject.transform.position;
+    }
 
     private void OnDisable()
     {
@@ -67,10 +71,14 @@ public class TwinStickMovement : MonoBehaviour
 
 
 
-        if (PlayerManager.Instance.playerDead || (GameManager.Instance.gameState ==GameManager.GameState.building))
+        if (GetComponent<PlayerManager>())
         {
-            playerControls.Disable();
+            if (PlayerManager.Instance.playerDead || (GameManager.Instance.gameState == GameManager.GameState.building))
+            {
+                playerControls.Disable();
+            }
         }
+
 
         else 
         {
