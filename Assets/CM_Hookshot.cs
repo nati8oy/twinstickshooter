@@ -14,7 +14,8 @@ public class CM_Hookshot : MonoBehaviour
     [SerializeField] private Transform debugHitPointTransform;
     private Vector3 hookshotPosition;
 
-    private Vector3 characterVelocityMomentum;
+    [SerializeField] private LineRenderer lr;
+    public Vector3 characterVelocityMomentum;
 
     [SerializeField] float hookshotSpeedMultiplier = 2f;
     private CharacterController controller;
@@ -22,7 +23,7 @@ public class CM_Hookshot : MonoBehaviour
 
     private Vector2 movement;
     private Vector3 playerVelocity;
-
+    [SerializeField] private PlayerControls playerControls;
 
 
     [SerializeField] private CharacterController characterController;
@@ -63,6 +64,9 @@ public class CM_Hookshot : MonoBehaviour
         jump.Enable();
 
         //characterController.HandleMovement();
+
+
+        
     }
 
     // Update is called once per frame
@@ -72,8 +76,7 @@ public class CM_Hookshot : MonoBehaviour
         {
             default:
             case State.Normal:
-                //HandleCharacterMovement();
-                //HandleHookshotStart();
+
                 break;
 
             case State.HookshotFlyingPlayer:
@@ -85,7 +88,11 @@ public class CM_Hookshot : MonoBehaviour
 
     }
 
-
+private void LateUpdate(){
+   // lr.SetPosition(1, hookshotPosition);
+    //set the line renderer start point to that of the shot point
+    lr.SetPosition(0, shotPoint.position);
+}
 
     private void HandleHookshotStart()
     {
@@ -96,8 +103,10 @@ public class CM_Hookshot : MonoBehaviour
             debugHitPointTransform.position = raycastHit.point;
             hookshotPosition = raycastHit.point;
             state = State.HookshotFlyingPlayer;
-
         }
+
+        lr.enabled = true;
+        lr.SetPosition(1, hookshotPosition);
 
     }
 
@@ -117,27 +126,38 @@ public class CM_Hookshot : MonoBehaviour
         //distance to get within before changing state
         float destinationThreshold = 2f;
 
+
+
+
         characterController.Move(hookshotDir * hookshotSpeed * hookshotSpeedMultiplier * Time.deltaTime);
         if(Vector3.Distance(transform.position, hookshotPosition)< destinationThreshold)
         {
             //reached hookshot position
             state = State.Normal;
+            lr.enabled = false;
         }
 
-        //twinStick.playerVelocity += characterVelocityMomentum;
-
-        float momentumExtraSpeed = 7f; 
-        characterVelocityMomentum = hookshotDir * hookshotSpeed * momentumExtraSpeed;
+        //if the player has jumped while hookshotting, cancel the hookshot
+        if (jump.ReadValue<float>() > 0)
+        {
+            Debug.Log("jumped while hookshotting");
+            CancelHookshot();
+            //also maintain momentum
+            characterVelocityMomentum = hookshotDir * hookshotSpeed * hookshotSpeedMultiplier;
+        }
+       
 
     }
 
     private void CancelHookshot()
     {
         state = State.Normal;
+        lr.enabled = false;
     }
 
-    private void Jump()
+    private bool Jump()
     {
+        return true;
     }
 
 }

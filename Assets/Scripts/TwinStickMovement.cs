@@ -32,7 +32,7 @@ public class TwinStickMovement : MonoBehaviour
     public float bulletForce = 40f;
     public float secondaryWeaponForce = 80f;
 
-
+    Vector3 CVM;
 
     [SerializeField] private bool isGamepad;
 
@@ -104,10 +104,29 @@ public class TwinStickMovement : MonoBehaviour
         Vector3 move = new Vector3(movement.x, 0, movement.y);
         controller.Move(move * Time.deltaTime * playerSpeed);
 
+        
+        if (gameObject.GetComponent<CM_Hookshot>())
+        {
+            Vector3 CVM = gameObject.GetComponent<CM_Hookshot>().characterVelocityMomentum;
+            playerVelocity += CVM;
+        }
+
+        if (CVM.magnitude >= 0f)
+        {
+            float momentumDrag = 3f;
+
+            CVM -= CVM * momentumDrag * Time.deltaTime;
+            if (CVM.magnitude < .0f)
+            {
+                CVM = Vector3.zero;
+            }
+        }
+        
 
         playerVelocity.y += gravityValue * Time.deltaTime;
-        controller.Move(playerVelocity * Time.deltaTime);
 
+        
+        
 
     }
 
