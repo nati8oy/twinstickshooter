@@ -10,8 +10,10 @@ public class CM_Hookshot : MonoBehaviour
     [SerializeField] private InputAction hookshotCancel;
     [SerializeField] private InputAction jump;
 
+    [SerializeField] private LayerMask layerMask;
+
     [SerializeField] private Transform shotPoint;
-    [SerializeField] private Transform debugHitPointTransform;
+    [SerializeField] private Transform hook;
     private Vector3 hookshotPosition;
 
     [SerializeField] private LineRenderer lr;
@@ -32,7 +34,7 @@ public class CM_Hookshot : MonoBehaviour
     private State state;
     private enum State
     {
-        Normal, HookshotFlyingPlayer,
+        Normal, HookshotLaunched, HookshotFlyingPlayer, HookshotPull,
     }
     private void Awake()
     {
@@ -76,11 +78,18 @@ public class CM_Hookshot : MonoBehaviour
         {
             default:
             case State.Normal:
+            lr.enabled = false;
 
+                break;
+            case State.HookshotLaunched:
+                //HookshotStarted();
                 break;
 
             case State.HookshotFlyingPlayer:
                 HandleHookshotMovement();
+                break;
+            case State.HookshotPull:
+            HandleHookshotPull();
                 break;
         }
 
@@ -100,15 +109,36 @@ private void LateUpdate(){
         if (Physics.Raycast(shotPoint.position, shotPoint.forward, out RaycastHit raycastHit))
         {
             //hit something
-            debugHitPointTransform.position = raycastHit.point;
-            hookshotPosition = raycastHit.point;
-            state = State.HookshotFlyingPlayer;
-        }
+            //hookshotPosition = raycastHit.point;
 
+            //check the layer of the object that was hit
+            //if the layer is grappleable, then set the hookshot position to the hit point
+            //if not, then set the hookshot position to the maximum distance of the hookshot
+            if (raycastHit.collider.gameObject.layer == 10){
+                Debug.Log("hit grappleable object");
+                hook.position = raycastHit.point;
+                hookshotPosition = raycastHit.point;
+                state = State.HookshotFlyingPlayer;
+
+            }
+
+             if (raycastHit.collider.gameObject.layer == 11){
+                Debug.Log("hit pullable object");
+                hook.position = raycastHit.point;
+                hookshotPosition = raycastHit.point;
+                state = State.HookshotPull;
+
+            }
+
+
+
+        }
+        
         lr.enabled = true;
         lr.SetPosition(1, hookshotPosition);
-
     }
+
+
 
 
     private void HandleHookshotMovement()
@@ -127,9 +157,62 @@ private void LateUpdate(){
         float destinationThreshold = 2f;
 
 
-
-
         characterController.Move(hookshotDir * hookshotSpeed * hookshotSpeedMultiplier * Time.deltaTime);
+        if(Vector3.Distance(transform.position, hookshotPosition)< destinationThreshold)
+        {
+            //reached hookshot position
+            state = State.Normal;
+            lr.enabled = false;
+            //characterController.enabled = false;
+        }
+
+        //if the player has jumped while hookshotting, cancel the hookshot
+        if (jump.ReadValue<float>() > 0)
+        {
+            Debug.Log("jumped while hookshotting");
+            //also maintain momentum
+
+            float momentumExtraSpeed = 7f;
+
+            characterVelocityMomentum = hookshotDir * hookshotSpeed * momentumExtraSpeed;
+
+            CancelHookshot();
+
+        }
+
+        //dampen speed of momentum
+        if (characterVelocityMomentum.magnitude >= 0f)
+        {
+            float momentumDrag = 3f;
+
+            characterVelocityMomentum -= characterVelocityMomentum * momentumDrag * Time.deltaTime;
+            if (characterVelocityMomentum.magnitude < .0f)
+            {
+                characterVelocityMomentum = Vector3.zero;
+            }
+        }
+
+    }
+
+    private void HandleHookshotPull()
+    {
+
+        float hookshotSpeedMin = 10f;
+        float hookshotSpeedMax = 40f;
+        Vector3 hookshotDir = (hookshotPosition - transform.position).normalized;
+
+        Vector3 move = new Vector3(hookshotDir.x, 0, hookshotDir.y);
+
+        float hookshotSpeed = Mathf.Clamp(Vector3.Distance(transform.position, hookshotPosition), hookshotSpeedMin, hookshotSpeedMax);
+        float hookshotSpeedMultiplier = 2f;
+
+        //distance to get within before changing state
+        float destinationThreshold = 2f;
+
+        
+        //yank the object hit by the hookshot towards the player
+        //characterController.Move(hookshotDir * hookshotSpeed * hookshotSpeedMultiplier * Time.deltaTime);
+
         if(Vector3.Distance(transform.position, hookshotPosition)< destinationThreshold)
         {
             //reached hookshot position
@@ -137,27 +220,40 @@ private void LateUpdate(){
             lr.enabled = false;
         }
 
-        //if the player has jumped while hookshotting, cancel the hookshot
-        if (jump.ReadValue<float>() > 0)
-        {
-            Debug.Log("jumped while hookshotting");
-            CancelHookshot();
-            //also maintain momentum
-            characterVelocityMomentum = hookshotDir * hookshotSpeed * hookshotSpeedMultiplier;
-        }
-       
-
     }
 
     private void CancelHookshot()
     {
+
+        characterController.enabled = false;
+        Invoke("ResetController", 0.5f);
+        //get the current velocity of the player
+        Vector3 currentVelocity = characterController.velocity;
+        
+        //Debug.Log("current velocity " + currentVelocity + " CVM " + characterVelocityMomentum);
+
+        //add the momentum to the current velocity
+        //Vector3 momentumVelocityAddition = characterVelocityMomentum;
+        /*
+        currentVelocity += momentumVelocityAddition;
+        */
+        //momentumVelocityAddition.y = 0;
+            
         state = State.Normal;
         lr.enabled = false;
+
+       
     }
 
     private bool Jump()
     {
         return true;
+    }
+
+    private void ResetController()
+    {
+        characterController.enabled = true;
+
     }
 
 }

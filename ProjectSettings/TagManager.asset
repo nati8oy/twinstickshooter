@@ -28,7 +28,6 @@ TagManager:
   - candy
   - resource
   - turret
-  - enemy_lvl2
   layers:
   - Default
   - TransparentFX
@@ -40,8 +39,8 @@ TagManager:
   - Traps
   - Environment
   - Friendly
-  - 
-  - 
+  - Grappleable
+  - Pullable
   - 
   - 
   - 
