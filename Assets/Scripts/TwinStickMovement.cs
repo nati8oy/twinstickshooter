@@ -101,7 +101,7 @@ public class TwinStickMovement : MonoBehaviour
    
     public void HandleMovement()
     {
-        
+        /*
         if (gameObject.GetComponent<CM_Hookshot>())
         {
             Vector3 CVM = gameObject.GetComponent<CM_Hookshot>().characterVelocityMomentum;
@@ -109,13 +109,13 @@ public class TwinStickMovement : MonoBehaviour
             Debug.Log("CVM amount: " + CVM);
         }
 
-        
+        */
 
 
         Vector3 move = new Vector3(movement.x, 0, movement.y);
         controller.Move(move * Time.deltaTime * playerSpeed);
 
-        
+        /*
         if (CVM.magnitude >= 0f)
         {
             float momentumDrag = 3f;
@@ -127,7 +127,7 @@ public class TwinStickMovement : MonoBehaviour
             }
         }
 
-        
+        */
 
         playerVelocity.y += gravityValue * Time.deltaTime;
 
