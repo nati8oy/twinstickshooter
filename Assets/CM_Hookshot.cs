@@ -25,7 +25,7 @@ public class CM_Hookshot : MonoBehaviour
 
 
    private float t = 0f;
-
+    private RaycastHit raycastHit;
 
     private Vector2 movement;
     private Vector3 playerVelocity;
@@ -33,6 +33,8 @@ public class CM_Hookshot : MonoBehaviour
 
 
     [SerializeField] private CharacterController characterController;
+
+    [SerializeField] private float hookshotMaxRange = 50f;
     private TwinStickMovement twinStick;
 
     private GameObject hitTarget;
@@ -94,7 +96,7 @@ public class CM_Hookshot : MonoBehaviour
 
                 break;
             case State.HookshotLaunched:
-                //HookshotStarted();
+                LaunchHookshot();
                 break;
 
             case State.HookshotFlyingPlayer:
@@ -118,8 +120,8 @@ private void LateUpdate(){
 
     private void HandleHookshotStart()
     {
-        RaycastHit hit;
-        if (Physics.Raycast(shotPoint.position, shotPoint.forward, out RaycastHit raycastHit))
+        
+        if (Physics.Raycast(shotPoint.position, shotPoint.forward, out raycastHit, hookshotMaxRange))
         {
             //hit something
             //hookshotPosition = raycastHit.point;
@@ -184,7 +186,7 @@ private void LateUpdate(){
         //if the player has jumped while hookshotting, cancel the hookshot
         if (jump.ReadValue<float>() > 0)
         {
-            Debug.Log("jumped while hookshotting");
+            
             //also maintain momentum
 
             float momentumExtraSpeed = 3f;
@@ -198,7 +200,7 @@ private void LateUpdate(){
         //dampen speed of momentum
         if (characterVelocityMomentum.magnitude >= 0f)
         {
-            float momentumDrag = 6f;
+            float momentumDrag = 20f;
 
             characterVelocityMomentum -= characterVelocityMomentum * momentumDrag * Time.deltaTime;
             if (characterVelocityMomentum.magnitude < .0f)
@@ -216,11 +218,12 @@ private void LateUpdate(){
         float hookshotSpeedMax = 40f;
 
         Vector3 hookshotDir = (hookshotPosition + transform.position).normalized;
+
         //pull the hittarget towards the player
         hitTarget.transform.position = Vector3.MoveTowards(hitTarget.transform.position, transform.position, 40f * Time.deltaTime);
         hook.gameObject.transform.position = Vector3.MoveTowards(hitTarget.transform.position, transform.position, 40f * Time.deltaTime);
 
-
+        //match the hook to the same position of the hit target as it's getting pulled back
         hook.gameObject.transform.position = hitTarget.transform.position;
 
 
@@ -234,8 +237,26 @@ private void LateUpdate(){
             CancelHookshot();
         }
 
+        //if the player has jumped while hookshotting, cancel the hookshot
+        if (jump.ReadValue<float>() > 0)
+        {
+    
+            CancelHookshot();
+
+        }
+    }
     
 
+    private void LaunchHookshot()
+    {
+        // shoot the hook at the object
+        hook.gameObject.transform.position = Vector3.MoveTowards(shotPoint.transform.position, hitTarget.transform.position, 40f * Time.deltaTime);
+
+        if (Vector3.Distance(transform.position, hitTarget.transform.position) < 3f)
+        {
+
+
+        }
     }
 
     private void CancelHookshot()
