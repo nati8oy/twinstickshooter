@@ -15,6 +15,8 @@ public class CM_Hookshot : MonoBehaviour
 
     [SerializeField] private Transform shotPoint;
     [SerializeField] private Transform hook;
+    [SerializeField] private Transform carryPoint;
+
     private Vector3 hookshotPosition;
 
     [SerializeField] private LineRenderer lr;
@@ -42,7 +44,7 @@ public class CM_Hookshot : MonoBehaviour
     private State state;
     private enum State
     {
-        Normal, HookshotLaunched, HookshotFlyingPlayer, HookshotPull,
+        Normal, HookshotLaunched, HookshotFlyingPlayer, HookshotPull, HookshotAttached, HookshotCarry,
     }
     private void Awake()
     {
@@ -63,13 +65,13 @@ public class CM_Hookshot : MonoBehaviour
         hookshot.Enable();
 
 
-        /*
+        
         hookshotPull = new InputAction(binding: "<Mouse>/rightButton");
         //edit mode is handled by functions inside of the builder manager script
-        hookshotPull.performed += _ => HandleHookshotPull();
+        hookshotPull.performed += _ => ThrowCarriedObject();
         hookshotPull.Enable();
 
-        */
+        
 
         jump = new InputAction(binding: "<Keyboard>/space");
         //edit mode is handled by functions inside of the builder manager script
@@ -104,8 +106,13 @@ public class CM_Hookshot : MonoBehaviour
                 break;
             case State.HookshotPull:
                 HandleHookshotPull();
-
                 break;
+            case State.HookshotAttached:
+                HandleHookshotPull();
+                break;
+            case State.HookshotCarry:
+                HandleHookshotCarry();
+                    break;
         }
 
         Debug.Log(state);
@@ -120,33 +127,52 @@ private void LateUpdate(){
 
     private void HandleHookshotStart()
     {
-        
-        if (Physics.Raycast(shotPoint.position, shotPoint.forward, out raycastHit, hookshotMaxRange))
+        //if you are normal or flying through the air then shoot the hookshot
+        if (state == State.Normal || state == State.HookshotFlyingPlayer)
         {
-            //hit something
-            //hookshotPosition = raycastHit.point;
 
-            //check the layer of the object that was hit
-            //if the layer is grappleable, then set the hookshot position to the hit point
-            //if not, then set the hookshot position to the maximum distance of the hookshot
-            if (raycastHit.collider.gameObject.layer == 10){
-                Debug.Log("hit grappleable object");
-                hook.position = raycastHit.point;
-                hookshotPosition = raycastHit.point;
-                state = State.HookshotFlyingPlayer;
+            if (Physics.Raycast(shotPoint.position, shotPoint.forward, out raycastHit, hookshotMaxRange))
+            {
+                //hit something
+                //hookshotPosition = raycastHit.point;
 
+                //check the layer of the object that was hit
+                //if the layer is grappleable, then set the hookshot position to the hit point
+                //if not, then set the hookshot position to the maximum distance of the hookshot
+                if (raycastHit.collider.gameObject.layer == 10)
+                {
+                    // Debug.Log("hit grappleable object");
+                    hook.position = raycastHit.point;
+                    hookshotPosition = raycastHit.point;
+                    state = State.HookshotFlyingPlayer;
+
+                }
+
+                //this is the pullable object layer
+                if (raycastHit.collider.gameObject.layer == 11)
+                {
+                    //Debug.Log("hit pullable object");
+                    hook.position = raycastHit.point;
+                    hookshotPosition = raycastHit.point;
+                    state = State.HookshotPull;
+
+                }
+
+                //this is the layer for collectibles that you can pull towards yourself
+                if (raycastHit.collider.gameObject.layer == 12)
+                {
+                    // Debug.Log("hit collectible object");
+                    hook.position = raycastHit.point;
+                    hookshotPosition = raycastHit.point;
+                    state = State.HookshotPull;
+
+                }
+
+
+                //set the hit target to whatever the raycast has hit
+                hitTarget = raycastHit.collider.gameObject;
             }
 
-             if (raycastHit.collider.gameObject.layer == 11){
-                Debug.Log("hit pullable object");
-                hook.position = raycastHit.point;
-                hookshotPosition = raycastHit.point;
-                state = State.HookshotPull;
-
-            }
-
-             //set the hit target to whatever the raycast has hit
-            hitTarget =  raycastHit.collider.gameObject;
 
         }
         
@@ -234,7 +260,16 @@ private void LateUpdate(){
         //and if it's less than 3, then cancel the hookshot
         if (Vector3.Distance(transform.position, hitTarget.transform.position) < 3f)
         {
-            CancelHookshot();
+            if (raycastHit.collider.gameObject.layer == 11)
+            {
+                state = State.HookshotCarry;
+            }
+
+            else
+            {
+                CancelHookshot();
+            }
+
         }
 
         //if the player has jumped while hookshotting, cancel the hookshot
@@ -245,7 +280,27 @@ private void LateUpdate(){
 
         }
     }
-    
+
+    private void HandleHookshotCarry()
+    {
+       
+        //carry the hittarget game object with the player at the shot point
+        hitTarget.transform.position = carryPoint.transform.position;
+        lr.enabled = false;
+    }
+
+
+    private void ThrowCarriedObject()
+    {
+        //if you're carrying an object, throw it
+        if(state == State.HookshotCarry)
+        {
+            state = State.Normal;
+            //launch the hittarget object in the direction the player is facing
+            hitTarget.GetComponent<Rigidbody>().AddForce(transform.forward * 500f);
+            Debug.Log("Object Thrwon");   
+        }
+    }
 
     private void LaunchHookshot()
     {
@@ -277,7 +332,6 @@ private void LateUpdate(){
             
         state = State.Normal;
         lr.enabled = false;
-
        
     }
 
