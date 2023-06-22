@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Security.Cryptography.X509Certificates;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.Events;
 
 public class CM_Hookshot : MonoBehaviour
 {
@@ -26,6 +27,8 @@ public class CM_Hookshot : MonoBehaviour
     private CharacterController controller;
 
 
+    private bool hitSomething =false;
+
    private float t = 0f;
     private RaycastHit raycastHit;
 
@@ -36,8 +39,12 @@ public class CM_Hookshot : MonoBehaviour
 
     [SerializeField] private CharacterController characterController;
 
-    [SerializeField] private float hookshotMaxRange = 50f;
+    [SerializeField] private float hookshotMaxRange = 10f;
     private TwinStickMovement twinStick;
+
+
+    [Header("Feedbacks")]
+    [SerializeField] private UnityEvent onGrapple;
 
     private GameObject hitTarget;
 
@@ -55,30 +62,25 @@ public class CM_Hookshot : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+
         characterController = gameObject.GetComponent<CharacterController>();
         twinStick = gameObject.GetComponent<TwinStickMovement>();
 
 
         hookshot = new InputAction(binding: "<Mouse>/leftButton");
-        //edit mode is handled by functions inside of the builder manager script
+        //hookshot.performed += _ => LaunchHookshot();
         hookshot.performed += _ => HandleHookshotStart();
         hookshot.Enable();
 
-
         
         hookshotPull = new InputAction(binding: "<Mouse>/rightButton");
-        //edit mode is handled by functions inside of the builder manager script
         hookshotPull.performed += _ => ThrowCarriedObject();
         hookshotPull.Enable();
 
         
-
         jump = new InputAction(binding: "<Keyboard>/space");
-        //edit mode is handled by functions inside of the builder manager script
         jump.performed += _ => Jump();
         jump.Enable();
-
-        //characterController.HandleMovement();
 
 
         
@@ -127,6 +129,10 @@ private void LateUpdate(){
 
     private void HandleHookshotStart()
     {
+
+        //adds the particles when moving
+        //onGrapple.Invoke();
+
         //if you are normal or flying through the air then shoot the hookshot
         if (state == State.Normal || state == State.HookshotFlyingPlayer)
         {
@@ -171,6 +177,9 @@ private void LateUpdate(){
 
                 //set the hit target to whatever the raycast has hit
                 hitTarget = raycastHit.collider.gameObject;
+                //make the raycast ignore the hook object's collider
+                Physics.IgnoreCollision(raycastHit.collider, hook.GetComponent<Collider>());
+                
             }
 
 
@@ -185,6 +194,8 @@ private void LateUpdate(){
 
     private void HandleHookshotMovement()
     {
+
+        
 
         float hookshotSpeedMin = 10f;
         float hookshotSpeedMax = 40f;
@@ -283,8 +294,11 @@ private void LateUpdate(){
 
     private void HandleHookshotCarry()
     {
-       
+        var hitTargetRB = hitTarget.GetComponent<Rigidbody>();
+
         //carry the hittarget game object with the player at the shot point
+        hitTargetRB.useGravity = false;
+        hitTargetRB.freezeRotation = true;
         hitTarget.transform.position = carryPoint.transform.position;
         lr.enabled = false;
     }
@@ -292,26 +306,64 @@ private void LateUpdate(){
 
     private void ThrowCarriedObject()
     {
+
+        var hitTargetRB = hitTarget.GetComponent<Rigidbody>();
         //if you're carrying an object, throw it
-        if(state == State.HookshotCarry)
+        if (state == State.HookshotCarry)
         {
             state = State.Normal;
             //launch the hittarget object in the direction the player is facing
-            hitTarget.GetComponent<Rigidbody>().AddForce(transform.forward * 500f);
+            hitTargetRB.useGravity = true;
+            hitTargetRB.freezeRotation = false;
+            hitTargetRB.AddForce(transform.forward * 2000f);
             Debug.Log("Object Thrwon");   
         }
     }
 
     private void LaunchHookshot()
     {
-        // shoot the hook at the object
-        hook.gameObject.transform.position = Vector3.MoveTowards(shotPoint.transform.position, hitTarget.transform.position, 40f * Time.deltaTime);
+        state = State.HookshotLaunched;
 
-        if (Vector3.Distance(transform.position, hitTarget.transform.position) < 3f)
+
+        if (!hitSomething)
         {
-
-
+            // shoot the hook at the object
+            //hook.position = shotPoint.position;
+            hook.position = Vector3.MoveTowards(shotPoint.position, shotPoint.position + transform.forward * 10f, 4f * Time.deltaTime);
+            //when the hook reaches 10f in front of the player, set the hook.position back to the shotpoint.position
+            if (Vector3.Distance(hook.position, shotPoint.position) < 1f)
+            {
+                hitSomething = true;
+                
+                
+            }
         }
+
+        else if (hitSomething)
+        {
+            hook.position = Vector3.MoveTowards(shotPoint.position + transform.forward * 10f, hook.position, 40f * Time.deltaTime);
+            hitSomething = false;
+            state = State.Normal;
+        }
+
+       
+
+        //lr.enabled = true;
+        //lr.SetPosition(1, hookshotPosition);
+
+        //move the hook position from the shot point to a distacne of 10f in front of the player
+        //hook.position = shotPoint.position + transform.forward * 10f;
+
+        
+
+        
+
+/*
+        if (Vector3.Distance(hook.position, Vector3.zero) < 3f)
+        {
+            state = State.Normal;
+            lr.enabled = false;
+        }*/
     }
 
     private void CancelHookshot()
