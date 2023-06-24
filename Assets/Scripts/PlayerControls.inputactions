@@ -76,6 +76,15 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
+                },
+                {
+                    "name": "Jump",
+                    "type": "Button",
+                    "id": "e0c19eb4-d716-4918-af81-097b6b0163e0",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -252,6 +261,17 @@
                     "processors": "",
                     "groups": "Gamepad",
                     "action": "Dash",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "b3a4c1dd-fbbc-4436-afc3-a6a4c0012960",
+                    "path": "<Keyboard>/space",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "KBM",
+                    "action": "Jump",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
@@ -448,7 +468,7 @@
                     "path": "<Mouse>/rightButton",
                     "interactions": "Press",
                     "processors": "",
-                    "groups": "",
+                    "groups": "KBM",
                     "action": "Cancel",
                     "isComposite": false,
                     "isPartOfComposite": false

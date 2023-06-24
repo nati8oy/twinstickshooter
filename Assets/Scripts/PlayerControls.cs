@@ -98,6 +98,15 @@ public partial class @PlayerControls : IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Jump"",
+                    ""type"": ""Button"",
+                    ""id"": ""e0c19eb4-d716-4918-af81-097b6b0163e0"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -274,6 +283,17 @@ public partial class @PlayerControls : IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""groups"": ""Gamepad"",
                     ""action"": ""Dash"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""b3a4c1dd-fbbc-4436-afc3-a6a4c0012960"",
+                    ""path"": ""<Keyboard>/space"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""KBM"",
+                    ""action"": ""Jump"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -470,7 +490,7 @@ public partial class @PlayerControls : IInputActionCollection2, IDisposable
                     ""path"": ""<Mouse>/rightButton"",
                     ""interactions"": ""Press"",
                     ""processors"": """",
-                    ""groups"": """",
+                    ""groups"": ""KBM"",
                     ""action"": ""Cancel"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
@@ -523,6 +543,7 @@ public partial class @PlayerControls : IInputActionCollection2, IDisposable
         m_Controls_Point = m_Controls.FindAction("Point", throwIfNotFound: true);
         m_Controls_Editmode = m_Controls.FindAction("Edit mode", throwIfNotFound: true);
         m_Controls_Dash = m_Controls.FindAction("Dash", throwIfNotFound: true);
+        m_Controls_Jump = m_Controls.FindAction("Jump", throwIfNotFound: true);
         // EditMode
         m_EditMode = asset.FindActionMap("EditMode", throwIfNotFound: true);
         m_EditMode_CameraMovement = m_EditMode.FindAction("Camera Movement", throwIfNotFound: true);
@@ -602,6 +623,7 @@ public partial class @PlayerControls : IInputActionCollection2, IDisposable
     private readonly InputAction m_Controls_Point;
     private readonly InputAction m_Controls_Editmode;
     private readonly InputAction m_Controls_Dash;
+    private readonly InputAction m_Controls_Jump;
     public struct ControlsActions
     {
         private @PlayerControls m_Wrapper;
@@ -614,6 +636,7 @@ public partial class @PlayerControls : IInputActionCollection2, IDisposable
         public InputAction @Point => m_Wrapper.m_Controls_Point;
         public InputAction @Editmode => m_Wrapper.m_Controls_Editmode;
         public InputAction @Dash => m_Wrapper.m_Controls_Dash;
+        public InputAction @Jump => m_Wrapper.m_Controls_Jump;
         public InputActionMap Get() { return m_Wrapper.m_Controls; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -647,6 +670,9 @@ public partial class @PlayerControls : IInputActionCollection2, IDisposable
                 @Dash.started -= m_Wrapper.m_ControlsActionsCallbackInterface.OnDash;
                 @Dash.performed -= m_Wrapper.m_ControlsActionsCallbackInterface.OnDash;
                 @Dash.canceled -= m_Wrapper.m_ControlsActionsCallbackInterface.OnDash;
+                @Jump.started -= m_Wrapper.m_ControlsActionsCallbackInterface.OnJump;
+                @Jump.performed -= m_Wrapper.m_ControlsActionsCallbackInterface.OnJump;
+                @Jump.canceled -= m_Wrapper.m_ControlsActionsCallbackInterface.OnJump;
             }
             m_Wrapper.m_ControlsActionsCallbackInterface = instance;
             if (instance != null)
@@ -675,6 +701,9 @@ public partial class @PlayerControls : IInputActionCollection2, IDisposable
                 @Dash.started += instance.OnDash;
                 @Dash.performed += instance.OnDash;
                 @Dash.canceled += instance.OnDash;
+                @Jump.started += instance.OnJump;
+                @Jump.performed += instance.OnJump;
+                @Jump.canceled += instance.OnJump;
             }
         }
     }
@@ -821,6 +850,7 @@ public partial class @PlayerControls : IInputActionCollection2, IDisposable
         void OnPoint(InputAction.CallbackContext context);
         void OnEditmode(InputAction.CallbackContext context);
         void OnDash(InputAction.CallbackContext context);
+        void OnJump(InputAction.CallbackContext context);
     }
     public interface IEditModeActions
     {

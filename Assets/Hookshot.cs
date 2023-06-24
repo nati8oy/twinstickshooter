@@ -121,7 +121,6 @@ public class Hookshot : MonoBehaviour
 
         activeGrapple = false;
         gameObject.GetComponent<TwinStickMovement>().enabled = true;
-        gameObject.GetComponent<TwinStickMovement>().HandleMovement();
 
 
     }
