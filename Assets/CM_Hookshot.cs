@@ -4,10 +4,13 @@ using System.Security.Cryptography.X509Certificates;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.Events;
+using static UnityEditor.Progress;
 
 public class CM_Hookshot : MonoBehaviour
 {
     private PlayerInput playerInput;
+
+    [Header("Inputs")]
     [SerializeField] private InputAction hookshot;
     [SerializeField] private InputAction hookshotPull;
     [SerializeField] private InputAction jump;
@@ -26,10 +29,9 @@ public class CM_Hookshot : MonoBehaviour
     [SerializeField] float hookshotSpeedMultiplier = 2f;
     private CharacterController controller;
 
-
     private bool hitSomething =false;
 
-   private float t = 0f;
+    private float t = 0f;
     private RaycastHit raycastHit;
 
     private Vector2 movement;
@@ -37,14 +39,25 @@ public class CM_Hookshot : MonoBehaviour
     [SerializeField] private PlayerControls playerControls;
 
 
+
     [SerializeField] private CharacterController characterController;
 
     [SerializeField] private float hookshotMaxRange = 10f;
     private TwinStickMovement twinStick;
 
+    //used to check which arm is being used to grapple
+    //0 means first arm
+
+    [Header("Arm Controls")]
+    private int currentArm = 0;
+    [SerializeField] private bool multiArmSwing;
+    [SerializeField] private Transform[] arms;
+
 
     [Header("Feedbacks")]
     [SerializeField] private UnityEvent onGrapple;
+    [SerializeField] private UnityEvent onGrappleDrag;
+    [SerializeField] private UnityEvent stopFeedbacks;
 
     private GameObject hitTarget;
 
@@ -53,6 +66,10 @@ public class CM_Hookshot : MonoBehaviour
     {
         Normal, HookshotLaunched, HookshotFlyingPlayer, HookshotPull, HookshotAttached, HookshotCarry,
     }
+
+
+
+
     private void Awake()
     {
         state = State.Normal;
@@ -83,7 +100,10 @@ public class CM_Hookshot : MonoBehaviour
         jump.Enable();
 
 
-        
+        shotPoint = arms[0];
+
+
+
     }
 
     // Update is called once per frame
@@ -102,19 +122,22 @@ public class CM_Hookshot : MonoBehaviour
             case State.HookshotLaunched:
                 LaunchHookshot();
                 break;
-
             case State.HookshotFlyingPlayer:
                 HandleHookshotMovement();
+                hook.gameObject.SetActive(true);
+
                 break;
             case State.HookshotPull:
                 HandleHookshotPull();
+                hook.gameObject.SetActive(true);
                 break;
             case State.HookshotAttached:
                 HandleHookshotPull();
                 break;
             case State.HookshotCarry:
                 HandleHookshotCarry();
-                    break;
+                hook.gameObject.SetActive(false);
+                break;
         }
 
         Debug.Log(state);
@@ -129,6 +152,12 @@ private void LateUpdate(){
 
     private void HandleHookshotStart()
     {
+
+        if (multiArmSwing)
+        {
+            currentArm = (currentArm + 1) % arms.Length;
+            shotPoint = arms[currentArm];
+        }
 
         //adds the particles when moving
         //onGrapple.Invoke();
@@ -151,6 +180,7 @@ private void LateUpdate(){
                     hook.position = raycastHit.point;
                     hookshotPosition = raycastHit.point;
                     state = State.HookshotFlyingPlayer;
+                    onGrapple.Invoke();
 
                 }
 
@@ -161,7 +191,6 @@ private void LateUpdate(){
                     hook.position = raycastHit.point;
                     hookshotPosition = raycastHit.point;
                     state = State.HookshotPull;
-
                 }
 
                 //this is the layer for collectibles that you can pull towards yourself
@@ -195,7 +224,15 @@ private void LateUpdate(){
     private void HandleHookshotMovement()
     {
 
-        
+
+
+        if (multiArmSwing)
+        {
+
+        }
+
+        onGrappleDrag.Invoke();
+
 
         float hookshotSpeedMin = 10f;
         float hookshotSpeedMax = 40f;
@@ -251,6 +288,8 @@ private void LateUpdate(){
 
     private void HandleHookshotPull()
     {
+        //hook.gameObject.SetActive(true);
+
         float hookshotSpeedMin = 10f;
         float hookshotSpeedMax = 40f;
 
@@ -258,10 +297,10 @@ private void LateUpdate(){
 
         //pull the hittarget towards the player
         hitTarget.transform.position = Vector3.MoveTowards(hitTarget.transform.position, transform.position, 40f * Time.deltaTime);
-        hook.gameObject.transform.position = Vector3.MoveTowards(hitTarget.transform.position, transform.position, 40f * Time.deltaTime);
+        hook.gameObject.transform.position = hitTarget.transform.position;
 
         //match the hook to the same position of the hit target as it's getting pulled back
-        hook.gameObject.transform.position = hitTarget.transform.position;
+        //hook.gameObject.transform.position = hitTarget.transform.position;
 
 
         lr.enabled = true;
@@ -294,6 +333,7 @@ private void LateUpdate(){
 
     private void HandleHookshotCarry()
     {
+
         var hitTargetRB = hitTarget.GetComponent<Rigidbody>();
 
         //carry the hittarget game object with the player at the shot point
@@ -316,7 +356,7 @@ private void LateUpdate(){
             hitTargetRB.useGravity = true;
             hitTargetRB.freezeRotation = false;
             hitTargetRB.AddForce(transform.forward * 2000f);
-            Debug.Log("Object Thrwon");   
+            Debug.Log("Object Thrown");   
         }
     }
 
@@ -346,17 +386,13 @@ private void LateUpdate(){
             state = State.Normal;
         }
 
-       
+  
 
         //lr.enabled = true;
         //lr.SetPosition(1, hookshotPosition);
 
         //move the hook position from the shot point to a distacne of 10f in front of the player
         //hook.position = shotPoint.position + transform.forward * 10f;
-
-        
-
-        
 
 /*
         if (Vector3.Distance(hook.position, Vector3.zero) < 3f)
@@ -368,11 +404,12 @@ private void LateUpdate(){
 
     private void CancelHookshot()
     {
+        stopFeedbacks.Invoke();
         characterController.enabled = false;
         Invoke("ResetController", 0.5f);
         //get the current velocity of the player
         Vector3 currentVelocity = characterController.velocity;
-        
+
         //Debug.Log("current velocity " + currentVelocity + " CVM " + characterVelocityMomentum);
 
         //add the momentum to the current velocity
@@ -381,7 +418,8 @@ private void LateUpdate(){
         currentVelocity += momentumVelocityAddition;
         */
         //momentumVelocityAddition.y = 0;
-            
+
+
         state = State.Normal;
         lr.enabled = false;
        
