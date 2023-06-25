@@ -5,6 +5,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.Events;
 using static UnityEditor.Progress;
+using UnityEngine.AI;
 
 public class CM_Hookshot : MonoBehaviour
 {
@@ -50,8 +51,10 @@ public class CM_Hookshot : MonoBehaviour
 
     [Header("Arm Controls")]
     private int currentArm = 0;
+    private int currentHook = 0;
     [SerializeField] private bool multiArmSwing;
     [SerializeField] private Transform[] arms;
+    [SerializeField] private Transform[] hooks;
 
 
     [Header("Feedbacks")]
@@ -99,8 +102,9 @@ public class CM_Hookshot : MonoBehaviour
         jump.performed += _ => Jump();
         jump.Enable();
 
-
+        //set the hookshots to the first one in the array for arms and hooks
         shotPoint = arms[0];
+        hook = hooks[0];
 
 
 
@@ -117,7 +121,6 @@ public class CM_Hookshot : MonoBehaviour
             default:
             case State.Normal:
             lr.enabled = false;
-
                 break;
             case State.HookshotLaunched:
                 LaunchHookshot();
@@ -125,7 +128,6 @@ public class CM_Hookshot : MonoBehaviour
             case State.HookshotFlyingPlayer:
                 HandleHookshotMovement();
                 hook.gameObject.SetActive(true);
-
                 break;
             case State.HookshotPull:
                 HandleHookshotPull();
@@ -140,7 +142,6 @@ public class CM_Hookshot : MonoBehaviour
                 break;
         }
 
-        Debug.Log(state);
 
     }
 
@@ -157,6 +158,13 @@ private void LateUpdate(){
         {
             currentArm = (currentArm + 1) % arms.Length;
             shotPoint = arms[currentArm];
+
+            currentHook = (currentHook + 1) % arms.Length;
+            hookshotPosition = hooks[currentHook].position;
+
+
+
+
         }
 
         //adds the particles when moving
@@ -168,9 +176,7 @@ private void LateUpdate(){
 
             if (Physics.Raycast(shotPoint.position, shotPoint.forward, out raycastHit, hookshotMaxRange))
             {
-                //hit something
-                //hookshotPosition = raycastHit.point;
-
+               
                 //check the layer of the object that was hit
                 //if the layer is grappleable, then set the hookshot position to the hit point
                 //if not, then set the hookshot position to the maximum distance of the hookshot
@@ -231,7 +237,7 @@ private void LateUpdate(){
 
         }
 
-        onGrappleDrag.Invoke();
+        //onGrappleDrag.Invoke();
 
 
         float hookshotSpeedMin = 10f;
@@ -256,6 +262,11 @@ private void LateUpdate(){
             lr.enabled = false;
             //characterController.enabled = false;
         }
+
+
+
+
+
 
         //if the player has jumped while hookshotting, cancel the hookshot
         if (jump.ReadValue<float>() > 0)
@@ -288,6 +299,13 @@ private void LateUpdate(){
 
     private void HandleHookshotPull()
     {
+
+        if (hitTarget.GetComponent<NavMeshAgent>())
+        {
+            hitTarget.GetComponent<NavMeshAgent>().enabled = false;
+
+        }
+
         //hook.gameObject.SetActive(true);
 
         float hookshotSpeedMin = 10f;
@@ -356,7 +374,13 @@ private void LateUpdate(){
             hitTargetRB.useGravity = true;
             hitTargetRB.freezeRotation = false;
             hitTargetRB.AddForce(transform.forward * 2000f);
-            Debug.Log("Object Thrown");   
+
+            if (hitTarget.GetComponent<NavMeshAgent>())
+            {
+                hitTarget.GetComponent<NavMeshAgent>().enabled = false;
+                Invoke("ResetEnemyMovement", 0.5f);
+               
+            }
         }
     }
 
@@ -433,6 +457,12 @@ private void LateUpdate(){
     private void ResetController()
     {
         characterController.enabled = true;
+
+    }
+
+    private void ResetEnemyMovement()
+    {
+        hitTarget.GetComponent<NavMeshAgent>().enabled = true;
 
     }
 
