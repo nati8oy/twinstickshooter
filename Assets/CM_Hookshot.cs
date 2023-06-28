@@ -104,7 +104,7 @@ public class CM_Hookshot : MonoBehaviour
 
         //set the hookshots to the first one in the array for arms and hooks
         shotPoint = arms[0];
-        hook = hooks[0];
+        //hook = hooks[0];
 
 
 
@@ -299,11 +299,10 @@ private void LateUpdate(){
 
     private void HandleHookshotPull()
     {
-
+        //deactivate the navmesh agent
         if (hitTarget.GetComponent<NavMeshAgent>())
         {
             hitTarget.GetComponent<NavMeshAgent>().enabled = false;
-
         }
 
         //hook.gameObject.SetActive(true);
@@ -375,10 +374,11 @@ private void LateUpdate(){
             hitTargetRB.freezeRotation = false;
             hitTargetRB.AddForce(transform.forward * 2000f);
 
+            //check if the object has a navmesh agent and if so reset it so it works again after being thrown
             if (hitTarget.GetComponent<NavMeshAgent>())
             {
                 hitTarget.GetComponent<NavMeshAgent>().enabled = false;
-                Invoke("ResetEnemyMovement", 0.5f);
+                Invoke("ResetEnemyMovement", 1f);
                
             }
         }
