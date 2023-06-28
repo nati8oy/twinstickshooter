@@ -1,81 +1,34 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
+using UnityEngine.Events;
 
 public class SimpleEnemyMovement : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
+
+    private NavMeshAgent navMeshAgent;
+    private Transform player;
+
+    private void Start()
     {
-        
+        navMeshAgent = GetComponent<NavMeshAgent>();
+        player = GameObject.FindGameObjectWithTag("Player").transform;
+
+        // Set the destination to player's initial position
+        navMeshAgent.SetDestination(player.position);
     }
 
-    // Update is called once per frame
-    void Update()
+    private void Update()
     {
-        // make this enemy move in a direction until it collides with a wall
-        // then change direction to the opposite direction
-
-        // if the enemy is moving right
-        if (transform.position.x < 10)
+        if (navMeshAgent.enabled == true)
         {
-            // move right
-            transform.position += new Vector3(1, 0, 0) * Time.deltaTime;
+            // Update the destination to player's current position
+            navMeshAgent.SetDestination(player.position);
         }
-        else
-        {
-            // move left
-            transform.position += new Vector3(-1, 0, 0) * Time.deltaTime;
-        }
-
-        // if the enemy is moving up
-        if (transform.position.z < 10)
-        {
-            // move up
-            transform.position += new Vector3(0, 0, 1) * Time.deltaTime;
-        }
-        else
-        {
-            // move down
-            transform.position += new Vector3(0, 0, -1) * Time.deltaTime;
-        }
-
-        //make the enemy randomly change direction every 4 seconds
-        if (Time.time % 4 == 0)
-        {
-          // change direction
-
-           // if the enemy is moving right
-          if (transform.position.x < 10)
-          {
-              // move right
-               transform.position += new Vector3(1, 0, 0) * Time.deltaTime;
-          }
-
-           // if the enemy is moving left
-            if (transform.position.x > -10)
-          {
-                // move left
-            transform.position += new Vector3(-1, 0, 0) * Time.deltaTime;
-        }
-
-        // if the enemy is moving up
-        
-            if (transform.position.z < 10)
-        {
-                // move up
-            transform.position += new Vector3(0, 0, 1) * Time.deltaTime;
-        }
-
-        // if the enemy is moving down
-
-            if (transform.position.z > -10)
-        {
-                // move down
-            transform.position += new Vector3(0, 0, -1) * Time.deltaTime;
-        }
-        }
-
-        
+       
     }
+
+
 }
+
