@@ -15,6 +15,7 @@ public class CM_Hookshot : MonoBehaviour
     [SerializeField] private InputAction hookshot;
     [SerializeField] private InputAction hookshotPull;
     [SerializeField] private InputAction jump;
+    [SerializeField] private InputAction pull;
 
     [SerializeField] private LayerMask layerMask;
 
@@ -39,12 +40,12 @@ public class CM_Hookshot : MonoBehaviour
     private Vector3 playerVelocity;
     [SerializeField] private PlayerControls playerControls;
 
-
+    [SerializeField] private SpringJoint joint;
 
     [SerializeField] private CharacterController characterController;
 
     [SerializeField] private float hookshotMaxRange = 10f;
-    private TwinStickMovement twinStick;
+    ///private TwinStickMovement twinStick;
 
     //used to check which arm is being used to grapple
     //0 means first arm
@@ -84,7 +85,7 @@ public class CM_Hookshot : MonoBehaviour
     {
 
         characterController = gameObject.GetComponent<CharacterController>();
-        twinStick = gameObject.GetComponent<TwinStickMovement>();
+        ///twinStick = gameObject.GetComponent<TwinStickMovement>();
 
 
         hookshot = new InputAction(binding: "<Mouse>/leftButton");
@@ -95,6 +96,7 @@ public class CM_Hookshot : MonoBehaviour
         
         hookshotPull = new InputAction(binding: "<Mouse>/rightButton");
         hookshotPull.performed += _ => ThrowCarriedObject();
+        //hookshotPull.performed += _ => HandleHookshotPull();
         hookshotPull.Enable();
 
         
@@ -102,8 +104,12 @@ public class CM_Hookshot : MonoBehaviour
         jump.performed += _ => Jump();
         jump.Enable();
 
+        pull = new InputAction(binding: "<Keyboard>/leftShift");
+        pull.performed += _ => ActivateHookshotPull();
+        pull.Enable();
+
         //set the hookshots to the first one in the array for arms and hooks
-        shotPoint = arms[0];
+        //shotPoint = arms[0];
         //hook = hooks[0];
 
 
@@ -113,8 +119,7 @@ public class CM_Hookshot : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        //get player velocity from the twinstick object
-        playerVelocity = twinStick.playerVelocity;
+        
 
         switch (state)
         {
@@ -134,7 +139,7 @@ public class CM_Hookshot : MonoBehaviour
                 hook.gameObject.SetActive(true);
                 break;
             case State.HookshotAttached:
-                HandleHookshotPull();
+                HandleHookshotAttached();
                 break;
             case State.HookshotCarry:
                 HandleHookshotCarry();
@@ -196,7 +201,7 @@ private void LateUpdate(){
                     //Debug.Log("hit pullable object");
                     hook.position = raycastHit.point;
                     hookshotPosition = raycastHit.point;
-                    state = State.HookshotPull;
+                    state = State.HookshotAttached;
                 }
 
                 //this is the layer for collectibles that you can pull towards yourself
@@ -297,8 +302,40 @@ private void LateUpdate(){
 
     }
 
+
+    private void HandleHookshotAttached()
+    {
+        lr.enabled = true;
+        lr.SetPosition(1, hookshotPosition);
+        hook.gameObject.transform.position = hookshotPosition;
+        hookshotPosition = hitTarget.transform.position;
+
+        //deactivate the navmesh agent of the object you've hit
+        hitTarget.GetComponent<NavMeshAgent>().enabled = false;
+
+        joint.connectedBody = hitTarget.GetComponent<Rigidbody>();
+      
+
+        //if the player has jumped while attached, cancel the hookshot
+        if (jump.ReadValue<float>() > 0)
+        {
+
+            //also maintain momentum
+
+            float momentumExtraSpeed = 3f;
+
+            //characterVelocityMomentum = hookshotDir * hookshotSpeed;
+
+            CancelHookshot();
+
+        }
+
+    }
+
     private void HandleHookshotPull()
     {
+
+        
         //deactivate the navmesh agent
         if (hitTarget.GetComponent<NavMeshAgent>())
         {
@@ -350,6 +387,8 @@ private void LateUpdate(){
 
     private void HandleHookshotCarry()
     {
+
+        DetachSpringJoint();
 
         var hitTargetRB = hitTarget.GetComponent<Rigidbody>();
 
@@ -429,8 +468,15 @@ private void LateUpdate(){
     private void CancelHookshot()
     {
         stopFeedbacks.Invoke();
-        characterController.enabled = false;
-        Invoke("ResetController", 0.5f);
+
+        //reset the enemy movement
+        ResetEnemyMovement();
+        DetachSpringJoint();
+
+
+        //characterController.enabled = false;
+        //Invoke("ResetController", 0.5f);
+
         //get the current velocity of the player
         Vector3 currentVelocity = characterController.velocity;
 
@@ -452,6 +498,25 @@ private void LateUpdate(){
     private bool Jump()
     {
         return true;
+    }
+
+    private void ActivateHookshotPull()
+    {
+        if(state == State.HookshotAttached)
+        {
+            state = State.HookshotPull;
+
+        }
+    }
+
+    private void DetachSpringJoint()
+    {
+        //if the spring joint is connect to something, disconnect it.
+        if (joint.connectedBody != null)
+        {
+            joint.connectedBody = null;
+            Debug.Log("Detached Spring joint");
+        }
     }
 
     private void ResetController()
