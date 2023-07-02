@@ -457,6 +457,18 @@ PrefabInstance:
       value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 6819315253618853363, guid: ee09c2e21d9f0db4685ea5dc5038469b, type: 3}
+      propertyPath: managedReferences[4810111054341996544].FlickerColor.b
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6819315253618853363, guid: ee09c2e21d9f0db4685ea5dc5038469b, type: 3}
+      propertyPath: managedReferences[4810111054341996544].FlickerColor.g
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6819315253618853363, guid: ee09c2e21d9f0db4685ea5dc5038469b, type: 3}
+      propertyPath: managedReferences[4810111054341996544].FlickerColor.r
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6819315253618853363, guid: ee09c2e21d9f0db4685ea5dc5038469b, type: 3}
       propertyPath: managedReferences[4810111054341996546].DisplayColor.a
       value: 1
       objectReference: {fileID: 0}
