@@ -93,7 +93,7 @@ public class TwinStickMovement : MonoBehaviour
 
     public void HandleInput()
     {
-        movement = playerControls.Controls.Movement.ReadValue<Vector2>();
+        //movement = playerControls.Controls.Movement.ReadValue<Vector2>();
         aim = playerControls.Controls.Aim.ReadValue<Vector2>();
 
     }

@@ -9,63 +9,80 @@ public class FrictionController : MonoBehaviour
     private PlayerControls playerControls;
     private PlayerInput playerInput;
 
-    [SerializeField] Vector2 moveInput;
-    [SerializeField] float moveSpeed;
-    [SerializeField] Rigidbody rb;
-    [SerializeField] float acceleration;
-    [SerializeField] float decceleration;
-    [SerializeField] float velPower;
+    private CharacterController characterController;
+    private Vector3 velocity;
 
-   [SerializeField] private float movement;
+    public float acceleration = 200f;
+    public float decceleration = 20f;
+    public float damping = 50;
+    public float targetSpeed = 150f;
+    [SerializeField] private float speedDif;
+    [SerializeField] private float accelRate;
+    [SerializeField] private Vector3 currentVelocity;
+    [SerializeField] private float velPower;
 
-   // [SerializeField] CharacterController characterController;
+    private bool isButtonHeld;
+    private float movement;
 
-
-    [SerializeField] float targetSpeed;
+    private PlayerControls controls;
 
     private void Awake()
     {
-        playerControls = new PlayerControls();
-        playerInput = GetComponent<PlayerInput>();
-        playerControls.Enable();
+        characterController = GetComponent<CharacterController>();
+        controls = new PlayerControls();
 
+        controls.Controls.Movement.performed += OnMovePerformed;
     }
 
-    private void FixedUpdate()
+    private void OnEnable()
     {
-        HandleInput();
-        HandleMovement();
-
+        controls.Enable();
     }
 
-    private void HandleInput()
+    private void OnDisable()
+    {
+        controls.Disable();
+    }
+
+    private void OnMovePerformed(InputAction.CallbackContext context)
+    {
+        isButtonHeld = true;
+    }
+
+    private void OnMoveCanceled(InputAction.CallbackContext context)
+    {
+        isButtonHeld = false;
+    }
+
+    private void Update()
     {
 
-        moveInput = playerControls.Controls.Movement.ReadValue<Vector2>();
-        Vector3 newMoveInput = new Vector3(moveInput.x, 0f, moveInput.y);
+        currentVelocity = velocity;
 
-        targetSpeed = newMoveInput.z * moveSpeed;
-        float speedDif = targetSpeed - rb.velocity.z;
-        float accelRate = (Mathf.Abs(targetSpeed) > 0.01f) ? acceleration : decceleration;
+        accelRate = (Mathf.Abs(targetSpeed)>0.01f) ? acceleration : decceleration;
 
-        movement = Mathf.Pow(Mathf.Abs(speedDif) * accelRate, velPower) * Mathf.Sign(speedDif);
-        rb.AddForce(movement * Vector3.forward);
+        speedDif = targetSpeed - characterController.velocity.x;
 
-        targetSpeed = newMoveInput.x * moveSpeed;
-        speedDif = targetSpeed - rb.velocity.x;
+       if (isButtonHeld)
+        {
 
-        movement = Mathf.Pow(Mathf.Abs(speedDif) * accelRate, velPower) * Mathf.Sign(speedDif);
-        rb.AddForce(movement * Vector3.right);
+            movement = Mathf.Pow(Mathf.Abs(speedDif)* accelRate, velPower)* Mathf.Sign(speedDif);
+            Vector2 movementInput = movement* controls.Controls.Movement.ReadValue<Vector2>();
+            Vector3 inputDirection = new Vector3(movementInput.x, 0f, movementInput.y).normalized;
+
+            velocity += inputDirection * accelRate * Time.deltaTime;
+            velocity = Vector3.ClampMagnitude(velocity, targetSpeed);
 
 
 
+        }
+        else
+        {
+            velocity -= velocity * damping * Time.deltaTime;
+        }
+
+        characterController.Move(velocity * Time.deltaTime);
     }
+ }
 
-    private void HandleMovement()
-    {
-        //Vector3 move = new Vector3(movement.x, 0, movement.y);
-        //characterController.Move(move * Time.deltaTime * moveSpeed);
 
-        
-    }
-}
