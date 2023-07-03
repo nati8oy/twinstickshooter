@@ -140,6 +140,7 @@ public class CM_Hookshot : MonoBehaviour
                 break;
             case State.HookshotAttached:
                 HandleHookshotAttached();
+                hook.gameObject.SetActive(false);
                 break;
             case State.HookshotCarry:
                 HandleHookshotCarry();
@@ -236,7 +237,6 @@ private void LateUpdate(){
     {
 
 
-
         if (multiArmSwing)
         {
 
@@ -285,6 +285,8 @@ private void LateUpdate(){
 
             CancelHookshot();
 
+            Debug.Log("cancelled while flying");
+
         }
 
         //dampen speed of momentum
@@ -310,8 +312,20 @@ private void LateUpdate(){
         hook.gameObject.transform.position = hookshotPosition;
         hookshotPosition = hitTarget.transform.position;
 
+
+        if (hitTarget == null)
+        {
+            CancelHookshot();
+        }
+
+
         //deactivate the navmesh agent of the object you've hit
-        hitTarget.GetComponent<NavMeshAgent>().enabled = false;
+        if (hitTarget.GetComponent<NavMeshAgent>())
+        {
+            hitTarget.GetComponent<NavMeshAgent>().enabled = false;
+
+        }
+
 
         joint.connectedBody = hitTarget.GetComponent<Rigidbody>();
       
@@ -362,7 +376,7 @@ private void LateUpdate(){
 
         //check the distance between the hookshot position and the player
         //and if it's less than 3, then cancel the hookshot
-        if (Vector3.Distance(transform.position, hitTarget.transform.position) < 3f)
+        if (Vector3.Distance(transform.position, hitTarget.transform.position) < 1f)
         {
             if (raycastHit.collider.gameObject.layer == 11)
             {
@@ -473,6 +487,11 @@ private void LateUpdate(){
         ResetEnemyMovement();
         DetachSpringJoint();
 
+        if (hitTarget.GetComponent<NavMeshAgent>())
+        {
+            hitTarget.GetComponent<NavMeshAgent>().enabled = true;
+
+        }
 
         //characterController.enabled = false;
         //Invoke("ResetController", 0.5f);
@@ -527,7 +546,11 @@ private void LateUpdate(){
 
     private void ResetEnemyMovement()
     {
-        hitTarget.GetComponent<NavMeshAgent>().enabled = true;
+        if (hitTarget.GetComponent<NavMeshAgent>())
+        {
+            hitTarget.GetComponent<NavMeshAgent>().enabled = true;
+
+        }
 
     }
 

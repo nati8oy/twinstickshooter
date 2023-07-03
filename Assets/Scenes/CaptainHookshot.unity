@@ -920,7 +920,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 11136eba46a2b4dbfa1242375b24e755, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerSpeed: 5
+  playerSpeed: 12
   gravityValue: -9.81
   controllerDeadZone: 0.1
   gamepadRotateSmoothing: 1000
@@ -1267,19 +1267,19 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 575609969}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0ba7a77c359411a48bd4383ba27d94ac, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveInput: {x: 0, y: 0}
-  moveSpeed: 20
-  rb: {fileID: 575609978}
-  acceleration: 7
-  decceleration: 7
-  velPower: 0.9
-  movement: 0
-  targetSpeed: 0
+  acceleration: 50
+  decceleration: 100
+  damping: 100
+  targetSpeed: 15
+  speedDif: 0
+  accelRate: 0
+  currentVelocity: {x: 0, y: 0, z: 0}
+  velPower: 10
 --- !u!114 &575609982
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1351,7 +1351,7 @@ SpringJoint:
   m_AutoConfigureConnectedAnchor: 1
   m_ConnectedAnchor: {x: 0, y: 0, z: 0}
   serializedVersion: 2
-  m_Spring: 10
+  m_Spring: 3
   m_Damper: 0.2
   m_MinDistance: 0
   m_MaxDistance: 3
