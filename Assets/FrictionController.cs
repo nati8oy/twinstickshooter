@@ -32,6 +32,7 @@ public class FrictionController : MonoBehaviour
         controls = new PlayerControls();
 
         controls.Controls.Movement.performed += OnMovePerformed;
+        controls.Controls.Movement.performed += OnMoveCanceled;
     }
 
     private void OnEnable()
@@ -58,28 +59,35 @@ public class FrictionController : MonoBehaviour
     {
 
         currentVelocity = velocity;
-
         accelRate = (Mathf.Abs(targetSpeed)>0.01f) ? acceleration : decceleration;
-
         speedDif = targetSpeed - characterController.velocity.x;
 
-       if (isButtonHeld)
-        {
+       
+        //if a button is being held down call the onmoveperformed function
 
-            movement = Mathf.Pow(Mathf.Abs(speedDif)* accelRate, velPower)* Mathf.Sign(speedDif);
-            Vector2 movementInput = movement* controls.Controls.Movement.ReadValue<Vector2>();
+        if(controls.Controls.Movement.ReadValue<Vector2>() != Vector2.zero)
+        {
+            movement = Mathf.Pow(Mathf.Abs(speedDif) * accelRate, velPower) * Mathf.Sign(speedDif);
+            Vector2 movementInput = movement * controls.Controls.Movement.ReadValue<Vector2>();
             Vector3 inputDirection = new Vector3(movementInput.x, 0f, movementInput.y).normalized;
 
             velocity += inputDirection * accelRate * Time.deltaTime;
             velocity = Vector3.ClampMagnitude(velocity, targetSpeed);
-
-
-
         }
-        else
+
+
+
+
+        //if a button is not being held down call the onmovecanceled function
+        if (controls.Controls.Movement.ReadValue<Vector2>() == Vector2.zero);
         {
             velocity -= velocity * damping * Time.deltaTime;
+            Debug.Log("current velocity: " + velocity);
+            //reduce velocity by damping over time
+            // velocity = Vector3.Lerp(velocity, Vector3.zero, damping * Time.deltaTime);
         }
+
+    
 
         characterController.Move(velocity * Time.deltaTime);
     }

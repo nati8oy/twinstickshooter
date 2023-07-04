@@ -235,37 +235,29 @@ private void LateUpdate(){
 
     private void HandleHookshotMovement()
     {
-
-
-        if (multiArmSwing)
-        {
-
-        }
-
-        //onGrappleDrag.Invoke();
-
+      
 
         float hookshotSpeedMin = 10f;
         float hookshotSpeedMax = 40f;
         Vector3 hookshotDir = (hookshotPosition - transform.position).normalized;
 
-        //Vector3 move = new Vector3(hookshotDir.x, 0, hookshotDir.y);
+        // Calculate the additional movement based on the current velocity of the Character Controller
+        Vector3 additionalMovement = characterController.velocity * Time.deltaTime;
 
         float hookshotSpeed = Mathf.Clamp(Vector3.Distance(transform.position, hookshotPosition), hookshotSpeedMin, hookshotSpeedMax);
         float hookshotSpeedMultiplier = 2f;
 
-        //distance to get within before changing state
-        float destinationThreshold = 2f;
+        // Calculate the final movement vector by combining the hookshot direction, additional movement, and hookshot speed
+        Vector3 move = hookshotDir * hookshotSpeed * hookshotSpeedMultiplier * Time.deltaTime + additionalMovement;
 
+        characterController.Move(move);
 
-        characterController.Move(hookshotDir * hookshotSpeed * hookshotSpeedMultiplier * Time.deltaTime);
-
-        if(Vector3.Distance(transform.position, hookshotPosition)< destinationThreshold)
+        if (Vector3.Distance(transform.position, hookshotPosition) < 1f)
         {
-            //reached hookshot position
+            // Reached hookshot position
             state = State.Normal;
             lr.enabled = false;
-            //characterController.enabled = false;
+            // characterController.enabled = false;
         }
 
 
@@ -280,6 +272,7 @@ private void LateUpdate(){
             //also maintain momentum
 
             float momentumExtraSpeed = 3f;
+
 
             //characterVelocityMomentum = hookshotDir * hookshotSpeed;
 
