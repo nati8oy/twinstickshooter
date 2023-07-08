@@ -45,7 +45,7 @@ public class CM_Hookshot : MonoBehaviour
     [SerializeField] private CharacterController characterController;
 
     [SerializeField] private float hookshotMaxRange = 10f;
-    ///private TwinStickMovement twinStick;
+
 
     //used to check which arm is being used to grapple
     //0 means first arm
@@ -53,17 +53,22 @@ public class CM_Hookshot : MonoBehaviour
     [Header("Arm Controls")]
     private int currentArm = 0;
     private int currentHook = 0;
+    /*
     [SerializeField] private bool multiArmSwing;
     [SerializeField] private Transform[] arms;
     [SerializeField] private Transform[] hooks;
-
+    */
 
     [Header("Feedbacks")]
     [SerializeField] private UnityEvent onGrapple;
+    [SerializeField] private UnityEvent OnHookshotHit;
     [SerializeField] private UnityEvent onGrappleDrag;
     [SerializeField] private UnityEvent stopFeedbacks;
 
+    [Header("Targeting")]
     private GameObject hitTarget;
+    [SerializeField] private bool autoTarget;
+    [SerializeField] GameObject[] targets;
 
     private State state;
     private enum State
@@ -149,6 +154,21 @@ public class CM_Hookshot : MonoBehaviour
         }
 
 
+        //target the closest object on layer 11
+        //get all of the nearby enemies and put them in an array
+        targets = GameObject.FindGameObjectsWithTag("enemy");
+
+        //loop through that array and for each one see if the distance from the first one in the array [0] to the gun is closer than the attack range.
+        foreach (GameObject targetEnemy in targets)
+        {
+           
+                //this attack is based on a timer that can be set in the inspector
+                Debug.DrawLine(gameObject.transform.position, targets[0].transform.position, color: Color.red);
+                Transform target = targets[0].transform;
+
+
+        }
+
     }
 
 private void LateUpdate(){
@@ -159,7 +179,7 @@ private void LateUpdate(){
 
     private void HandleHookshotStart()
     {
-
+        /*
         if (multiArmSwing)
         {
             currentArm = (currentArm + 1) % arms.Length;
@@ -167,11 +187,9 @@ private void LateUpdate(){
 
             currentHook = (currentHook + 1) % arms.Length;
             hookshotPosition = hooks[currentHook].position;
-
-
-
-
         }
+        */
+
 
         //adds the particles when moving
         //onGrapple.Invoke();
@@ -180,48 +198,78 @@ private void LateUpdate(){
         if (state == State.Normal || state == State.HookshotFlyingPlayer)
         {
 
-            if (Physics.Raycast(shotPoint.position, shotPoint.forward, out raycastHit, hookshotMaxRange))
+            if (autoTarget)
             {
-               
-                //check the layer of the object that was hit
-                //if the layer is grappleable, then set the hookshot position to the hit point
-                //if not, then set the hookshot position to the maximum distance of the hookshot
-                if (raycastHit.collider.gameObject.layer == 10)
+    
+                //loop through that array and for each one see if the distance from the first one in the array [0] to the gun is closer than the attack range.
+                foreach (GameObject targetEnemy in targets)
                 {
-                    // Debug.Log("hit grappleable object");
-                    hook.position = raycastHit.point;
-                    hookshotPosition = raycastHit.point;
-                    state = State.HookshotFlyingPlayer;
-                    onGrapple.Invoke();
+                    if (Vector3.Distance(transform.position, targets[0].transform.position) < 10)
+                    {
+                        hook.position = targets[0].transform.position;
+                        hookshotPosition = targets[0].transform.position;
+                        state = State.HookshotAttached;
+                        lr.enabled = true;
+                        lr.SetPosition(1, hookshotPosition);
+                    }
 
                 }
+            }
 
-                //this is the pullable object layer
-                if (raycastHit.collider.gameObject.layer == 11)
+            else
+            {
+
+                if (Physics.Raycast(shotPoint.position, shotPoint.forward, out raycastHit, hookshotMaxRange))
                 {
-                    //Debug.Log("hit pullable object");
-                    hook.position = raycastHit.point;
-                    hookshotPosition = raycastHit.point;
-                    state = State.HookshotAttached;
+
+                    //check the layer of the object that was hit
+                    //if the layer is grappleable, then set the hookshot position to the hit point
+                    //if not, then set the hookshot position to the maximum distance of the hookshot
+                    if (raycastHit.collider.gameObject.layer == 10)
+                    {
+                        // Debug.Log("hit grappleable object");
+                        hook.position = raycastHit.point;
+                        hookshotPosition = raycastHit.point;
+                        state = State.HookshotFlyingPlayer;
+                        //onGrapple.Invoke();
+                        OnHookshotHit.Invoke();
+
+                    }
+
+
+                    //this is the pullable object layer
+                    if (raycastHit.collider.gameObject.layer == 11)
+                    {
+                        //Debug.Log("hit pullable object");
+                        hook.position = raycastHit.point;
+                        hookshotPosition = raycastHit.point;
+                        state = State.HookshotAttached;
+                    }
+
+                    //this is the layer for collectibles that you can pull towards yourself
+                    if (raycastHit.collider.gameObject.layer == 12)
+                    {
+                        // Debug.Log("hit collectible object");
+                        hook.position = raycastHit.point;
+                        hookshotPosition = raycastHit.point;
+                        state = State.HookshotPull;
+
+                    }
+
+
                 }
-
-                //this is the layer for collectibles that you can pull towards yourself
-                if (raycastHit.collider.gameObject.layer == 12)
-                {
-                    // Debug.Log("hit collectible object");
-                    hook.position = raycastHit.point;
-                    hookshotPosition = raycastHit.point;
-                    state = State.HookshotPull;
-
-                }
-
 
                 //set the hit target to whatever the raycast has hit
                 hitTarget = raycastHit.collider.gameObject;
+                Debug.Log("hit target is " + hitTarget.name);
                 //make the raycast ignore the hook object's collider
                 Physics.IgnoreCollision(raycastHit.collider, hook.GetComponent<Collider>());
-                
+
+
             }
+
+
+
 
 
         }
@@ -252,7 +300,7 @@ private void LateUpdate(){
 
         characterController.Move(move);
 
-        if (Vector3.Distance(transform.position, hookshotPosition) < 1f)
+        if (Vector3.Distance(transform.position, hookshotPosition) < 2f)
         {
             // Reached hookshot position
             state = State.Normal;
@@ -278,7 +326,6 @@ private void LateUpdate(){
 
             CancelHookshot();
 
-            Debug.Log("cancelled while flying");
 
         }
 
@@ -527,7 +574,6 @@ private void LateUpdate(){
         if (joint.connectedBody != null)
         {
             joint.connectedBody = null;
-            Debug.Log("Detached Spring joint");
         }
     }
 

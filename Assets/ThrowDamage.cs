@@ -17,7 +17,6 @@ public class ThrowDamage : MonoBehaviour
         // Perform damage logic here
 
         onHit.Invoke();
-        Debug.Log("Damage applied!");
     }
 
     // Start is called before the first frame update

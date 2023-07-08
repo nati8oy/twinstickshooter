@@ -16,8 +16,6 @@ GameObject:
   - component: {fileID: 541802505096995614}
   - component: {fileID: 541802505096995613}
   - component: {fileID: 8665156677701576094}
-  - component: {fileID: 964792131861785174}
-  - component: {fileID: 3538547936258269802}
   - component: {fileID: 223871363996966822}
   m_Layer: 11
   m_Name: SimpleEnemy
@@ -175,38 +173,6 @@ MonoBehaviour:
           m_BoolArgument: 0
         m_CallState: 2
   damageThreshold: 20
---- !u!114 &964792131861785174
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 541802505096995604}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 445554b08dc664e18bf91e034311e7f2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  dropsLoot: 1
-  lootObject: {fileID: 0}
-  lootDropped: 0
-  lootDataObject: {fileID: 11400000, guid: eafe96d6925734207ae9ecfe106d2f9a, type: 2}
---- !u!114 &3538547936258269802
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 541802505096995604}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6dab9b6d45a7d477a9f88396ec084dfc, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  lootList:
-  - {fileID: 11400000, guid: 7bd818e0256e74f9b988000580e5e61c, type: 2}
-  - {fileID: 11400000, guid: 6c856c632a9b343de962c6b9d64c6650, type: 2}
-  droppedItem: {fileID: 0}
 --- !u!195 &223871363996966822
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -217,7 +183,7 @@ NavMeshAgent:
   m_Enabled: 1
   m_AgentTypeID: 0
   m_Radius: 0.5000001
-  m_Speed: 3.5
+  m_Speed: 7
   m_Acceleration: 8
   avoidancePriority: 50
   m_AngularSpeed: 120
@@ -531,6 +497,10 @@ PrefabInstance:
     - target: {fileID: 6819315253618853363, guid: ee09c2e21d9f0db4685ea5dc5038469b, type: 3}
       propertyPath: managedReferences[4810111054341996548].Timing.TrackID
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6819315253618853363, guid: ee09c2e21d9f0db4685ea5dc5038469b, type: 3}
+      propertyPath: managedReferences[4810111054341996544].FlickerDuration
+      value: 0.1
       objectReference: {fileID: 0}
     - target: {fileID: 6819315253618853363, guid: ee09c2e21d9f0db4685ea5dc5038469b, type: 3}
       propertyPath: managedReferences[4810111054341996546].RandomizeOutput

@@ -21,8 +21,16 @@ public class LaserSight : MonoBehaviour
     // Update is called once per frame
     private void LateUpdate()
     {
-       // lineRenderer.SetPosition(0, startPoint.position);
-        lineRenderer.SetPosition(1, gameObject.transform.forward * sightLength);
+
+        //use the linerenderer to draw a line from the start point to the end point
+        if (lineRenderer != null)
+        {
+            lineRenderer.SetPosition(0, startPoint.position);
+            lineRenderer.SetPosition(1, gameObject.transform.forward * sightLength);
+
+        }
+
+       
     }
 
 }
