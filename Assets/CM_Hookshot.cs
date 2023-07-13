@@ -63,7 +63,9 @@ public class CM_Hookshot : MonoBehaviour
     [SerializeField] private UnityEvent onGrapple;
     [SerializeField] private UnityEvent OnHookshotHit;
     [SerializeField] private UnityEvent onGrappleDrag;
+    [SerializeField] private UnityEvent onThrow;
     [SerializeField] private UnityEvent stopFeedbacks;
+
 
     [Header("Targeting")]
     private GameObject hitTarget;
@@ -456,16 +458,24 @@ private void LateUpdate(){
 
     private void ThrowCarriedObject()
     {
+        //play throw feedbacks
+        onThrow.Invoke();
 
         var hitTargetRB = hitTarget.GetComponent<Rigidbody>();
         //if you're carrying an object, throw it
         if (state == State.HookshotCarry)
         {
             state = State.Normal;
-            //launch the hittarget object in the direction the player is facing
-            hitTargetRB.useGravity = true;
-            hitTargetRB.freezeRotation = false;
-            hitTargetRB.AddForce(transform.forward * 2000f);
+
+            //check if it's got a rigid body or not
+            if (hitTarget.GetComponent<Rigidbody>())
+            {
+                //launch the hittarget object in the direction the player is facing
+                hitTargetRB.useGravity = true;
+                hitTargetRB.freezeRotation = false;
+                hitTargetRB.AddForce(transform.forward * 2000f);
+            }
+           
 
             //check if the object has a navmesh agent and if so reset it so it works again after being thrown
             if (hitTarget.GetComponent<NavMeshAgent>())

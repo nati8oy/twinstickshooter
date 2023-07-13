@@ -1,12 +1,15 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class Destructible : MonoBehaviour, IDamagable
 {
     public int HPTotal = 2;
     public int currentHP;
     private bool itemDestroyed;
+
+    [SerializeField] private UnityEvent onDestruction;
 
     private void OnEnable()
     {
