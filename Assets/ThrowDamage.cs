@@ -14,8 +14,8 @@ public class ThrowDamage : MonoBehaviour
 
     [Header("Health Bar")]
     [SerializeField] private MMHealthBar healthBar;
-    [SerializeField] private float maxHealth = 100f;
-    [SerializeField] private float currentHealth = 100f;
+    [SerializeField] private float maxHealth;
+    [SerializeField] private float currentHealth;
     [SerializeField] private float minHealth = 0f;
 
     // Start is called before the first frame update
@@ -25,29 +25,12 @@ public class ThrowDamage : MonoBehaviour
     // Start is called before the first frame update
 
 
-    private void Damage(float damageAmount)
-    {
-        // Perform damage logic here
-
-        onHit.Invoke();
-
-
-        if (currentHealth> minHealth)
-        {
-            currentHealth = currentHealth - damageAmount;
-            healthBar.UpdateBar(currentHealth, minHealth, maxHealth, true);
-        }
-        else
-        {
-            currentHealth = minHealth;
-        }
-
-
-    }
 
     // Start is called before the first frame update
     void Start()
     {
+
+        currentHealth = maxHealth;  
         rb = gameObject.GetComponent<Rigidbody>();
     }
 
@@ -65,6 +48,30 @@ public class ThrowDamage : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        if(currentHealth <= 0)
+        {
+            Destroy(gameObject);
+        }
+    }
+
+
+    private void Damage(float damageAmount)
+    {
+        // Perform damage logic here
+
+        onHit.Invoke();
+
+
+        if (currentHealth > minHealth)
+        {
+            currentHealth = currentHealth - damageAmount;
+            healthBar.UpdateBar(currentHealth, minHealth, maxHealth, true);
+        }
+        else
+        {
+            currentHealth = minHealth;
+        }
+
+            
     }
 }
