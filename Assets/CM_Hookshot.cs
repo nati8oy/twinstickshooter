@@ -263,7 +263,7 @@ private void LateUpdate(){
 
                 //set the hit target to whatever the raycast has hit
                 hitTarget = raycastHit.collider.gameObject;
-                Debug.Log("hit target is " + hitTarget.name);
+                //Debug.Log("hit target is " + hitTarget.name);
                 //make the raycast ignore the hook object's collider
                 Physics.IgnoreCollision(raycastHit.collider, hook.GetComponent<Collider>());
 
@@ -398,6 +398,13 @@ private void LateUpdate(){
             hitTarget.GetComponent<NavMeshAgent>().enabled = false;
         }
 
+
+        if (hitTarget.GetComponent<FixedJoint>())
+        {
+         
+            Destroy(hitTarget.GetComponent<FixedJoint>());
+        }
+
         //hook.gameObject.SetActive(true);
 
         float hookshotSpeedMin = 10f;
@@ -417,7 +424,7 @@ private void LateUpdate(){
         lr.SetPosition(1, hitTarget.transform.position);
 
         //check the distance between the hookshot position and the player
-        //and if it's less than 3, then cancel the hookshot
+        //and if it's less than 1f, then cancel the hookshot
         if (Vector3.Distance(transform.position, hitTarget.transform.position) < 1f)
         {
             if (raycastHit.collider.gameObject.layer == 11)
@@ -452,6 +459,7 @@ private void LateUpdate(){
         hitTargetRB.useGravity = false;
         hitTargetRB.freezeRotation = true;
         hitTarget.transform.position = carryPoint.transform.position;
+
         lr.enabled = false;
     }
 
@@ -460,6 +468,8 @@ private void LateUpdate(){
     {
         //play throw feedbacks
         onThrow.Invoke();
+
+       
 
         var hitTargetRB = hitTarget.GetComponent<Rigidbody>();
         //if you're carrying an object, throw it

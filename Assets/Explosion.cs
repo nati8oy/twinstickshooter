@@ -35,7 +35,7 @@ public class Explosion : MonoBehaviour
 
             if (rb != null)
                 rb.AddExplosionForce(power, explosionPos, radius, 100.0F);
-            Debug.Log("no. of object in explosion: " +  colliders.Length);
+            //Debug.Log("no. of object in explosion: " +  colliders.Length);
 
         }
 
