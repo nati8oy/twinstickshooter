@@ -18,8 +18,6 @@ public class ThrowDamage : MonoBehaviour
     [SerializeField] private float currentHealth;
     [SerializeField] private float minHealth = 0f;
 
-    // Start is called before the first frame update
-
 
     private Rigidbody rb;
     // Start is called before the first frame update
@@ -51,7 +49,9 @@ public class ThrowDamage : MonoBehaviour
         if(currentHealth <= 0)
         {
             Destroy(gameObject);
+            
         }
+
     }
 
 

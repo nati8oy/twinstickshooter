@@ -29,7 +29,6 @@ public class LaserSight : MonoBehaviour
             lineRenderer.SetPosition(1, gameObject.transform.forward * sightLength);
 
         }
-
        
     }
 

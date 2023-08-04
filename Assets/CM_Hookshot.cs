@@ -4,7 +4,6 @@ using System.Security.Cryptography.X509Certificates;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.Events;
-using static UnityEditor.Progress;
 using UnityEngine.AI;
 
 public class CM_Hookshot : MonoBehaviour
@@ -22,6 +21,8 @@ public class CM_Hookshot : MonoBehaviour
     [SerializeField] private Transform shotPoint;
     [SerializeField] private Transform hook;
     [SerializeField] private Transform carryPoint;
+
+    [SerializeField] private float throwForce = 2000f;
 
     private Vector3 hookshotPosition;
 
@@ -360,6 +361,12 @@ private void LateUpdate(){
             CancelHookshot();
         }
 
+        //var hitTargetRB = hitTarget.GetComponent<Rigidbody>();
+        //add force to the object you've hit in an arc
+
+        //
+       // hitTargetRB.AddForce(transform.forward * 10f + transform.right * 5f);
+
 
         //deactivate the navmesh agent of the object you've hit
         if (hitTarget.GetComponent<NavMeshAgent>())
@@ -483,7 +490,7 @@ private void LateUpdate(){
                 //launch the hittarget object in the direction the player is facing
                 hitTargetRB.useGravity = true;
                 hitTargetRB.freezeRotation = false;
-                hitTargetRB.AddForce(transform.forward * 2000f);
+                hitTargetRB.AddForce(transform.forward * throwForce);
             }
            
 

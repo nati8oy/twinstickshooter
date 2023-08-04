@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "New Object", menuName = "Distructible")]
+[CreateAssetMenu(fileName = "New Object", menuName = "Destructible")]
 
 
 public class DestructibleObject : ScriptableObject
