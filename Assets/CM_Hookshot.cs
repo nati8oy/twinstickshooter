@@ -18,7 +18,7 @@ public class CM_Hookshot : MonoBehaviour
 
     [SerializeField] private LayerMask layerMask;
 
-    [SerializeField] private Transform shotPoint;
+    public Transform shotPoint;
     [SerializeField] private Transform hook;
     [SerializeField] private Transform carryPoint;
 
@@ -47,6 +47,8 @@ public class CM_Hookshot : MonoBehaviour
 
     [SerializeField] private float hookshotMaxRange = 10f;
 
+    public bool isGrappling = false;
+
 
     //used to check which arm is being used to grapple
     //0 means first arm
@@ -69,7 +71,7 @@ public class CM_Hookshot : MonoBehaviour
 
 
     [Header("Targeting")]
-    private GameObject hitTarget;
+    public GameObject hitTarget;
     [SerializeField] private bool autoTarget;
     [SerializeField] GameObject[] targets;
 
@@ -134,6 +136,7 @@ public class CM_Hookshot : MonoBehaviour
             default:
             case State.Normal:
             lr.enabled = false;
+            isGrappling = false;
                 break;
             case State.HookshotLaunched:
                 LaunchHookshot();
@@ -153,6 +156,7 @@ public class CM_Hookshot : MonoBehaviour
             case State.HookshotCarry:
                 HandleHookshotCarry();
                 hook.gameObject.SetActive(false);
+                isGrappling = false;
                 break;
         }
 
@@ -286,7 +290,8 @@ private void LateUpdate(){
 
     private void HandleHookshotMovement()
     {
-      
+
+        isGrappling = true;
 
         float hookshotSpeedMin = 10f;
         float hookshotSpeedMax = 40f;
@@ -398,7 +403,6 @@ private void LateUpdate(){
     private void HandleHookshotPull()
     {
 
-        
         //deactivate the navmesh agent
         if (hitTarget.GetComponent<NavMeshAgent>())
         {
@@ -406,11 +410,13 @@ private void LateUpdate(){
         }
 
 
+        //destroy the joint for an attached object
         if (hitTarget.GetComponent<FixedJoint>())
         {
-         
             Destroy(hitTarget.GetComponent<FixedJoint>());
         }
+
+
 
         //hook.gameObject.SetActive(true);
 
