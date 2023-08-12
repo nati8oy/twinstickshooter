@@ -238,7 +238,7 @@ private void LateUpdate(){
                         hook.position = raycastHit.point;
                         hookshotPosition = raycastHit.point;
                         state = State.HookshotFlyingPlayer;
-                        //onGrapple.Invoke();
+                        onGrapple.Invoke();
                         OnHookshotHit.Invoke();
 
                     }
@@ -497,6 +497,7 @@ private void LateUpdate(){
                 hitTargetRB.useGravity = true;
                 hitTargetRB.freezeRotation = false;
                 hitTargetRB.AddForce(transform.forward * throwForce);
+                hitTargetRB.AddTorque(transform.forward * throwForce);
             }
            
 

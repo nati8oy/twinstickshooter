@@ -41,6 +41,8 @@ public class Explosion : MonoBehaviour
 
         Instantiate(explosion, gameObject.transform.position, gameObject.transform.rotation);
 
+
+        gameObject.SetActive(false);
     }
 
 
