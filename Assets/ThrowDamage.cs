@@ -60,7 +60,6 @@ public class ThrowDamage : MonoBehaviour
         // Perform damage logic here
 
         onHit.Invoke();
-        Debug.Log("Hit particles played") ;
 
 
         if (currentHealth > minHealth)
