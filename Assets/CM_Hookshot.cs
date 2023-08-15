@@ -97,12 +97,12 @@ public class CM_Hookshot : MonoBehaviour
         characterController = gameObject.GetComponent<CharacterController>();
         ///twinStick = gameObject.GetComponent<TwinStickMovement>();
 
-
+        /*
         hookshot = new InputAction(binding: "<Mouse>/leftButton");
         //hookshot.performed += _ => LaunchHookshot();
         hookshot.performed += _ => HandleHookshotStart();
         hookshot.Enable();
-
+        */
         
         hookshotPull = new InputAction(binding: "<Mouse>/rightButton");
         hookshotPull.performed += _ => ThrowCarriedObject();

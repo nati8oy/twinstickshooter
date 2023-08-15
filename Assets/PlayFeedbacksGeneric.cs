@@ -23,6 +23,7 @@ public class PlayFeedbacksGeneric : MonoBehaviour
     private void OnCollisionEnter(Collision collision)
     {
         onHit.Invoke();
+        Debug.Log("Hit Somethin");
     }
 
     public void ShootFeedback()
