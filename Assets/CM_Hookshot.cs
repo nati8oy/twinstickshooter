@@ -105,6 +105,7 @@ public class CM_Hookshot : MonoBehaviour
         */
         
         hookshotPull = new InputAction(binding: "<Mouse>/rightButton");
+        hookshotPull.performed += _ => HandleHookshotStart();
         hookshotPull.performed += _ => ThrowCarriedObject();
         //hookshotPull.performed += _ => HandleHookshotPull();
         hookshotPull.Enable();

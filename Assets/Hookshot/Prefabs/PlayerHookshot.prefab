@@ -1437,6 +1437,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 8543506190736137439}
+  - {fileID: 1490985091897877977}
   m_Father: {fileID: 102278313849289249}
   m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: -90.097, z: 0}
@@ -1565,19 +1566,19 @@ MonoBehaviour:
         m_Calls: []
   DebugActive: 0
   FeedbacksList:
-  - rid: 4550405011742130180
+  - rid: 4550405011742130184
   KeepPlayModeChanges: 0
   PerformanceMode: 0
   ForceStopFeedbacksOnDisable: 1
   references:
     version: 2
     RefIds:
-    - rid: 4550405011742130180
-      type: {class: MMF_Flicker, ns: MoreMountains.Feedbacks, asm: MoreMountains.Feedbacks}
+    - rid: 4550405011742130184
+      type: {class: MMF_SquashAndStretch, ns: MoreMountains.Feedbacks, asm: MoreMountains.Feedbacks}
       data:
         Active: 1
-        UniqueID: 733689168
-        Label: Flicker
+        UniqueID: -16867830
+        Label: Squash and Stretch
         ChannelMode: 0
         Channel: 0
         MMChannelDefinition: {fileID: 0}
@@ -1637,15 +1638,49 @@ MonoBehaviour:
         RemapRangeFalloff: {x: 0, y: 1}
         Owner: {fileID: 206249456274581547}
         DebugActive: 0
-        BoundRenderer: {fileID: 4428789531107561608}
+        SquashAndStretchTarget: {fileID: 8543506190736137439}
         Mode: 0
-        PropertyName: _Tint
-        FlickerDuration: 0.2
-        FlickerOctave: 0.04
-        FlickerColor: {r: 1, g: 0.078431375, b: 0.078431375, a: 1}
-        MaterialIndexes: 
-        UseMaterialPropertyBlocks: 0
-        SpriteRendererTextureProperty: _MainTex
+        Axis: 8
+        AnimateScaleDuration: 0.2
+        RemapCurveZero: 0
+        RemapCurveOne: 1
+        Offset: 4
+        AnimateCurve:
+          serializedVersion: 2
+          m_Curve:
+          - serializedVersion: 3
+            time: 0
+            value: 0
+            inSlope: 0
+            outSlope: 0
+            tangentMode: 0
+            weightedMode: 0
+            inWeight: 0
+            outWeight: 0
+          - serializedVersion: 3
+            time: 0.3
+            value: 1.5
+            inSlope: 0
+            outSlope: 0
+            tangentMode: 0
+            weightedMode: 0
+            inWeight: 0
+            outWeight: 0
+          - serializedVersion: 3
+            time: 1
+            value: 0
+            inSlope: 0
+            outSlope: 0
+            tangentMode: 0
+            weightedMode: 0
+            inWeight: 0
+            outWeight: 0
+          m_PreInfinity: 2
+          m_PostInfinity: 2
+          m_RotationOrder: 4
+        AllowAdditivePlays: 0
+        DetermineScaleOnPlay: 0
+        DestinationScale: 2
 --- !u!1 &3687338233227320649
 GameObject:
   m_ObjectHideFlags: 0
@@ -1743,3 +1778,85 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!1001 &7362035803784394773
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 7882128615059998195}
+    m_Modifications:
+    - target: {fileID: 809301666122908579, guid: c815695427461ec42ba6c7c8d44131fe, type: 3}
+      propertyPath: m_Materials.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8257982704310509004, guid: c815695427461ec42ba6c7c8d44131fe, type: 3}
+      propertyPath: m_RootOrder
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8257982704310509004, guid: c815695427461ec42ba6c7c8d44131fe, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 8257982704310509004, guid: c815695427461ec42ba6c7c8d44131fe, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 8257982704310509004, guid: c815695427461ec42ba6c7c8d44131fe, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 8257982704310509004, guid: c815695427461ec42ba6c7c8d44131fe, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8257982704310509004, guid: c815695427461ec42ba6c7c8d44131fe, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0.2
+      objectReference: {fileID: 0}
+    - target: {fileID: 8257982704310509004, guid: c815695427461ec42ba6c7c8d44131fe, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 2.16
+      objectReference: {fileID: 0}
+    - target: {fileID: 8257982704310509004, guid: c815695427461ec42ba6c7c8d44131fe, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0.70710665
+      objectReference: {fileID: 0}
+    - target: {fileID: 8257982704310509004, guid: c815695427461ec42ba6c7c8d44131fe, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0.000000012344518
+      objectReference: {fileID: 0}
+    - target: {fileID: 8257982704310509004, guid: c815695427461ec42ba6c7c8d44131fe, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0.707107
+      objectReference: {fileID: 0}
+    - target: {fileID: 8257982704310509004, guid: c815695427461ec42ba6c7c8d44131fe, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0.00000004214687
+      objectReference: {fileID: 0}
+    - target: {fileID: 8257982704310509004, guid: c815695427461ec42ba6c7c8d44131fe, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8257982704310509004, guid: c815695427461ec42ba6c7c8d44131fe, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: -90.00001
+      objectReference: {fileID: 0}
+    - target: {fileID: 8257982704310509004, guid: c815695427461ec42ba6c7c8d44131fe, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8257982704310509004, guid: c815695427461ec42ba6c7c8d44131fe, type: 3}
+      propertyPath: m_ConstrainProportionsScale
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8257982704310509005, guid: c815695427461ec42ba6c7c8d44131fe, type: 3}
+      propertyPath: m_Name
+      value: SwordTrailFire
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: c815695427461ec42ba6c7c8d44131fe, type: 3}
+--- !u!4 &1490985091897877977 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 8257982704310509004, guid: c815695427461ec42ba6c7c8d44131fe, type: 3}
+  m_PrefabInstance: {fileID: 7362035803784394773}
+  m_PrefabAsset: {fileID: 0}
