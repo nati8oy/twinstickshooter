@@ -12,31 +12,39 @@ public class MeleeAttack : MonoBehaviour
 
     [SerializeField] private Animator animator;
 
+    [SerializeField] private float attackRate;
+
+    [SerializeField] private float nextAttackTime;
+
+
     void Start()
     {
-        //feedbackPlayer = new MMF_Player();
-
-        meleeAttack = new InputAction(binding: "<Mouse>/leftButton");
-        meleeAttack.performed += _ => Swing();
-        meleeAttack.Enable();
-
+      
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+        // Check if the left mouse button is pressed and the fire rate cooldown has passed
+        if (Mouse.current.leftButton.isPressed && Time.time >= nextAttackTime)
+        {
+            // Fire a bullet
+            Swing();
+
+            // Set the next allowed fire time based on the fire rate
+            nextAttackTime = Time.time + 1f / attackRate;
+        }
     }
 
     private void Swing()
     {
-        animator.SetBool("Attack", true);
+        animator.SetTrigger("Attack");
         feedbackPlayer.PlayFeedbacks();
     }
 
     private void StopSwing()
     {
-        animator.SetBool("Attack", false);
+       // animator.SetBool("Attack", false);
 
     }
 }
