@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 2abf9bfb1c5ce344490eb8bacd004b4e, type: 3}
-  m_Name: Attack1
+  m_Name: Attack2
   m_EditorClassIdentifier: 
-  AnimatorOverrideController: {fileID: 22100000, guid: de80f692be7cd024e9cb798cd84b884f, type: 2}
+  AnimatorOverrideController: {fileID: 22100000, guid: ad7818ef733d0ed4eb20f08807dfd27f, type: 2}
   damage: 0
