@@ -16,6 +16,7 @@ public class MeleeAttack : MonoBehaviour
 
     [SerializeField] private float nextAttackTime;
 
+    [SerializeField] bool handSwitcher;
 
     void Start()
     {
@@ -38,13 +39,28 @@ public class MeleeAttack : MonoBehaviour
 
     private void Swing()
     {
-        animator.SetTrigger("Attack");
-        feedbackPlayer.PlayFeedbacks();
+        if(handSwitcher)
+        {
+            animator.SetTrigger("AttackL");
+            //Debug.Log("Left");
+        }
+
+        else
+        {
+            animator.SetTrigger("AttackR");
+            // Debug.Log("Right");
+            feedbackPlayer.PlayFeedbacks();
+
+        }
+
+        //animator.SetTrigger("Attack");
+
     }
 
     private void StopSwing()
     {
-       // animator.SetBool("Attack", false);
+        //toggle the bool to alternate between hands when attacking
+        handSwitcher = !handSwitcher;
 
     }
 }
