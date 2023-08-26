@@ -9,58 +9,33 @@ public class MeleeAttack : MonoBehaviour
     private PlayerInput playerInput;
     [SerializeField] private InputAction meleeAttack;
     [SerializeField] private MMF_Player feedbackPlayer;
+    [SerializeField] private Weapon weapon;
 
-    [SerializeField] private Animator animator;
 
-    [SerializeField] private float attackRate;
-
-    [SerializeField] private float nextAttackTime;
-
-    [SerializeField] bool handSwitcher;
-
-    void Start()
-    {
-      
-    }
+    [SerializeField] float hitDamage = 20f;
+    private bool playedFeedbacks;
 
     // Update is called once per frame
     void Update()
     {
-        // Check if the left mouse button is pressed and the fire rate cooldown has passed
-        if (Mouse.current.leftButton.isPressed && Time.time >= nextAttackTime)
-        {
-            // Fire a bullet
-            Swing();
-
-            // Set the next allowed fire time based on the fire rate
-            nextAttackTime = Time.time + 1f / attackRate;
-        }
+      
     }
-
-    private void Swing()
+    private void OnCollisionEnter(Collision collision)
     {
-        if(handSwitcher)
+        if(collision.gameObject.tag == "enemy")
         {
-            animator.SetTrigger("AttackL");
-            //Debug.Log("Left");
-        }
+            collision.gameObject.GetComponent<EnemyHealth>().Damage(weapon.damage);
 
-        else
-        {
-            animator.SetTrigger("AttackR");
-            // Debug.Log("Right");
+                collision.gameObject.GetComponent<Rigidbody>().AddExplosionForce(weapon.knockback, transform.position, 2f);
+
             feedbackPlayer.PlayFeedbacks();
 
-        }
+            Debug.Log("Hit feedbacks played");
 
-        //animator.SetTrigger("Attack");
+            if (hitDamage >= 500f)
+            {
+            }
 
-    }
-
-    private void StopSwing()
-    {
-        //toggle the bool to alternate between hands when attacking
-        handSwitcher = !handSwitcher;
-
+        }        
     }
 }

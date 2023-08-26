@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using MoreMountains.Feedbacks;
 
 public class PlayerCombat : MonoBehaviour
 {
@@ -18,6 +19,10 @@ public class PlayerCombat : MonoBehaviour
 
     [SerializeField] Animator animator;
     [SerializeField] Weapon weapon;
+
+
+    [SerializeField] private MMF_Player feedbackPlayer;
+
 
     void Start()
     {
@@ -61,13 +66,13 @@ public class PlayerCombat : MonoBehaviour
 
 
                 animator.Play("Attack", 0, 0);
-                Debug.Log("Attack");
                 //weapon.damage = combo[comboCounter].damage;
                 //add knockback here
                 //add VFX or particle effects here
 
                 comboCounter++;
                 lastClickedTime = Time.time;
+
 
                 if (comboCounter >= combo.Count)
                 {
@@ -88,9 +93,15 @@ public class PlayerCombat : MonoBehaviour
 
     private void EndCombo()
     {
-        Debug.Log("Combo Ended");
+        //Debug.Log("Combo Ended");
         comboCounter = 0;
         lastComboEnd = Time.time;
+
+    }
+
+    public void PlayFX()
+    {
+        feedbackPlayer.PlayFeedbacks();
 
     }
 }

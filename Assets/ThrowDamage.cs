@@ -17,6 +17,7 @@ public class ThrowDamage : MonoBehaviour
     [SerializeField] private float maxHealth;
     [SerializeField] private float currentHealth;
     [SerializeField] private float minHealth = 0f;
+    //[SerializeField] private EnemyHealth enemyHealth;
 
 
     private Rigidbody rb;
@@ -55,7 +56,7 @@ public class ThrowDamage : MonoBehaviour
     }
 
 
-    private void Damage(float damageAmount)
+    public void Damage(float damageAmount)
     {
         // Perform damage logic here
 

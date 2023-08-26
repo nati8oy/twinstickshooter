@@ -18,4 +18,8 @@ public class Weapon : ScriptableObject
     public int ammo;
     public float cooldown;
 
+    [Header("Melee Weapons")]
+    //melee
+    public float knockback;
+
 }

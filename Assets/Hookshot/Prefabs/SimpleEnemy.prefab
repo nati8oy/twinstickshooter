@@ -14,9 +14,9 @@ GameObject:
   - component: {fileID: 541802505096995610}
   - component: {fileID: 541802505096995611}
   - component: {fileID: 541802505096995614}
-  - component: {fileID: 8665156677701576094}
   - component: {fileID: 223871363996966822}
   - component: {fileID: 9154119427084787499}
+  - component: {fileID: 3136187794374814907}
   m_Layer: 11
   m_Name: SimpleEnemy
   m_TagString: enemy
@@ -135,51 +135,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &8665156677701576094
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 541802505096995604}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1f76a3e0aade1684e8f44dd512398777, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  onHit:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 6328183361992974557}
-        m_TargetAssemblyTypeName: MoreMountains.Feedbacks.MMF_Player, MoreMountains.Feedbacks
-        m_MethodName: PlayFeedbacks
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 541802504001546236}
-        m_TargetAssemblyTypeName: MoreMountains.Feedbacks.MMF_Player, MoreMountains.Feedbacks
-        m_MethodName: PlayFeedbacks
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-  damageThreshold: 50
-  throwDamage: 10
-  healthBar: {fileID: 9154119427084787499}
-  maxHealth: 20
-  currentHealth: 20
-  minHealth: 0
 --- !u!195 &223871363996966822
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -378,6 +333,25 @@ MonoBehaviour:
   DisplayDurationOnHit: 1
   HideBarAtZero: 1
   HideBarAtZeroDelay: 1
+--- !u!114 &3136187794374814907
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 541802505096995604}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 77ed4504b5866504698585908b9b45df, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  onHit:
+    m_PersistentCalls:
+      m_Calls: []
+  healthBar: {fileID: 9154119427084787499}
+  maxHealth: 100
+  currentHealth: 100
+  minHealth: 0
 --- !u!1 &566864763347462508
 GameObject:
   m_ObjectHideFlags: 0
