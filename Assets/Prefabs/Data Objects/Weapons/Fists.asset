@@ -19,4 +19,4 @@ MonoBehaviour:
   ammoType: 
   ammo: 0
   cooldown: 0
-  knockback: 30
+  knockback: 375

@@ -14,3 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   AnimatorOverrideController: {fileID: 22100000, guid: 8402ef11ba1745040aed8d7236cc5b4e, type: 2}
   damage: 20
+  knockback: 500

@@ -26,11 +26,11 @@ public class MeleeAttack : MonoBehaviour
         {
             collision.gameObject.GetComponent<EnemyHealth>().Damage(weapon.damage);
 
-                collision.gameObject.GetComponent<Rigidbody>().AddExplosionForce(weapon.knockback, transform.position, 2f);
+            collision.gameObject.GetComponent<Rigidbody>().AddExplosionForce(weapon.knockback, transform.position, 2f);
 
             feedbackPlayer.PlayFeedbacks();
 
-            Debug.Log("Hit feedbacks played");
+            //Debug.Log("Hit feedbacks played");
 
             if (hitDamage >= 500f)
             {

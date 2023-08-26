@@ -578,6 +578,11 @@ MonoBehaviour:
         - {fileID: 8300000, guid: aefcd4c44040a8c4fa8d002183ef8ac3, type: 3}
         - {fileID: 8300000, guid: 3dd56ee47aa87cd4aaa1c66c7098c6f3, type: 3}
         - {fileID: 8300000, guid: 18f74f4bba8947a4d8310ce6e390d361, type: 3}
+        - {fileID: 8300000, guid: 1738d2d721a00d445b0fe5327aa10341, type: 3}
+        - {fileID: 8300000, guid: aa9038ba6b5db4941a1550a8efdec907, type: 3}
+        - {fileID: 8300000, guid: 166c7bc9aec9ea840bdb994bd76f407b, type: 3}
+        - {fileID: 8300000, guid: 7ea748087babb4943b963d6512fe0e5c, type: 3}
+        - {fileID: 8300000, guid: 9c2d30270b30dc8409b9b4d7fa06d6e9, type: 3}
         TestPlayButton:
           ButtonText: Debug Play Sound
         TestStopButton:

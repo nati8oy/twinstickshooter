@@ -13,4 +13,5 @@ MonoBehaviour:
   m_Name: Attack1
   m_EditorClassIdentifier: 
   AnimatorOverrideController: {fileID: 22100000, guid: de80f692be7cd024e9cb798cd84b884f, type: 2}
-  damage: 5
+  damage: 20
+  knockback: 375

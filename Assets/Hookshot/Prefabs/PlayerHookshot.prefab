@@ -814,12 +814,26 @@ MonoBehaviour:
   - {fileID: 11400000, guid: fdd658ddd9152934aad4b5c1b3ba7795, type: 2}
   - {fileID: 11400000, guid: f1fe7031f52f0e445a56204566265653, type: 2}
   - {fileID: 11400000, guid: fdd658ddd9152934aad4b5c1b3ba7795, type: 2}
-  - {fileID: 11400000, guid: 88b1623c66376564a994422826693fd7, type: 2}
   comboDelay: 0.1
   comboAttackDelay: 0.2
   animator: {fileID: 0}
   weapon: {fileID: 0}
-  feedbackPlayer: {fileID: 0}
+  feedbackPlayer: {fileID: 3850684314863834522}
+  onSwing:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 3850684314863834522}
+        m_TargetAssemblyTypeName: MoreMountains.Feedbacks.MMF_Player, MoreMountains.Feedbacks
+        m_MethodName: PlayFeedbacks
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &3850684314863834522
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -902,19 +916,19 @@ MonoBehaviour:
         m_Calls: []
   DebugActive: 0
   FeedbacksList:
-  - rid: 4550405193861693443
+  - rid: 4550405193861693446
   KeepPlayModeChanges: 0
   PerformanceMode: 0
   ForceStopFeedbacksOnDisable: 1
   references:
     version: 2
     RefIds:
-    - rid: 4550405193861693443
-      type: {class: MMF_Scale, ns: MoreMountains.Feedbacks, asm: MoreMountains.Feedbacks}
+    - rid: 4550405193861693446
+      type: {class: MMF_Sound, ns: MoreMountains.Feedbacks, asm: MoreMountains.Feedbacks.MMTools}
       data:
         Active: 1
-        UniqueID: 673864461
-        Label: Scale
+        UniqueID: 790869301
+        Label: Sound
         ChannelMode: 0
         Channel: 0
         MMChannelDefinition: {fileID: 0}
@@ -974,148 +988,25 @@ MonoBehaviour:
         RemapRangeFalloff: {x: 0, y: 1}
         Owner: {fileID: 3850684314863834522}
         DebugActive: 0
-        Mode: 0
-        AnimateScaleTarget: {fileID: 699516233991121103}
-        AnimateScaleDuration: 0.2
-        RemapCurveZero: 1
-        RemapCurveOne: 2
-        Offset: 0
-        AnimateX: 1
-        AnimateScaleTweenX:
-          MMTweenDefinitionType: 1
-          MMTweenCurve: 4
-          Curve:
-            serializedVersion: 2
-            m_Curve:
-            - serializedVersion: 3
-              time: 0
-              value: 0
-              inSlope: 0
-              outSlope: 0
-              tangentMode: 0
-              weightedMode: 0
-              inWeight: 0
-              outWeight: 0
-            - serializedVersion: 3
-              time: 0.3
-              value: 1.5
-              inSlope: 0
-              outSlope: 0
-              tangentMode: 0
-              weightedMode: 0
-              inWeight: 0
-              outWeight: 0
-            - serializedVersion: 3
-              time: 1
-              value: 0
-              inSlope: 0
-              outSlope: 0
-              tangentMode: 0
-              weightedMode: 0
-              inWeight: 0
-              outWeight: 0
-            m_PreInfinity: 2
-            m_PostInfinity: 2
-            m_RotationOrder: 4
-          Initialized: 0
-        AnimateY: 1
-        AnimateScaleTweenY:
-          MMTweenDefinitionType: 1
-          MMTweenCurve: 4
-          Curve:
-            serializedVersion: 2
-            m_Curve:
-            - serializedVersion: 3
-              time: 0
-              value: 0
-              inSlope: 0
-              outSlope: 0
-              tangentMode: 0
-              weightedMode: 0
-              inWeight: 0
-              outWeight: 0
-            - serializedVersion: 3
-              time: 0.3
-              value: 1.5
-              inSlope: 0
-              outSlope: 0
-              tangentMode: 0
-              weightedMode: 0
-              inWeight: 0
-              outWeight: 0
-            - serializedVersion: 3
-              time: 1
-              value: 0
-              inSlope: 0
-              outSlope: 0
-              tangentMode: 0
-              weightedMode: 0
-              inWeight: 0
-              outWeight: 0
-            m_PreInfinity: 2
-            m_PostInfinity: 2
-            m_RotationOrder: 4
-          Initialized: 0
-        AnimateZ: 1
-        AnimateScaleTweenZ:
-          MMTweenDefinitionType: 1
-          MMTweenCurve: 4
-          Curve:
-            serializedVersion: 2
-            m_Curve:
-            - serializedVersion: 3
-              time: 0
-              value: 0
-              inSlope: 0
-              outSlope: 0
-              tangentMode: 0
-              weightedMode: 0
-              inWeight: 0
-              outWeight: 0
-            - serializedVersion: 3
-              time: 0.3
-              value: 1.5
-              inSlope: 0
-              outSlope: 0
-              tangentMode: 0
-              weightedMode: 0
-              inWeight: 0
-              outWeight: 0
-            - serializedVersion: 3
-              time: 1
-              value: 0
-              inSlope: 0
-              outSlope: 0
-              tangentMode: 0
-              weightedMode: 0
-              inWeight: 0
-              outWeight: 0
-            m_PreInfinity: 2
-            m_PostInfinity: 2
-            m_RotationOrder: 4
-          Initialized: 0
-        UniformScaling: 0
-        AllowAdditivePlays: 0
-        DetermineScaleOnPlay: 0
-        DestinationScale: {x: 0.5, y: 0.5, z: 0.5}
-        AnimateScaleX:
-          serializedVersion: 2
-          m_Curve: []
-          m_PreInfinity: 2
-          m_PostInfinity: 2
-          m_RotationOrder: 4
-        AnimateScaleY:
-          serializedVersion: 2
-          m_Curve: []
-          m_PreInfinity: 2
-          m_PostInfinity: 2
-          m_RotationOrder: 4
-        AnimateScaleZ:
-          serializedVersion: 2
-          m_Curve: []
-          m_PreInfinity: 2
-          m_PostInfinity: 2
-          m_RotationOrder: 4
+        Sfx: {fileID: 0}
+        RandomSfx:
+        - {fileID: 8300000, guid: 16e466915ecb51545a29f5ff3bb1c696, type: 3}
+        - {fileID: 8300000, guid: 1e8cdd492fddfd14d8a80a8a0e76ed43, type: 3}
+        - {fileID: 8300000, guid: c9fa1c14fec67104492cbd2b1ac9c246, type: 3}
+        - {fileID: 8300000, guid: 29c618e131e762a44a2f95b1e4eef9ee, type: 3}
+        - {fileID: 8300000, guid: 07d685dbad0b9c2429bdefbfa32fd296, type: 3}
+        TestPlayButton:
+          ButtonText: Debug Play Sound
+        TestStopButton:
+          ButtonText: Debug Stop Sound
+        PlayMethod: 2
+        PoolSize: 10
+        MinVolume: 0.65
+        MaxVolume: 0.85
+        MinPitch: 0.9
+        MaxPitch: 1.1
+        SfxAudioMixerGroup: {fileID: 0}
+        Priority: 128
 --- !u!1 &102278314314392664
 GameObject:
   m_ObjectHideFlags: 0
@@ -2198,8 +2089,12 @@ PrefabInstance:
       value: Fist(R)
       objectReference: {fileID: 0}
     - target: {fileID: 3178004519754326911, guid: c5cf928be1eff4c43b57354177fed5e5, type: 3}
+      propertyPath: managedReferences[4550405193861693444].Active
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3178004519754326911, guid: c5cf928be1eff4c43b57354177fed5e5, type: 3}
       propertyPath: managedReferences[4550405193861693444].FreezeFrameDuration
-      value: 0.03
+      value: 0.07
       objectReference: {fileID: 0}
     - target: {fileID: 5637220636540726060, guid: c5cf928be1eff4c43b57354177fed5e5, type: 3}
       propertyPath: m_RootOrder
@@ -2270,6 +2165,14 @@ PrefabInstance:
     - target: {fileID: 1147792326364210384, guid: c5cf928be1eff4c43b57354177fed5e5, type: 3}
       propertyPath: m_Name
       value: Fist(L)
+      objectReference: {fileID: 0}
+    - target: {fileID: 3178004519754326911, guid: c5cf928be1eff4c43b57354177fed5e5, type: 3}
+      propertyPath: managedReferences[4550405193861693444].Active
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3178004519754326911, guid: c5cf928be1eff4c43b57354177fed5e5, type: 3}
+      propertyPath: managedReferences[4550405193861693444].FreezeFrameDuration
+      value: 0.07
       objectReference: {fileID: 0}
     - target: {fileID: 5637220636540726060, guid: c5cf928be1eff4c43b57354177fed5e5, type: 3}
       propertyPath: m_RootOrder
