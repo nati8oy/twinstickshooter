@@ -12,6 +12,8 @@ public class PlayerCombat : MonoBehaviour
     private float lastComboEnd;
     private int comboCounter;
 
+    [SerializeField] private Rigidbody playerRB;
+
     [Header("Attack Settings")]
     [SerializeField] private float comboDelay = 0.5f;
     [SerializeField] private float comboAttackDelay = 0.2f;
@@ -70,6 +72,10 @@ public class PlayerCombat : MonoBehaviour
                 animator.Play("Attack", 0, 0);
 
                 onSwing.Invoke();
+
+
+
+
                 //weapon.damage = combo[comboCounter].damage;
                 //add knockback here
                 //add VFX or particle effects here

@@ -28,8 +28,7 @@ public class SimpleEnemyMovement : MonoBehaviour
         }
        
     }
-
-
+  
 
 }
 

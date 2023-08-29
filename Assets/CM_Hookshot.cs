@@ -75,6 +75,12 @@ public class CM_Hookshot : MonoBehaviour
     [SerializeField] private bool autoTarget;
     [SerializeField] GameObject[] targets;
 
+
+    [Header("Hookshot Speed")]
+
+    [SerializeField] private float hookshotSpeedMin = 10f;
+    [SerializeField] private float hookshotSpeedMax = 40f;
+
     private State state;
     private enum State
     {
@@ -294,8 +300,7 @@ private void LateUpdate(){
 
         isGrappling = true;
 
-        float hookshotSpeedMin = 10f;
-        float hookshotSpeedMax = 40f;
+        
         Vector3 hookshotDir = (hookshotPosition - transform.position).normalized;
 
         // Calculate the additional movement based on the current velocity of the Character Controller

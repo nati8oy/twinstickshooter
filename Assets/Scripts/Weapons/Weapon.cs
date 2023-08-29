@@ -21,5 +21,5 @@ public class Weapon : ScriptableObject
     [Header("Melee Weapons")]
     //melee
     public float knockback;
-
+    public float stun;
 }
