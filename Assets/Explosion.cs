@@ -9,6 +9,7 @@ public class Explosion : MonoBehaviour
     [SerializeField] private float radius = 10.0F;
     [SerializeField] private float power = 10.0F;
     [SerializeField] private GameObject explosion;
+    [SerializeField] private float explosionDamage;
 
     [SerializeField] LayerMask layerMask;
 
@@ -19,6 +20,7 @@ public class Explosion : MonoBehaviour
         if(collision.gameObject.tag == "enemy")
         {
             Explode();
+            collision.gameObject.GetComponent<EnemyHealth>().Damage(explosionDamage);
         }
 
     }
@@ -35,7 +37,12 @@ public class Explosion : MonoBehaviour
 
             if (rb != null)
                 rb.AddExplosionForce(power, explosionPos, radius, 100.0F);
-            //Debug.Log("no. of object in explosion: " +  colliders.Length);
+
+            //get each item that was hit and remove explosionDamage amount of health
+            
+            //hit.gameObject.GetComponent<EnemyHealth>().Damage(explosionDamage);
+
+            Debug.Log("no. of object in explosion: " +  colliders.Length);
 
         }
 

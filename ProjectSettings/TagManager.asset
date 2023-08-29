@@ -28,6 +28,7 @@ TagManager:
   - candy
   - resource
   - turret
+  - melee
   layers:
   - Default
   - TransparentFX
