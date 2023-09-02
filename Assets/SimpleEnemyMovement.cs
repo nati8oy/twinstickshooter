@@ -3,12 +3,16 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.Events;
+using MoreMountains.Feedbacks;  
 
 public class SimpleEnemyMovement : MonoBehaviour
 {
 
     private NavMeshAgent navMeshAgent;
     private Transform player;
+    [SerializeField] private UnityEvent onStun;
+
+    private bool stunned;
 
     private void Start()
     {
@@ -25,10 +29,9 @@ public class SimpleEnemyMovement : MonoBehaviour
         {
             // Update the destination to player's current position
             navMeshAgent.SetDestination(player.position);
+
         }
-       
-    }
-  
+    }  
 
 }
 
