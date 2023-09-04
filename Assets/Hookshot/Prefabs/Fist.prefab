@@ -121,7 +121,7 @@ MonoBehaviour:
     m_Interactions: 
     m_SingletonActionBindings: []
     m_Flags: 0
-  feedbackPlayer: {fileID: 3178004519754326911}
+  feedbackPlayer: {fileID: 0}
   weapon: {fileID: 11400000, guid: 63d8d111184545249a7da998d344bf82, type: 2}
   hitDamage: 20
 --- !u!54 &1067965796929567633

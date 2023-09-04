@@ -622,6 +622,8 @@ MonoBehaviour:
   hitTarget: {fileID: 0}
   autoTarget: 0
   targets: []
+  hookshotSpeedMin: 10
+  hookshotSpeedMax: 40
 --- !u!120 &102278313849289253
 LineRenderer:
   m_ObjectHideFlags: 0
@@ -2379,8 +2381,39 @@ PrefabInstance:
       propertyPath: hitDamage
       value: 20
       objectReference: {fileID: 0}
+    - target: {fileID: 7966574130739667003, guid: c5cf928be1eff4c43b57354177fed5e5, type: 3}
+      propertyPath: feedbackPlayer
+      value: 
+      objectReference: {fileID: 3542465057953792027}
+    - target: {fileID: 7966574130739667003, guid: c5cf928be1eff4c43b57354177fed5e5, type: 3}
+      propertyPath: onHit.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 102278313491091324}
+    - target: {fileID: 7966574130739667003, guid: c5cf928be1eff4c43b57354177fed5e5, type: 3}
+      propertyPath: onHit.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: PlayFeedbacks
+      objectReference: {fileID: 0}
+    - target: {fileID: 7966574130739667003, guid: c5cf928be1eff4c43b57354177fed5e5, type: 3}
+      propertyPath: onHit.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: MoreMountains.Feedbacks.MMF_Player, MoreMountains.Feedbacks
+      objectReference: {fileID: 0}
+    - target: {fileID: 7966574130739667003, guid: c5cf928be1eff4c43b57354177fed5e5, type: 3}
+      propertyPath: onHit.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: c5cf928be1eff4c43b57354177fed5e5, type: 3}
+--- !u!114 &3542465057953792027 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 3178004519754326911, guid: c5cf928be1eff4c43b57354177fed5e5, type: 3}
+  m_PrefabInstance: {fileID: 2104262354028667748}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6da43522623d4704e979466dc7650b65, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!4 &5983235770022479944 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 5637220636540726060, guid: c5cf928be1eff4c43b57354177fed5e5, type: 3}
@@ -2449,6 +2482,26 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7966574130739667003, guid: c5cf928be1eff4c43b57354177fed5e5, type: 3}
+      propertyPath: feedbackPlayer
+      value: 
+      objectReference: {fileID: 7752043268772257948}
+    - target: {fileID: 7966574130739667003, guid: c5cf928be1eff4c43b57354177fed5e5, type: 3}
+      propertyPath: onHit.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 102278313491091324}
+    - target: {fileID: 7966574130739667003, guid: c5cf928be1eff4c43b57354177fed5e5, type: 3}
+      propertyPath: onHit.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: PlayFeedbacks
+      objectReference: {fileID: 0}
+    - target: {fileID: 7966574130739667003, guid: c5cf928be1eff4c43b57354177fed5e5, type: 3}
+      propertyPath: onHit.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: MoreMountains.Feedbacks.MMF_Player, MoreMountains.Feedbacks
+      objectReference: {fileID: 0}
+    - target: {fileID: 7966574130739667003, guid: c5cf928be1eff4c43b57354177fed5e5, type: 3}
+      propertyPath: onHit.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: c5cf928be1eff4c43b57354177fed5e5, type: 3}
 --- !u!4 &699516233991121103 stripped
@@ -2456,3 +2509,14 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 5637220636540726060, guid: c5cf928be1eff4c43b57354177fed5e5, type: 3}
   m_PrefabInstance: {fileID: 5156129001662186467}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &7752043268772257948 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 3178004519754326911, guid: c5cf928be1eff4c43b57354177fed5e5, type: 3}
+  m_PrefabInstance: {fileID: 5156129001662186467}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6da43522623d4704e979466dc7650b65, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

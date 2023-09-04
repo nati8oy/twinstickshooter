@@ -6,8 +6,8 @@ using UnityEngine;
 public class Explosion : MonoBehaviour
 {
 
-    [SerializeField] private float radius = 10.0F;
-    [SerializeField] private float power = 10.0F;
+    [SerializeField] private float radius = 3.0F;
+    [SerializeField] private float power = 12.0F;
     [SerializeField] private GameObject explosion;
     [SerializeField] private float explosionDamage;
 
@@ -25,7 +25,7 @@ public class Explosion : MonoBehaviour
 
     }
 
-    private void Explode()
+    public void Explode()
     {
 
         Vector3 explosionPos = transform.position;

@@ -33,17 +33,18 @@ public class MeleeAttack : MonoBehaviour
 
             }
             */
-
+ 
             if (weapon.stun)
             {
                 collision.gameObject.GetComponent<EnemyStun>().Stun(weapon.stunTime);
+                collision.gameObject.GetComponent<Rigidbody>().AddExplosionForce(weapon.knockback, transform.position, 2f);
+                feedbackPlayer.PlayFeedbacks();
             }
 
             else
             {
                 collision.gameObject.GetComponent<EnemyHealth>().Damage(weapon.damage);
-                collision.gameObject.GetComponent<Rigidbody>().AddExplosionForce(weapon.knockback, transform.position, 2f);
-                feedbackPlayer.PlayFeedbacks();
+                
             }
 
            

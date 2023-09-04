@@ -20,7 +20,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &6096755248722658600
 Transform:
   m_ObjectHideFlags: 0
@@ -130,6 +130,7 @@ MonoBehaviour:
   radius: 10
   power: 1000
   explosion: {fileID: 4591458806872402725, guid: 7ce34eff6577756489978e94ba920697, type: 3}
+  explosionDamage: 0
   layerMask:
     serializedVersion: 2
     m_Bits: 3072
