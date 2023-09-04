@@ -633,4 +633,10 @@ private void LateUpdate(){
 
     }
 
+    void OnDrawGizmos()
+    {
+        // This will draw the raycast in the Unity scene view for debugging purposes
+        Gizmos.DrawRay(raycastHit.transform.position, shotPoint.forward * 5f);
+    }
+
 }
