@@ -42,7 +42,7 @@ public class Explosion : MonoBehaviour
             
             //hit.gameObject.GetComponent<EnemyHealth>().Damage(explosionDamage);
 
-            Debug.Log("no. of object in explosion: " +  colliders.Length);
+            //Debug.Log("no. of object in explosion: " +  colliders.Length);
 
         }
 

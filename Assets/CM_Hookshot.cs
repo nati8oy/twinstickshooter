@@ -5,6 +5,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.Events;
 using UnityEngine.AI;
+using UnityEditor.PackageManager;
 
 public class CM_Hookshot : MonoBehaviour
 {
@@ -49,19 +50,6 @@ public class CM_Hookshot : MonoBehaviour
 
     public bool isGrappling = false;
 
-
-    //used to check which arm is being used to grapple
-    //0 means first arm
-
-    [Header("Arm Controls")]
-    private int currentArm = 0;
-    private int currentHook = 0;
-    /*
-    [SerializeField] private bool multiArmSwing;
-    [SerializeField] private Transform[] arms;
-    [SerializeField] private Transform[] hooks;
-    */
-
     [Header("Feedbacks")]
     [SerializeField] private UnityEvent onGrapple;
     [SerializeField] private UnityEvent OnHookshotHit;
@@ -72,8 +60,11 @@ public class CM_Hookshot : MonoBehaviour
 
     [Header("Targeting")]
     public GameObject hitTarget;
-    [SerializeField] private bool autoTarget;
     [SerializeField] GameObject[] targets;
+    [SerializeField] bool targetVisible;
+    [SerializeField] Transform crosshair;
+    private RaycastHit targetingRaycast;
+    [SerializeField] private AutoTarget autoTargetScript;
 
 
     [Header("Hookshot Speed")]
@@ -88,8 +79,6 @@ public class CM_Hookshot : MonoBehaviour
     }
 
 
-
-
     private void Awake()
     {
         state = State.Normal;
@@ -99,6 +88,7 @@ public class CM_Hookshot : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+       
 
         characterController = gameObject.GetComponent<CharacterController>();
         ///twinStick = gameObject.GetComponent<TwinStickMovement>();
@@ -136,7 +126,24 @@ public class CM_Hookshot : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        //visualises a target/crosshair for the hookshot
+        if (targetVisible)
+        {
+            //set the crosshair object to a distance of hookshotMaxRange in front of the shotpoint
+            crosshair.position = shotPoint.position + shotPoint.forward * hookshotMaxRange;
+
+            
+            //raycast from the shotpoint to the crosshair
+            if (Physics.Raycast(shotPoint.position, shotPoint.forward, out targetingRaycast, hookshotMaxRange, layerMask))
+            {
+                //if the raycast hits something then set the crosshair position to the hit point
+                crosshair.position = targetingRaycast.point;
+                //hitTarget = targetingRaycast.collider.gameObject;
+            }
+            
+        }
+
+
 
         switch (state)
         {
@@ -212,25 +219,7 @@ private void LateUpdate(){
         if (state == State.Normal || state == State.HookshotFlyingPlayer)
         {
 
-            if (autoTarget)
-            {
-    
-                //loop through that array and for each one see if the distance from the first one in the array [0] to the gun is closer than the attack range.
-                foreach (GameObject targetEnemy in targets)
-                {
-                    if (Vector3.Distance(transform.position, targets[0].transform.position) < 10)
-                    {
-                        hook.position = targets[0].transform.position;
-                        hookshotPosition = targets[0].transform.position;
-                        state = State.HookshotAttached;
-                        lr.enabled = true;
-                        lr.SetPosition(1, hookshotPosition);
-                    }
-
-                }
-            }
-
-            else
+            
             {
 
                 if (Physics.Raycast(shotPoint.position, shotPoint.forward, out raycastHit, hookshotMaxRange))
@@ -480,15 +469,24 @@ private void LateUpdate(){
         hitTarget.transform.position = carryPoint.transform.position;
 
         lr.enabled = false;
+
+
+
+
+        /*
+        if (targetVisible)
+        {
+            //set the crosshair object to a distance of hookshotMaxRange in front of the shotpoint
+            crosshair.gameObject.SetActive(false);
+
+        }*/
     }
 
 
-    private void ThrowCarriedObject()
+        private void ThrowCarriedObject()
     {
         //play throw feedbacks
         onThrow.Invoke();
-
-       
 
         var hitTargetRB = hitTarget.GetComponent<Rigidbody>();
         //if you're carrying an object, throw it
@@ -502,7 +500,18 @@ private void LateUpdate(){
                 //launch the hittarget object in the direction the player is facing
                 hitTargetRB.useGravity = true;
                 hitTargetRB.freezeRotation = false;
-                hitTargetRB.AddForce(transform.forward * throwForce);
+
+                if (autoTargetScript!=null)
+                {
+                    hitTargetRB.AddForce(autoTargetScript.attackDirection * throwForce);
+
+                }
+                else
+                {
+                    hitTargetRB.AddForce(transform.forward * throwForce);
+                }
+
+                //add a bit spin to the object when you throw it
                 hitTargetRB.AddTorque(transform.forward * throwForce);
             }
            
@@ -633,10 +642,11 @@ private void LateUpdate(){
 
     }
 
-    void OnDrawGizmos()
+    //visualise the raycast in the scene view using gizmos
+     void OnDrawGizmos()
     {
-        // This will draw the raycast in the Unity scene view for debugging purposes
-        Gizmos.DrawRay(raycastHit.transform.position, shotPoint.forward * 5f);
+        Gizmos.color = Color.red;
+        Gizmos.DrawLine(shotPoint.position, shotPoint.position + shotPoint.forward * hookshotMaxRange);
     }
 
 }
