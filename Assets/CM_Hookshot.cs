@@ -164,8 +164,9 @@ public class CM_Hookshot : MonoBehaviour
                 hook.gameObject.SetActive(true);
                 break;
             case State.HookshotAttached:
-                HandleHookshotAttached();
-                hook.gameObject.SetActive(false);
+                HandleHookshotPull();
+//                HandleHookshotAttached();
+                hook.gameObject.SetActive(true);
                 break;
             case State.HookshotCarry:
                 HandleHookshotCarry();
@@ -178,17 +179,6 @@ public class CM_Hookshot : MonoBehaviour
         //target the closest object on layer 11
         //get all of the nearby enemies and put them in an array
         targets = GameObject.FindGameObjectsWithTag("enemy");
-
-        //loop through that array and for each one see if the distance from the first one in the array [0] to the gun is closer than the attack range.
-        foreach (GameObject targetEnemy in targets)
-        {
-           
-                //this attack is based on a timer that can be set in the inspector
-                Debug.DrawLine(gameObject.transform.position, targets[0].transform.position, color: Color.red);
-                Transform target = targets[0].transform;
-
-
-        }
 
     }
 
@@ -263,6 +253,7 @@ private void LateUpdate(){
                 }
 
                 //set the hit target to whatever the raycast has hit
+
                 hitTarget = raycastHit.collider.gameObject;
                 //Debug.Log("hit target is " + hitTarget.name);
                 //make the raycast ignore the hook object's collider
@@ -398,88 +389,85 @@ private void LateUpdate(){
     private void HandleHookshotPull()
     {
 
-        //deactivate the navmesh agent
-        if (hitTarget.GetComponent<NavMeshAgent>())
+        if (hitTarget != null)
         {
-            hitTarget.GetComponent<NavMeshAgent>().enabled = false;
-        }
 
-
-        //destroy the joint for an attached object
-        if (hitTarget.GetComponent<FixedJoint>())
-        {
-            Destroy(hitTarget.GetComponent<FixedJoint>());
-        }
-
-
-
-        //hook.gameObject.SetActive(true);
-
-        float hookshotSpeedMin = 10f;
-        float hookshotSpeedMax = 40f;
-
-        Vector3 hookshotDir = (hookshotPosition + transform.position).normalized;
-
-        //pull the hittarget towards the player
-        hitTarget.transform.position = Vector3.MoveTowards(hitTarget.transform.position, transform.position, 40f * Time.deltaTime);
-        hook.gameObject.transform.position = hitTarget.transform.position;
-
-        //match the hook to the same position of the hit target as it's getting pulled back
-        //hook.gameObject.transform.position = hitTarget.transform.position;
-
-
-        lr.enabled = true;
-        lr.SetPosition(1, hitTarget.transform.position);
-
-        //check the distance between the hookshot position and the player
-        //and if it's less than 1f, then cancel the hookshot
-        if (Vector3.Distance(transform.position, hitTarget.transform.position) < 1f)
-        {
-            if (raycastHit.collider.gameObject.layer == 11)
+            //deactivate the navmesh agent
+            if (hitTarget.GetComponent<NavMeshAgent>())
             {
-                state = State.HookshotCarry;
+                hitTarget.GetComponent<NavMeshAgent>().enabled = false;
             }
 
-            else
+
+            //destroy the joint for an attached object
+            if (hitTarget.GetComponent<FixedJoint>())
             {
+                Destroy(hitTarget.GetComponent<FixedJoint>());
+            }
+
+
+
+            //hook.gameObject.SetActive(true);
+
+            float hookshotSpeedMin = 10f;
+            float hookshotSpeedMax = 40f;
+
+            Vector3 hookshotDir = (hookshotPosition + transform.position).normalized;
+
+            //pull the hittarget towards the player
+            hitTarget.transform.position = Vector3.MoveTowards(hitTarget.transform.position, transform.position, 40f * Time.deltaTime);
+            hook.gameObject.transform.position = hitTarget.transform.position;
+
+            //match the hook to the same position of the hit target as it's getting pulled back
+            //hook.gameObject.transform.position = hitTarget.transform.position;
+
+
+            lr.enabled = true;
+            lr.SetPosition(1, hitTarget.transform.position);
+
+            //check the distance between the hookshot position and the player
+            //and if it's less than 1f, then cancel the hookshot
+            if (Vector3.Distance(transform.position, hitTarget.transform.position) < 1f)
+            {
+                if (raycastHit.collider.gameObject.layer == 11)
+                {
+                    state = State.HookshotCarry;
+                }
+
+                else
+                {
+                    CancelHookshot();
+                }
+
+            }
+
+            //if the player has jumped while hookshotting, cancel the hookshot
+            if (jump.ReadValue<float>() > 0)
+            {
+
                 CancelHookshot();
+
             }
-
         }
 
-        //if the player has jumped while hookshotting, cancel the hookshot
-        if (jump.ReadValue<float>() > 0)
-        {
-    
-            CancelHookshot();
-
-        }
     }
 
     private void HandleHookshotCarry()
     {
-
-        DetachSpringJoint();
-
-        var hitTargetRB = hitTarget.GetComponent<Rigidbody>();
-
-        //carry the hittarget game object with the player at the shot point
-        hitTargetRB.useGravity = false;
-        hitTargetRB.freezeRotation = true;
-        hitTarget.transform.position = carryPoint.transform.position;
-
-        lr.enabled = false;
-
-
-
-
-        /*
-        if (targetVisible)
+        if (hitTarget != null)
         {
-            //set the crosshair object to a distance of hookshotMaxRange in front of the shotpoint
-            crosshair.gameObject.SetActive(false);
+            DetachSpringJoint();
 
-        }*/
+            var hitTargetRB = hitTarget.GetComponent<Rigidbody>();
+
+            //carry the hittarget game object with the player at the shot point
+            hitTargetRB.useGravity = false;
+            hitTargetRB.freezeRotation = true;
+            hitTarget.transform.position = carryPoint.transform.position;
+
+            lr.enabled = false;
+
+        }
     }
 
 
@@ -501,7 +489,8 @@ private void LateUpdate(){
                 hitTargetRB.useGravity = true;
                 hitTargetRB.freezeRotation = false;
 
-                if (autoTargetScript!=null)
+                //check if the auto targeting is on and if the object you're throwing isn't an enemy
+                if (autoTargetScript!=null && hitTarget.tag!="enemy")
                 {
                     hitTargetRB.AddForce(autoTargetScript.attackDirection * throwForce);
 
@@ -634,11 +623,15 @@ private void LateUpdate(){
 
     private void ResetEnemyMovement()
     {
-        if (hitTarget.GetComponent<NavMeshAgent>())
+        if (hitTarget != null)
         {
-            hitTarget.GetComponent<NavMeshAgent>().enabled = true;
+            if (hitTarget.GetComponent<NavMeshAgent>())
+            {
+                hitTarget.GetComponent<NavMeshAgent>().enabled = true;
 
+            }
         }
+       
 
     }
 

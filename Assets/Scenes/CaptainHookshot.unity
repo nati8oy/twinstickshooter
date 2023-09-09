@@ -2304,17 +2304,6 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 102278313849289249, guid: 623f5226bf49a25479dafb914b4aadb6, type: 3}
   m_PrefabInstance: {fileID: 102278313350358617}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &575609991 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 460407556482336877, guid: 623f5226bf49a25479dafb914b4aadb6, type: 3}
-  m_PrefabInstance: {fileID: 102278313350358617}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 29b4e58926ad9ac4e9ce54efd5693a8a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &606319025
 GameObject:
   m_ObjectHideFlags: 0
@@ -6701,6 +6690,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: SimpleEnemy (1)
       objectReference: {fileID: 0}
+    - target: {fileID: 541802505096995611, guid: f763ec2ebd64b2e49bb37ce589d8a2d2, type: 3}
+      propertyPath: hookshotScript
+      value: 
+      objectReference: {fileID: 0}
     - target: {fileID: 541802505096995615, guid: f763ec2ebd64b2e49bb37ce589d8a2d2, type: 3}
       propertyPath: m_RootOrder
       value: 7
@@ -7690,25 +7683,9 @@ PrefabInstance:
       propertyPath: hook
       value: 
       objectReference: {fileID: 1429526708}
-    - target: {fileID: 102278313849289250, guid: 623f5226bf49a25479dafb914b4aadb6, type: 3}
-      propertyPath: autoTarget
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 102278313849289250, guid: 623f5226bf49a25479dafb914b4aadb6, type: 3}
-      propertyPath: autoTargetScript
-      value: 
-      objectReference: {fileID: 575609991}
-    - target: {fileID: 102278313849289250, guid: 623f5226bf49a25479dafb914b4aadb6, type: 3}
-      propertyPath: hookshotMaxRange
-      value: 30
-      objectReference: {fileID: 0}
     - target: {fileID: 102278313849289256, guid: 623f5226bf49a25479dafb914b4aadb6, type: 3}
       propertyPath: m_Name
       value: PlayerHookshot
-      objectReference: {fileID: 0}
-    - target: {fileID: 460407556482336877, guid: 623f5226bf49a25479dafb914b4aadb6, type: 3}
-      propertyPath: closestTarget
-      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 623f5226bf49a25479dafb914b4aadb6, type: 3}

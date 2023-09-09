@@ -13,7 +13,7 @@ GameObject:
   m_Layer: 0
   m_Name: CarryPoint
   m_TagString: Untagged
-  m_Icon: {fileID: 0}
+  m_Icon: {fileID: 1206586993520771344, guid: 0000000000000000d000000000000000, type: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
@@ -25,7 +25,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 102278313375156206}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.879, z: -0.021}
+  m_LocalPosition: {x: 0, y: 0.92, z: -0.06}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -577,7 +577,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 3072
   shotPoint: {fileID: 102278314551979599}
-  hook: {fileID: 5525737978178216577, guid: 5d83138a4852049ffb1adad3c97fcbde, type: 3}
+  hook: {fileID: 0}
   carryPoint: {fileID: 102278313375156193}
   throwForce: 1250
   lr: {fileID: 102278313849289253}
@@ -585,7 +585,7 @@ MonoBehaviour:
   hookshotSpeedMultiplier: 7
   joint: {fileID: 102278313849289433}
   characterController: {fileID: 102278313849289261}
-  hookshotMaxRange: 10
+  hookshotMaxRange: 30
   isGrappling: 0
   onGrapple:
     m_PersistentCalls:
@@ -639,10 +639,10 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   hitTarget: {fileID: 0}
-  autoTarget: 0
   targets: []
   targetVisible: 1
   crosshair: {fileID: 6460949521456873037}
+  autoTargetScript: {fileID: 460407556482336877}
   hookshotSpeedMin: 20
   hookshotSpeedMax: 80
 --- !u!120 &102278313849289253
@@ -1273,6 +1273,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 29b4e58926ad9ac4e9ce54efd5693a8a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  closestTarget: 1
+  furthestTarget: 0
+  targets: []
+  attackRange: 10
+  attackDirection: {x: 0, y: 0, z: 0}
+  closestObject: {fileID: 0}
 --- !u!1 &102278314314392664
 GameObject:
   m_ObjectHideFlags: 0
@@ -1485,7 +1491,6 @@ GameObject:
   - component: {fileID: 102278314406291483}
   - component: {fileID: 102278314406291486}
   - component: {fileID: 102278314406291487}
-  - component: {fileID: 102278314406291484}
   - component: {fileID: 102278314406291485}
   m_Layer: 0
   m_Name: Middle Hand
@@ -1560,19 +1565,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!65 &102278314406291484
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 102278314406291480}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 1, y: 1, z: 1}
-  m_Center: {x: 0, y: 0, z: 0}
 --- !u!120 &102278314406291485
 LineRenderer:
   m_ObjectHideFlags: 0
@@ -2404,7 +2396,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: -3033667219593020291, guid: a825550d737975c4db2a51686bf7c0e7, type: 3}
+  - {fileID: 2100000, guid: 9ca80467a033e954a8b9ad8601d6f4c7, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
