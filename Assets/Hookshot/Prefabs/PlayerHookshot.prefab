@@ -340,6 +340,7 @@ GameObject:
   - component: {fileID: 5099815271907611458}
   - component: {fileID: 3850684314863834522}
   - component: {fileID: 460407556482336877}
+  - component: {fileID: 575609992}
   m_Layer: 0
   m_Name: PlayerHookshot
   m_TagString: Player
@@ -1275,10 +1276,33 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   closestTarget: 1
   furthestTarget: 0
+  hookshotAutoTargeting: 0
   targets: []
   attackRange: 10
   attackDirection: {x: 0, y: 0, z: 0}
   closestObject: {fileID: 0}
+--- !u!114 &575609992
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 102278313849289256}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7c6f9fa415614784bbc389b71cb7b28d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  playerRef: {fileID: 0}
+  angle: 0
+  radius: 2
+  targetMask:
+    serializedVersion: 2
+    m_Bits: 0
+  obstructionMask:
+    serializedVersion: 2
+    m_Bits: 0
+  canSeeTarget: 0
 --- !u!1 &102278314314392664
 GameObject:
   m_ObjectHideFlags: 0

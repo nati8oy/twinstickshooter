@@ -115,11 +115,6 @@ public class CM_Hookshot : MonoBehaviour
         pull.performed += _ => ActivateHookshotPull();
         pull.Enable();
 
-        //set the hookshots to the first one in the array for arms and hooks
-        //shotPoint = arms[0];
-        //hook = hooks[0];
-
-
 
     }
 
@@ -142,8 +137,6 @@ public class CM_Hookshot : MonoBehaviour
             }
             
         }
-
-
 
         switch (state)
         {
@@ -190,25 +183,10 @@ private void LateUpdate(){
 
     private void HandleHookshotStart()
     {
-        /*
-        if (multiArmSwing)
-        {
-            currentArm = (currentArm + 1) % arms.Length;
-            shotPoint = arms[currentArm];
-
-            currentHook = (currentHook + 1) % arms.Length;
-            hookshotPosition = hooks[currentHook].position;
-        }
-        */
-
-
-        //adds the particles when moving
-        //onGrapple.Invoke();
-
+   
         //if you are normal or flying through the air then shoot the hookshot
         if (state == State.Normal || state == State.HookshotFlyingPlayer)
         {
-
             
             {
 
@@ -229,7 +207,6 @@ private void LateUpdate(){
 
                     }
 
-
                     //this is the pullable object layer
                     if (raycastHit.collider.gameObject.layer == 11)
                     {
@@ -249,7 +226,6 @@ private void LateUpdate(){
 
                     }
 
-
                 }
 
                 //set the hit target to whatever the raycast has hit
@@ -258,22 +234,13 @@ private void LateUpdate(){
                 //Debug.Log("hit target is " + hitTarget.name);
                 //make the raycast ignore the hook object's collider
                 Physics.IgnoreCollision(raycastHit.collider, hook.GetComponent<Collider>());
-
-
             }
-
-
-
-
 
         }
         
         lr.enabled = true;
         lr.SetPosition(1, hookshotPosition);
     }
-
-
-
 
     private void HandleHookshotMovement()
     {
@@ -302,24 +269,13 @@ private void LateUpdate(){
             // characterController.enabled = false;
         }
 
-
-
-
-
-
         //if the player has jumped while hookshotting, cancel the hookshot
         if (jump.ReadValue<float>() > 0)
         {
             
             //also maintain momentum
-
             float momentumExtraSpeed = 3f;
-
-
-            //characterVelocityMomentum = hookshotDir * hookshotSpeed;
-
             CancelHookshot();
-
 
         }
 
@@ -352,20 +308,12 @@ private void LateUpdate(){
             CancelHookshot();
         }
 
-        //var hitTargetRB = hitTarget.GetComponent<Rigidbody>();
-        //add force to the object you've hit in an arc
-
-        //
-       // hitTargetRB.AddForce(transform.forward * 10f + transform.right * 5f);
-
-
         //deactivate the navmesh agent of the object you've hit
         if (hitTarget.GetComponent<NavMeshAgent>())
         {
             hitTarget.GetComponent<NavMeshAgent>().enabled = false;
 
         }
-
 
         joint.connectedBody = hitTarget.GetComponent<Rigidbody>();
       
@@ -377,8 +325,6 @@ private void LateUpdate(){
             //also maintain momentum
 
             float momentumExtraSpeed = 3f;
-
-            //characterVelocityMomentum = hookshotDir * hookshotSpeed;
 
             CancelHookshot();
 
@@ -398,16 +344,11 @@ private void LateUpdate(){
                 hitTarget.GetComponent<NavMeshAgent>().enabled = false;
             }
 
-
             //destroy the joint for an attached object
             if (hitTarget.GetComponent<FixedJoint>())
             {
                 Destroy(hitTarget.GetComponent<FixedJoint>());
             }
-
-
-
-            //hook.gameObject.SetActive(true);
 
             float hookshotSpeedMin = 10f;
             float hookshotSpeedMax = 40f;
@@ -472,45 +413,52 @@ private void LateUpdate(){
 
 
         private void ThrowCarriedObject()
-    {
-        //play throw feedbacks
-        onThrow.Invoke();
-
-        var hitTargetRB = hitTarget.GetComponent<Rigidbody>();
-        //if you're carrying an object, throw it
-        if (state == State.HookshotCarry)
         {
-            state = State.Normal;
 
-            //check if it's got a rigid body or not
-            if (hitTarget.GetComponent<Rigidbody>())
+        if (hitTarget != null)
+        {
+
+            //play throw feedbacks
+            onThrow.Invoke();
+
+            var hitTargetRB = hitTarget.GetComponent<Rigidbody>();
+
+
+            //if you're carrying an object, throw it
+            if (state == State.HookshotCarry)
             {
-                //launch the hittarget object in the direction the player is facing
-                hitTargetRB.useGravity = true;
-                hitTargetRB.freezeRotation = false;
+                state = State.Normal;
 
-                //check if the auto targeting is on and if the object you're throwing isn't an enemy
-                if (autoTargetScript!=null && hitTarget.tag!="enemy")
+                //check if it's got a rigid body or not
+                if (hitTarget.GetComponent<Rigidbody>())
                 {
-                    hitTargetRB.AddForce(autoTargetScript.attackDirection * throwForce);
+                    //launch the hittarget object in the direction the player is facing
+                    hitTargetRB.useGravity = true;
+                    hitTargetRB.freezeRotation = false;
+
+                    //check if the auto targeting is on and if the object you're throwing isn't an enemy
+                    if (autoTargetScript != null && hitTarget.tag != "enemy")
+                    {
+                        hitTargetRB.AddForce(autoTargetScript.attackDirection * throwForce);
+
+                    }
+                    else
+                    {
+                        hitTargetRB.AddForce(transform.forward * throwForce);
+                    }
+
+                    //add a bit spin to the object when you throw it
+                    hitTargetRB.AddTorque(transform.forward * throwForce);
+                }
+
+
+                //check if the object has a navmesh agent and if so reset it so it works again after being thrown
+                if (hitTarget.GetComponent<NavMeshAgent>())
+                {
+                    hitTarget.GetComponent<NavMeshAgent>().enabled = false;
+                    Invoke("ResetEnemyMovement", 1f);
 
                 }
-                else
-                {
-                    hitTargetRB.AddForce(transform.forward * throwForce);
-                }
-
-                //add a bit spin to the object when you throw it
-                hitTargetRB.AddTorque(transform.forward * throwForce);
-            }
-           
-
-            //check if the object has a navmesh agent and if so reset it so it works again after being thrown
-            if (hitTarget.GetComponent<NavMeshAgent>())
-            {
-                hitTarget.GetComponent<NavMeshAgent>().enabled = false;
-                Invoke("ResetEnemyMovement", 1f);
-               
             }
         }
     }
@@ -541,20 +489,6 @@ private void LateUpdate(){
             state = State.Normal;
         }
 
-  
-
-        //lr.enabled = true;
-        //lr.SetPosition(1, hookshotPosition);
-
-        //move the hook position from the shot point to a distacne of 10f in front of the player
-        //hook.position = shotPoint.position + transform.forward * 10f;
-
-/*
-        if (Vector3.Distance(hook.position, Vector3.zero) < 3f)
-        {
-            state = State.Normal;
-            lr.enabled = false;
-        }*/
     }
 
     private void CancelHookshot()
@@ -635,11 +569,12 @@ private void LateUpdate(){
 
     }
 
+    /*
     //visualise the raycast in the scene view using gizmos
      void OnDrawGizmos()
     {
         Gizmos.color = Color.red;
         Gizmos.DrawLine(shotPoint.position, shotPoint.position + shotPoint.forward * hookshotMaxRange);
     }
-
+    */
 }

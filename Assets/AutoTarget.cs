@@ -6,55 +6,90 @@ public class AutoTarget : MonoBehaviour
 {
     [SerializeField] private bool closestTarget;
     [SerializeField] private bool furthestTarget;
+    [SerializeField] private bool hookshotAutoTargeting;
+
     [SerializeField] private GameObject[] targets;
     //[SerializeField] private GameObject currentTarget;
     [SerializeField] private float attackRange = 10f;
     public Vector3 attackDirection;
 
-    [SerializeField] private GameObject closestObject;
+     public GameObject closestObject;
 
-    // Start is called before the first frame update
-    void Start()
+
+    private void Start()
     {
+        FindClosestTarget();
+
+        //run this as a coroutine to save a bit of processing
+        StartCoroutine(FindClosestTargetRoutine());
+    }
+
+
+    private IEnumerator FindClosestTargetRoutine()
+    {
+
+        //if the closest object is not null then run this coroutine
+        if (closestObject)
+        {
+            WaitForSeconds wait = new WaitForSeconds(0.2f);
+
+            while (true)
+            {
+                yield return wait;
+                FindClosestTarget();
+            }
+        }
         
     }
 
-    // Update is called once per frame
-    void Update()
+
+    private void FindClosestTarget()
     {
+        //fill the arrawy with the enemy game objects
         targets = GameObject.FindGameObjectsWithTag("enemy");
 
         float closestDistance = Mathf.Infinity;
 
-            foreach (GameObject targetEnemy in targets)
+        foreach (GameObject targetEnemy in targets)
+        {
+
+            if (targetEnemy != null)
             {
+                // Calculate the distance between the player and the current object.
+                float distance = Vector3.Distance(transform.position, targetEnemy.transform.position);
 
-                if (targetEnemy != null)
+                // Check if this object is closer than the previously closest object.
+                if (distance < closestDistance)
                 {
-                    // Calculate the distance between the player and the current object.
-                    float distance = Vector3.Distance(transform.position, targetEnemy.transform.position);
-
-                    // Check if this object is closer than the previously closest object.
-                    if (distance < closestDistance)
-                    {
-                        closestDistance = distance;
-                        closestObject = targetEnemy;
-                        //draw a debug from the player to the current target
-                    }
+                    closestDistance = distance;
+                    closestObject = targetEnemy;
+                    //draw a debug from the player to the current target
                 }
-
-            //this shows the direction that will be used by another script for auto targeting
-            attackDirection = (closestObject.transform.position - transform.position).normalized;
-
-            //drag a debug line to the closest enemy
-            Debug.DrawLine(transform.position, closestObject.transform.position, Color.green);
+               
+            }
+            else
+            {
+                closestObject = null;
+            }
         }
 
 
+        if (targets.Length > 0)
+        {
+            //this shows the direction that will be used by another script for auto targeting
+            attackDirection = (closestObject.transform.position - transform.position).normalized;
 
-       
 
+            //drag a debug line to the closest enemy
+            Debug.DrawLine(transform.position, closestObject.transform.position, Color.green);
 
+        }
+        else
+        {
+            attackDirection = transform.forward;
+        }
     }
 
+
+    
 }
