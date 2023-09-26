@@ -2,19 +2,19 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[RequireComponent(typeof(LineRenderer))] 
 public class LaserSight : MonoBehaviour
 {
     
-    private LineRenderer lineRenderer;
 
     [SerializeField] private Transform startPoint;
-    [SerializeField] private float sightLength = 3f;
+    [SerializeField] private Transform endPoint;
+    [SerializeField] LineRenderer lr;
+
 
     // Start is called before the first frame update
     void Start()
     {
-        lineRenderer = GetComponent<LineRenderer>();
+        lr = GetComponent<LineRenderer>();
        // lineRenderer.positionCount = 2;
     }
 
@@ -23,10 +23,10 @@ public class LaserSight : MonoBehaviour
     {
 
         //use the linerenderer to draw a line from the start point to the end point
-        if (lineRenderer != null)
+        if (lr != null)
         {
-            lineRenderer.SetPosition(0, startPoint.position);
-            lineRenderer.SetPosition(1, gameObject.transform.forward * sightLength);
+            lr.SetPosition(0, startPoint.position);
+            lr.SetPosition(1, endPoint.position);
 
         }
        

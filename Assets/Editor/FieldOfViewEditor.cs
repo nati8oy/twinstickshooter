@@ -23,7 +23,7 @@ public class FieldOfViewEditor : Editor
         if(fov.canSeeTarget)
         {
             Handles.color = Color.cyan;
-            Handles.DrawLine(fov.transform.position, fov.targetRef.transform.position);
+            //Handles.DrawLine(fov.transform.position, fov.targetRefObject.transform.position);
         }
         else
         {

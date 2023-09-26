@@ -65,6 +65,7 @@ public class CM_Hookshot : MonoBehaviour
     [SerializeField] Transform crosshair;
     private RaycastHit targetingRaycast;
     [SerializeField] private AutoTarget autoTargetScript;
+    [SerializeField] private GameObject lockOnTarget;
 
 
     [Header("Hookshot Speed")]
@@ -121,6 +122,9 @@ public class CM_Hookshot : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        //stores the lock on target in the variable
+        lockOnTarget = GetComponent<AutoTarget>().closestTarget;
+
         //visualises a target/crosshair for the hookshot
         if (targetVisible)
         {
@@ -137,6 +141,7 @@ public class CM_Hookshot : MonoBehaviour
             }
             
         }
+
 
         switch (state)
         {
@@ -190,50 +195,64 @@ private void LateUpdate(){
             
             {
 
+                /*
+                hitTarget = lockOnTarget;
+                hook.position = lockOnTarget.transform.position;
+                hookshotPosition = lockOnTarget.transform.position;
+                state = State.HookshotPull;
+                */
+
+
+                //gameObject.GetComponent<AutoTarget>().FindClosestGrapplePoint();
+
+
+                
                 if (Physics.Raycast(shotPoint.position, shotPoint.forward, out raycastHit, hookshotMaxRange))
-                {
-
-                    //check the layer of the object that was hit
-                    //if the layer is grappleable, then set the hookshot position to the hit point
-                    //if not, then set the hookshot position to the maximum distance of the hookshot
-                    if (raycastHit.collider.gameObject.layer == 10)
                     {
-                        // Debug.Log("hit grappleable object");
-                        hook.position = raycastHit.point;
-                        hookshotPosition = raycastHit.point;
-                        state = State.HookshotFlyingPlayer;
-                        onGrapple.Invoke();
-                        OnHookshotHit.Invoke();
 
-                    }
+                        //check the layer of the object that was hit
+                        //if the layer is grappleable, then set the hookshot position to the hit point
+                        //if not, then set the hookshot position to the maximum distance of the hookshot
+                        if (raycastHit.collider.gameObject.layer == 10)
+                        {
+                            // Debug.Log("hit grappleable object");
+                            hook.position = raycastHit.point;
+                            hookshotPosition = raycastHit.point;
+                            state = State.HookshotFlyingPlayer;
+                            onGrapple.Invoke();
+                            OnHookshotHit.Invoke();
 
-                    //this is the pullable object layer
-                    if (raycastHit.collider.gameObject.layer == 11)
-                    {
-                        //Debug.Log("hit pullable object");
-                        hook.position = raycastHit.point;
-                        hookshotPosition = raycastHit.point;
-                        state = State.HookshotAttached;
-                    }
+                        }
 
-                    //this is the layer for collectibles that you can pull towards yourself
-                    if (raycastHit.collider.gameObject.layer == 12)
-                    {
-                        // Debug.Log("hit collectible object");
-                        hook.position = raycastHit.point;
-                        hookshotPosition = raycastHit.point;
-                        state = State.HookshotPull;
+                        //this is the pullable object layer
+                        if (raycastHit.collider.gameObject.layer == 11)
+                        {
+                            //Debug.Log("hit pullable object");
+                            hook.position = raycastHit.point;
+                            hookshotPosition = raycastHit.point;
+                            state = State.HookshotAttached;
+                        }
 
-                    }
+                        //this is the layer for collectibles that you can pull towards yourself
+                        if (raycastHit.collider.gameObject.layer == 12)
+                        {
+                            // Debug.Log("hit collectible object");
+                            hook.position = raycastHit.point;
+                            hookshotPosition = raycastHit.point;
+                            state = State.HookshotPull;
 
+                        }
+
+
+                    //set the hit target to whatever the raycast has hit
+                    hitTarget = raycastHit.collider.gameObject;
+                    //Debug.Log("hit target is " + hitTarget.name);
+
+                    //make the raycast ignore the hook object's collider
+                    Physics.IgnoreCollision(raycastHit.collider, hook.GetComponent<Collider>());
                 }
+                
 
-                //set the hit target to whatever the raycast has hit
-
-                hitTarget = raycastHit.collider.gameObject;
-                //Debug.Log("hit target is " + hitTarget.name);
-                //make the raycast ignore the hook object's collider
-                Physics.IgnoreCollision(raycastHit.collider, hook.GetComponent<Collider>());
             }
 
         }

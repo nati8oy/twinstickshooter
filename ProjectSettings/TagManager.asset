@@ -29,6 +29,7 @@ TagManager:
   - resource
   - turret
   - melee
+  - grapple point
   layers:
   - Default
   - TransparentFX

@@ -644,6 +644,7 @@ MonoBehaviour:
   targetVisible: 1
   crosshair: {fileID: 6460949521456873037}
   autoTargetScript: {fileID: 460407556482336877}
+  lockOnTarget: {fileID: 0}
   hookshotSpeedMin: 20
   hookshotSpeedMax: 80
 --- !u!120 &102278313849289253
@@ -1274,13 +1275,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 29b4e58926ad9ac4e9ce54efd5693a8a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  closestTarget: 1
+  lockToClosestTarget: 0
   furthestTarget: 0
   hookshotAutoTargeting: 0
   targets: []
+  grapplePoints: []
   attackRange: 10
   attackDirection: {x: 0, y: 0, z: 0}
-  closestObject: {fileID: 0}
+  grappleDirection: {x: 0, y: 0, z: 0}
+  closestTarget: {fileID: 0}
+  closestGrapplePoint: {fileID: 0}
 --- !u!114 &575609992
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1293,15 +1297,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7c6f9fa415614784bbc389b71cb7b28d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerRef: {fileID: 0}
-  angle: 0
-  radius: 2
+  angle: 90
+  radius: 7
   targetMask:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 3072
   obstructionMask:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 256
   canSeeTarget: 0
 --- !u!1 &102278314314392664
 GameObject:
@@ -1516,6 +1519,7 @@ GameObject:
   - component: {fileID: 102278314406291486}
   - component: {fileID: 102278314406291487}
   - component: {fileID: 102278314406291485}
+  - component: {fileID: 5872245103367564208}
   m_Layer: 0
   m_Name: Middle Hand
   m_TagString: Untagged
@@ -1596,7 +1600,7 @@ LineRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 102278314406291480}
-  m_Enabled: 0
+  m_Enabled: 1
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
@@ -1609,7 +1613,7 @@ LineRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 4d217f608a726411a82a4f553a5b691d, type: 2}
+  - {fileID: 10306, guid: 0000000000000000f000000000000000, type: 0}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -1635,7 +1639,7 @@ LineRenderer:
   - {x: 0, y: 0, z: 1}
   m_Parameters:
     serializedVersion: 3
-    widthMultiplier: 0.25
+    widthMultiplier: 0.15
     widthCurve:
       serializedVersion: 2
       m_Curve:
@@ -1653,8 +1657,8 @@ LineRenderer:
       m_RotationOrder: 4
     colorGradient:
       serializedVersion: 2
-      key0: {r: 1, g: 1, b: 1, a: 1}
-      key1: {r: 1, g: 1, b: 1, a: 1}
+      key0: {r: 0.8679245, g: 0.12691349, b: 0.12691349, a: 1}
+      key1: {r: 1, g: 0.4273501, b: 0, a: 0}
       key2: {r: 0, g: 0, b: 0, a: 0}
       key3: {r: 0, g: 0, b: 0, a: 0}
       key4: {r: 0, g: 0, b: 0, a: 0}
@@ -1688,6 +1692,21 @@ LineRenderer:
     generateLightingData: 0
   m_UseWorldSpace: 1
   m_Loop: 0
+--- !u!114 &5872245103367564208
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 102278314406291480}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 28efc77f63e442041be2de4520f3a559, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  startPoint: {fileID: 102278314551979599}
+  endPoint: {fileID: 6460949521456873037}
+  lr: {fileID: 102278314406291485}
 --- !u!1 &102278314551979596
 GameObject:
   m_ObjectHideFlags: 0
@@ -2420,7 +2439,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 9ca80467a033e954a8b9ad8601d6f4c7, type: 2}
+  - {fileID: 2100000, guid: 8cdec9ab91388ac47925d7bcd32c2d36, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0

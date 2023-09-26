@@ -6,7 +6,7 @@ public class FieldOfView : MonoBehaviour
 {
 
     [Header("Field of View")]
-    public GameObject targetRef;
+    //public GameObject targetRefObject;
     public float angle;
     public float radius;
 
@@ -17,15 +17,15 @@ public class FieldOfView : MonoBehaviour
 
     void Start()
     {
-
+        /*
         if(GetComponent<AutoTarget>() != null)
         {
             targetRef = GetComponent<AutoTarget>().closestObject;
         } else
         {
-            targetRef = null;
+            //targetRef = null;
             Debug.LogError("No AutoTarget script found on this object");
-        }
+        }*/
 
         StartCoroutine(FOVRoutine());
     }
@@ -50,21 +50,23 @@ public class FieldOfView : MonoBehaviour
     private void FieldOfViewCheck()
     {
         //check it's not null
-        if(GetComponent<AutoTarget>() != null)
+
+        var targetRef = GetComponent<AutoTarget>().closestTarget;
+        
+        /*
+        if (GetComponent<AutoTarget>() != null)
         {
             targetRef = GetComponent<AutoTarget>().closestObject;
 
         }
-        else
-        {
-            targetRef = null;
-        }
+      */
 
         Collider[] rangeChecks = Physics.OverlapSphere(transform.position, radius, targetMask);
 
 
         if (rangeChecks.Length != 0)
-        {if(targetRef != null) { 
+        {
+            if(targetRef != null) { 
             Transform targetObject = targetRef.transform;
 
                 Vector3 directionToTarget = (targetObject.position - transform.position).normalized;
@@ -74,19 +76,19 @@ public class FieldOfView : MonoBehaviour
 
                     if (!Physics.Raycast(transform.position, directionToTarget, distanceToTarget, obstructionMask))
                     {
-                        Debug.Log("Target in range");
+                       // Debug.Log("Target in range");
                         canSeeTarget = true;
 
                     }
                     else
                     {
-                        Debug.Log("Target out of range");
+                       // Debug.Log("Target out of range");
                         canSeeTarget = false;
                     }
                 }
                 else
                 {
-                    Debug.Log("Target out of range");
+                    //Debug.Log("Target out of range");
                     canSeeTarget = false;
                 }
             }
