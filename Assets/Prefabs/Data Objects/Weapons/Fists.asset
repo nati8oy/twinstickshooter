@@ -20,3 +20,5 @@ MonoBehaviour:
   ammo: 0
   cooldown: 0
   knockback: 375
+  stun: 1
+  stunTime: 3

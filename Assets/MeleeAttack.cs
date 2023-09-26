@@ -11,6 +11,8 @@ public class MeleeAttack : MonoBehaviour
     [SerializeField] private InputAction meleeAttack;
     [SerializeField] private MMF_Player feedbackPlayer;
     [SerializeField] private Weapon weapon;
+  
+    private bool stun;
 
     [SerializeField] float hitDamage = 20f;
     private bool playedFeedbacks;
@@ -31,19 +33,22 @@ public class MeleeAttack : MonoBehaviour
 
             }
             */
-
-            collision.gameObject.GetComponent<EnemyHealth>().Damage(weapon.damage);
-
-            collision.gameObject.GetComponent<Rigidbody>().AddExplosionForce(weapon.knockback, transform.position, 2f);
-
-            feedbackPlayer.PlayFeedbacks();
-
-
-            //Debug.Log("Hit feedbacks played");
-
-            if (hitDamage >= 500f)
+ 
+            if (weapon.stun)
             {
+                collision.gameObject.GetComponent<EnemyStun>().Stun(weapon.stunTime);
+                collision.gameObject.GetComponent<Rigidbody>().AddExplosionForce(weapon.knockback, transform.position, 2f);
+                feedbackPlayer.PlayFeedbacks();
             }
+
+            else
+            {
+                collision.gameObject.GetComponent<EnemyHealth>().Damage(weapon.damage);
+                
+            }
+
+           
+
 
         }        
     }
