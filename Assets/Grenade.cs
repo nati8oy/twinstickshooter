@@ -108,7 +108,7 @@ public class Grenade : MonoBehaviour
             }
 
         }
-        gameObject.GetComponent<Rigidbody>().velocity = Vector3.zero;
+        gameObject.GetComponent<Rigidbody>().linearVelocity = Vector3.zero;
         gameObject.SetActive(false);
 
     }

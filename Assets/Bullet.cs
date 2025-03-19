@@ -23,14 +23,14 @@ public class Bullet : MonoBehaviour
         {
             damagable.Damage(bulletDamage);
             Debug.Log("damage taken by " + collision.gameObject.name + bulletDamage);
-            gameObject.GetComponent<Rigidbody>().velocity = Vector3.zero;
+            gameObject.GetComponent<Rigidbody>().linearVelocity = Vector3.zero;
             gameObject.SetActive(false);
         }
 
 
         if (collision.gameObject.layer == environmentLayerIndex)
         {
-            gameObject.GetComponent<Rigidbody>().velocity = Vector3.zero;
+            gameObject.GetComponent<Rigidbody>().linearVelocity = Vector3.zero;
             gameObject.SetActive(false);
         }
 
@@ -39,20 +39,20 @@ public class Bullet : MonoBehaviour
         {
            // collision.gameObject.GetComponent<EnemyBehaviour>().Damage(bulletDamage);
             collision.gameObject.GetComponent<EnemyAttributes>().Damage(bulletDamage);
-            gameObject.GetComponent<Rigidbody>().velocity = Vector3.zero;
+            gameObject.GetComponent<Rigidbody>().linearVelocity = Vector3.zero;
             gameObject.SetActive(false);
         }
 
 
         if (collision.gameObject.tag == "player")
         {
-            gameObject.GetComponent<Rigidbody>().velocity = Vector3.zero;
+            gameObject.GetComponent<Rigidbody>().linearVelocity = Vector3.zero;
             gameObject.SetActive(false);
         }
 
         if (collision.gameObject.tag == "bullet")
         {
-            gameObject.GetComponent<Rigidbody>().velocity = Vector3.zero;
+            gameObject.GetComponent<Rigidbody>().linearVelocity = Vector3.zero;
             gameObject.SetActive(false);
         }
     }
@@ -65,7 +65,7 @@ public class Bullet : MonoBehaviour
     }
     private void killBullet()
     {
-        gameObject.GetComponent<Rigidbody>().velocity = Vector3.zero;
+        gameObject.GetComponent<Rigidbody>().linearVelocity = Vector3.zero;
         gameObject.SetActive(false);
        // Debug.Log("bullet deleted");
 

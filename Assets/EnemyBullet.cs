@@ -21,13 +21,13 @@ public class EnemyBullet : MonoBehaviour
 
         if (collision.gameObject.tag == "Player")
         {
-            gameObject.GetComponent<Rigidbody>().velocity = Vector3.zero;
+            gameObject.GetComponent<Rigidbody>().linearVelocity = Vector3.zero;
             gameObject.SetActive(false);
         }
 
         if (collision.gameObject.tag == "enemy")
         {
-            gameObject.GetComponent<Rigidbody>().velocity = Vector3.zero;
+            gameObject.GetComponent<Rigidbody>().linearVelocity = Vector3.zero;
             gameObject.SetActive(false);
         }
 
@@ -45,7 +45,7 @@ public class EnemyBullet : MonoBehaviour
 
     private void killBullet()
     {
-        gameObject.GetComponent<Rigidbody>().velocity = Vector3.zero;
+        gameObject.GetComponent<Rigidbody>().linearVelocity = Vector3.zero;
         gameObject.SetActive(false);
         // Debug.Log("bullet deleted");
 

@@ -51,7 +51,7 @@ public class Hookshot : MonoBehaviour
         playerControls = new PlayerControls();
         playerInput = GetComponent<PlayerInput>();
 
-        rbDrag = rb.drag; 
+        rbDrag = rb.linearDamping; 
        
 
     }
@@ -66,11 +66,11 @@ public class Hookshot : MonoBehaviour
 
         if (activeGrapple)
         {
-            rb.drag = 0;
+            rb.linearDamping = 0;
             gameObject.GetComponent<TwinStickMovement>().enabled = false;
         } else
         {
-            rb.drag = rbDrag;
+            rb.linearDamping = rbDrag;
         }
     }
 
@@ -84,7 +84,7 @@ public class Hookshot : MonoBehaviour
 
     private void SetVelocity()
     {
-       rb.velocity = velocityToSet;
+       rb.linearVelocity = velocityToSet;
     }
 
     private void StartGrapple()
