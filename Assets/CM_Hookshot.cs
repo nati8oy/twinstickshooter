@@ -101,7 +101,9 @@ public class CM_Hookshot : MonoBehaviour
         hookshot.Enable();
         */
         
-        hookshotPull = new InputAction(binding: "<Mouse>/rightButton");
+        hookshotPull = new InputAction(binding: "<Mouse>/rightButton" );
+        //hookshotPull = new InputAction(binding: "<DualShockGamepad>/rightShoulder");
+        
         hookshotPull.performed += _ => HandleHookshotStart();
         hookshotPull.performed += _ => ThrowCarriedObject();
         //hookshotPull.performed += _ => HandleHookshotPull();

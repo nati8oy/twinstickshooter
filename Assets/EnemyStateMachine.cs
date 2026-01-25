@@ -7,7 +7,7 @@ using UnityEngine.Events;
 
 public class EnemyStateMachine : MonoBehaviour
 {
-   [SerializeField] private enum EnemyState
+   private enum EnemyState
     {
         chasing,
         carried,

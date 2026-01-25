@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using Cinemachine;
+using Unity.Cinemachine;
 using UnityEngine.Events;
 
 using MoreMountains.Tools;

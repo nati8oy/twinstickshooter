@@ -93,8 +93,21 @@ public class TwinStickMovement : MonoBehaviour
 
     public void HandleInput()
     {
-        //movement = playerControls.Controls.Movement.ReadValue<Vector2>();
+        movement = playerControls.Controls.Movement.ReadValue<Vector2>();
         aim = playerControls.Controls.Aim.ReadValue<Vector2>();
+
+        // Auto-detect which input device is being used for aiming
+        // If gamepad right stick has significant input, use gamepad mode
+        // Otherwise, if mouse position is being updated, use mouse mode
+        Vector2 gamepadAim = Gamepad.current != null ? Gamepad.current.rightStick.ReadValue() : Vector2.zero;
+        if (Mathf.Abs(gamepadAim.x) > controllerDeadZone || Mathf.Abs(gamepadAim.y) > controllerDeadZone)
+        {
+            isGamepad = true;
+        }
+        else if (Mouse.current != null && Mouse.current.delta.ReadValue().sqrMagnitude > 0.1f)
+        {
+            isGamepad = false;
+        }
 
     }
 

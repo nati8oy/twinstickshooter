@@ -107,7 +107,7 @@ namespace MoreMountains.Feedbacks
 			GrabInitialScale();
 		}
 
-		protected virtual void GrabInitialScale()
+		public virtual void GrabInitialScale()
 		{
 			switch (Mode)
 			{
@@ -162,7 +162,10 @@ namespace MoreMountains.Feedbacks
 			base.ShakeComplete();
 			_attenuation = 0f;
 			_newScale = ComputeNewScale();
-			ApplyNewScale(_newScale);
+			if (TargetTransform != null)
+			{
+				ApplyNewScale(_newScale);	
+			}
 		}
 
 		protected virtual void ApplyNewScale(Vector3 newScale)
@@ -263,22 +266,26 @@ namespace MoreMountains.Feedbacks
 				_originalAttenuationCurve = AttenuationCurve;
 			}
 
-			TimescaleMode = timescaleMode;
-			ShakeDuration = duration;
-			ShakeSpeed = shakeSpeed;
-			ShakeRange = shakeRange * feedbacksIntensity * ComputeRangeIntensity(useRange, rangeDistance, useRangeFalloff, rangeFalloff, remapRangeFalloff, rangePosition); 
-			ShakeMainDirection = shakeMainDirection;
-			RandomizeDirection = randomizeDirection;
-			ShakeAltDirection = shakeAltDirection;
-			RandomizeDirectionOnPlay = randomizeDirectionOnPlay;
-			AddDirectionalNoise = addDirectionalNoise;
-			DirectionalNoiseStrengthMin = directionalNoiseStrengthMin;
-			DirectionalNoiseStrengthMax = directionalNoiseStrengthMax;
-			RandomnessSeed = randomnessSeed;
-			RandomizeSeedOnShake = randomizeSeedOnShake;
-			UseAttenuation = useAttenuation;
-			AttenuationCurve = attenuationCurve;
-			ForwardDirection = forwardDirection;
+			if (!OnlyUseShakerValues)
+			{
+				TimescaleMode = timescaleMode;
+				ShakeDuration = duration;
+				ShakeSpeed = shakeSpeed;
+				ShakeRange = shakeRange * feedbacksIntensity * ComputeRangeIntensity(useRange, rangeDistance,
+					useRangeFalloff, rangeFalloff, remapRangeFalloff, rangePosition);
+				ShakeMainDirection = shakeMainDirection;
+				RandomizeDirection = randomizeDirection;
+				ShakeAltDirection = shakeAltDirection;
+				RandomizeDirectionOnPlay = randomizeDirectionOnPlay;
+				AddDirectionalNoise = addDirectionalNoise;
+				DirectionalNoiseStrengthMin = directionalNoiseStrengthMin;
+				DirectionalNoiseStrengthMax = directionalNoiseStrengthMax;
+				RandomnessSeed = randomnessSeed;
+				RandomizeSeedOnShake = randomizeSeedOnShake;
+				UseAttenuation = useAttenuation;
+				AttenuationCurve = attenuationCurve;
+				ForwardDirection = forwardDirection;
+			}
 
 			Play();
 		}

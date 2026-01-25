@@ -1,6 +1,8 @@
 ﻿using UnityEngine;
 using System.Collections;
+#if MM_UI
 using UnityEngine.UI;
+using UnityEngine.Scripting.APIUpdating;
 
 namespace MoreMountains.Feedbacks
 {
@@ -9,6 +11,8 @@ namespace MoreMountains.Feedbacks
 	/// </summary>
 	[AddComponentMenu("")]
 	[FeedbackHelp("This feedback lets you control the contents of a target Text over time.")]
+	[MovedFrom(false, null, "MoreMountains.Feedbacks")]
+	[System.Serializable]
 	[FeedbackPath("UI/Text")]
 	public class MMF_Text : MMF_Feedback
 	{
@@ -23,6 +27,8 @@ namespace MoreMountains.Feedbacks
 		public override string RequiredTargetText { get { return TargetText != null ? TargetText.name : "";  } }
 		public override string RequiresSetupText { get { return "This feedback requires that a TargetText be set to be able to work properly. You can set one below."; } }
 		#endif
+		public override bool HasAutomatedTargetAcquisition => true;
+		protected override void AutomateTargetAcquisition() => TargetText = FindAutomatedTarget<Text>();
 
 		[MMFInspectorGroup("Text", true, 76, true)]
 		/// the Text component to control
@@ -69,3 +75,4 @@ namespace MoreMountains.Feedbacks
 		}
 	}
 }
+#endif

@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Scripting.APIUpdating;
 
 namespace MoreMountains.Feedbacks
 {
@@ -10,6 +11,8 @@ namespace MoreMountains.Feedbacks
 	/// </summary>
 	[AddComponentMenu("")]
 	[FeedbackHelp("This feedback will let you enable/disable/toggle a target collider, or change its trigger status")]
+	[MovedFrom(false, null, "MoreMountains.Feedbacks")]
+	[System.Serializable]
 	[FeedbackPath("GameObject/Collider")]
 	public class MMF_Collider : MMF_Feedback
 	{
@@ -22,6 +25,8 @@ namespace MoreMountains.Feedbacks
 		public override string RequiredTargetText { get { return TargetCollider != null ? TargetCollider.name : "";  } }
 		public override string RequiresSetupText { get { return "This feedback requires that a TargetCollider be set to be able to work properly. You can set one below."; } }
 		#endif
+		public override bool HasAutomatedTargetAcquisition => true;
+		protected override void AutomateTargetAcquisition() => TargetCollider = FindAutomatedTarget<Collider>();
 
 		/// the possible effects the feedback can have on the target collider's status 
 		public enum Modes { Enable, Disable, ToggleActive, Trigger, NonTrigger, ToggleTrigger }

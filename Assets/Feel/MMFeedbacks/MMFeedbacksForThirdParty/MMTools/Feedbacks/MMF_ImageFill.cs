@@ -1,8 +1,10 @@
-﻿using System.Collections;
+﻿#if MM_UI
+using System.Collections;
 using System.Collections.Generic;
 using MoreMountains.Tools;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.Scripting.APIUpdating;
 
 namespace MoreMountains.Feedbacks
 {
@@ -11,6 +13,8 @@ namespace MoreMountains.Feedbacks
 	/// </summary>
 	[AddComponentMenu("")]
 	[FeedbackHelp("This feedback will let you modify the fill value of a target Image over time.")]
+	[MovedFrom(false, null, "MoreMountains.Feedbacks.MMTools")]
+	[System.Serializable]
 	[FeedbackPath("UI/Image Fill")]
 	public class MMF_ImageFill : MMF_Feedback
 	{
@@ -24,6 +28,8 @@ namespace MoreMountains.Feedbacks
 		public override string RequiresSetupText { get { return "This feedback requires that a BoundImage be set to be able to work properly. You can set one below."; } }
 		#endif
 		public override bool HasCustomInspectors => true;
+		public override bool HasAutomatedTargetAcquisition => true;
+		protected override void AutomateTargetAcquisition() => BoundImage = FindAutomatedTarget<Image>();
 
 		/// the possible modes for this feedback
 		public enum Modes { OverTime, Instant, ToDestination }
@@ -51,8 +57,7 @@ namespace MoreMountains.Feedbacks
 		public float InstantFill = 1f;
 		/// the curve to use when interpolating towards the destination fill
 		[Tooltip("the curve to use when interpolating towards the destination fill")]
-		[MMFEnumCondition("Mode", (int)Modes.OverTime, (int)Modes.ToDestination)]
-		public MMTweenType Curve = new MMTweenType(MMTween.MMTweenCurve.EaseInCubic);
+		public MMTweenType Curve = new MMTweenType(MMTween.MMTweenCurve.EaseInCubic, "", "Mode", (int)Modes.OverTime, (int)Modes.ToDestination);
 		/// the value to which the curve's 0 should be remapped
 		[Tooltip("the value to which the curve's 0 should be remapped")]
 		[MMFEnumCondition("Mode", (int)Modes.OverTime)]
@@ -67,14 +72,31 @@ namespace MoreMountains.Feedbacks
 		public float DestinationFill = 1f;
 		/// if this is true, the target will be disabled when this feedbacks is stopped
 		[Tooltip("if this is true, the target will be disabled when this feedbacks is stopped")] 
-		public bool DisableOnStop = true;
+		public bool DisableOnStop = false;
 
 		/// the duration of this feedback is the duration of the Image, or 0 if instant
 		public override float FeedbackDuration { get { return (Mode == Modes.Instant) ? 0f : ApplyTimeMultiplier(Duration); } set { Duration = value; } }
 
 		protected Coroutine _coroutine;
 		protected float _initialFill;
+		protected float _initialInstantFill;
 		protected bool _initialState;
+		
+		protected override void CustomInitialization(MMF_Player owner)
+		{
+			base.CustomInitialization(owner);
+			
+			if (BoundImage == null)
+			{
+				Debug.LogWarning("[Image Fill Feedback] The image fill feedback on "+Owner.name+" doesn't have a bound image, it won't work. You need to specify an image in its inspector.");
+				return;
+			}
+
+			if (Active)
+			{
+				_initialInstantFill = BoundImage.fillAmount;
+			}
+		}
 
 		/// <summary>
 		/// On Play we turn our Image on and start an over time coroutine if needed
@@ -83,7 +105,7 @@ namespace MoreMountains.Feedbacks
 		/// <param name="feedbacksIntensity"></param>
 		protected override void CustomPlayFeedback(Vector3 position, float feedbacksIntensity = 1.0f)
 		{
-			if (!Active || !FeedbackTypeAuthorized)
+			if (!Active || !FeedbackTypeAuthorized || (BoundImage == null))
 			{
 				return;
 			}
@@ -94,14 +116,14 @@ namespace MoreMountains.Feedbacks
 			switch (Mode)
 			{
 				case Modes.Instant:
-					BoundImage.fillAmount = InstantFill;
+					BoundImage.fillAmount = NormalPlayDirection ? InstantFill : _initialInstantFill;
 					break;
 				case Modes.OverTime:
 					if (!AllowAdditivePlays && (_coroutine != null))
 					{
 						return;
 					}
-
+					if (_coroutine != null) { Owner.StopCoroutine(_coroutine); }
 					_coroutine = Owner.StartCoroutine(ImageSequence());
 					break;
 				case Modes.ToDestination:
@@ -109,7 +131,7 @@ namespace MoreMountains.Feedbacks
 					{
 						return;
 					}
-
+					if (_coroutine != null) { Owner.StopCoroutine(_coroutine); }
 					_coroutine = Owner.StartCoroutine(ImageSequence());
 					break;
 			}
@@ -175,6 +197,10 @@ namespace MoreMountains.Feedbacks
 			{
 				Turn(false);    
 			}
+			if (_coroutine != null)
+			{
+				Owner.StopCoroutine(_coroutine);		
+			}
 			_coroutine = null;
 		}
 
@@ -201,5 +227,21 @@ namespace MoreMountains.Feedbacks
 			Turn(_initialState);
 			BoundImage.fillAmount = _initialFill;
 		}
+		
+		/// <summary>
+		/// On Validate, we init our curves conditions if needed
+		/// </summary>
+		public override void OnValidate()
+		{
+			base.OnValidate();
+			if (string.IsNullOrEmpty(Curve.EnumConditionPropertyName))
+			{
+				Curve.EnumConditionPropertyName = "Mode";
+				Curve.EnumConditions = new bool[32];
+				Curve.EnumConditions[(int)Modes.OverTime] = true;
+				Curve.EnumConditions[(int)Modes.ToDestination] = true;
+			}
+		}
 	}
 }
+#endif

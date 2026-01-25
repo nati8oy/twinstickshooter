@@ -1,7 +1,7 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿#if MM_UI
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.Scripting.APIUpdating;
 
 namespace MoreMountains.Feedbacks
 {
@@ -10,6 +10,8 @@ namespace MoreMountains.Feedbacks
 	/// </summary>
 	[AddComponentMenu("")]
 	[FeedbackHelp("This feedback will let you trigger cross fades on a target Graphic.")]
+	[MovedFrom(false, null, "MoreMountains.Feedbacks")]
+	[System.Serializable]
 	[FeedbackPath("UI/Graphic CrossFade")]
 	public class MMF_GraphicCrossFade : MMF_Feedback
 	{
@@ -26,6 +28,8 @@ namespace MoreMountains.Feedbacks
 		/// the duration of this feedback is the duration of the Image, or 0 if instant
 		public override float FeedbackDuration { get { return ApplyTimeMultiplier(Duration); } set { Duration = value; } }
 		public override bool HasChannel => true;
+		public override bool HasAutomatedTargetAcquisition => true;
+		protected override void AutomateTargetAcquisition() => TargetGraphic = FindAutomatedTarget<Graphic>();
 
 		/// the possible modes for this feedback
 		public enum Modes { Alpha, Color }
@@ -54,7 +58,7 @@ namespace MoreMountains.Feedbacks
 		public bool UseAlpha = true;
 		/// if this is true, the target will be disabled when this feedbacks is stopped
 		[Tooltip("if this is true, the target will be disabled when this feedbacks is stopped")] 
-		public bool DisableOnStop = true;
+		public bool DisableOnStop = false;
         
 		protected Coroutine _coroutine;
 		protected Color _initialColor;
@@ -141,3 +145,4 @@ namespace MoreMountains.Feedbacks
 		}
 	}
 }
+#endif

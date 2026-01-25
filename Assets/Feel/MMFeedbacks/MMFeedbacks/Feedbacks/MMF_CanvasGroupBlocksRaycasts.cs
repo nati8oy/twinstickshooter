@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
+using UnityEngine;using UnityEngine.Scripting.APIUpdating;
+
 namespace MoreMountains.Feedbacks
 {
 	/// <summary>
@@ -8,6 +9,8 @@ namespace MoreMountains.Feedbacks
 	/// </summary>
 	[AddComponentMenu("")]
 	[FeedbackHelp("This feedback will let you turn the BlocksRaycast parameter of a target CanvasGroup on or off on play")]
+	[MovedFrom(false, null, "MoreMountains.Feedbacks")]
+	[System.Serializable]
 	[FeedbackPath("UI/CanvasGroup BlocksRaycasts")]
 	public class MMF_CanvasGroupBlocksRaycasts : MMF_Feedback
 	{
@@ -19,6 +22,8 @@ namespace MoreMountains.Feedbacks
 		public override string RequiredTargetText { get { return TargetCanvasGroup != null ? TargetCanvasGroup.name : "";  } }
 		public override string RequiresSetupText { get { return "This feedback requires that a TargetCanvasGroup be set to be able to work properly. You can set one below."; } }
 		#endif
+		public override bool HasAutomatedTargetAcquisition => true;
+		protected override void AutomateTargetAcquisition() => TargetCanvasGroup = FindAutomatedTarget<CanvasGroup>();
         
 		[MMFInspectorGroup("Block Raycasts", true, 54, true)]
 		/// the target canvas group we want to control the BlocksRaycasts parameter on 

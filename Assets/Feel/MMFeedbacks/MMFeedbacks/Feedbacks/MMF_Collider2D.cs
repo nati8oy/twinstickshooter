@@ -2,14 +2,18 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Scripting.APIUpdating;
 
 namespace MoreMountains.Feedbacks
 {
+	#if MM_PHYSICS2D
 	/// <summary>
 	/// This feedback will let you enable/disable/toggle a target collider 2D, or change its trigger status
 	/// </summary>
 	[AddComponentMenu("")]
 	[FeedbackHelp("This feedback will let you enable/disable/toggle a target collider 2D, or change its trigger status")]
+	[MovedFrom(false, null, "MoreMountains.Feedbacks")]
+	[System.Serializable]
 	[FeedbackPath("GameObject/Collider2D")]
 	public class MMF_Collider2D : MMF_Feedback
 	{
@@ -22,6 +26,8 @@ namespace MoreMountains.Feedbacks
 		public override string RequiredTargetText { get { return TargetCollider2D != null ? TargetCollider2D.name : "";  } }
 		public override string RequiresSetupText { get { return "This feedback requires that a TargetCollider2D be set to be able to work properly. You can set one below."; } }
 		#endif
+		public override bool HasAutomatedTargetAcquisition => true;
+		protected override void AutomateTargetAcquisition() => TargetCollider2D = FindAutomatedTarget<Collider2D>();
 
 		/// the possible effects the feedback can have on the target collider's status 
 		public enum Modes { Enable, Disable, ToggleActive, Trigger, NonTrigger, ToggleTrigger }
@@ -119,4 +125,5 @@ namespace MoreMountains.Feedbacks
 			}
 		}
 	}
+	#endif
 }

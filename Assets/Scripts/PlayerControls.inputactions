@@ -1,4 +1,5 @@
 {
+    "version": 1,
     "name": "PlayerControls",
     "maps": [
         {
@@ -27,7 +28,7 @@
                     "name": "Shoot Primary",
                     "type": "Button",
                     "id": "d42b2c52-d893-4696-b827-9ba73a255b40",
-                    "expectedControlType": "Button",
+                    "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
@@ -36,7 +37,7 @@
                     "name": "Shoot Secondary",
                     "type": "Button",
                     "id": "bd4348f6-3916-4ba2-a805-4b6516f77b13",
-                    "expectedControlType": "Button",
+                    "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false

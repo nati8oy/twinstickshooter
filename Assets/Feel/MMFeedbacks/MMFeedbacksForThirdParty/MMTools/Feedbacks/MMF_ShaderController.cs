@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 using MoreMountains.Tools;
+using UnityEngine.Scripting.APIUpdating;
 
+#if MM_UI
 namespace MoreMountains.Feedbacks
 {
 	/// <summary>
@@ -10,6 +12,8 @@ namespace MoreMountains.Feedbacks
 	/// </summary>
 	[AddComponentMenu("")]
 	[FeedbackHelp("This feedback lets you trigger a one time play on a target ShaderController.")]
+	[MovedFrom(false, null, "MoreMountains.Feedbacks.MMTools")]
+	[System.Serializable]
 	[FeedbackPath("Renderer/ShaderController")]
 	public class MMF_ShaderController : MMF_Feedback
 	{
@@ -25,6 +29,8 @@ namespace MoreMountains.Feedbacks
 		public override string RequiresSetupText { get { return "This feedback requires that a TargetShaderController be set to be able to work properly. You can set one below."; } }
 		#endif
 		public override bool HasRandomness => true;
+		public override bool HasAutomatedTargetAcquisition => true;
+		protected override void AutomateTargetAcquisition() => TargetShaderController = FindAutomatedTarget<ShaderController>();
 
 		[MMFInspectorGroup("Shader Controller", true, 37, true)]
 		/// the mode this controller is in
@@ -39,6 +45,11 @@ namespace MoreMountains.Feedbacks
 		/// whether this should revert to original at the end
 		[Tooltip("whether this should revert to original at the end")]
 		public bool RevertToInitialValueAfterEnd = false;
+		
+		/// whether or not to initialize the initial value to the current value on a OneTime play
+		[Tooltip("whether or not to initialize the initial value to the current value on a OneTime play")]
+		[MMFEnumCondition("Mode", (int)Modes.OneTime)]
+		public bool GetInitialValueOnOneTime = false;
 		/// the duration of the One Time shake
 		[Tooltip("the duration of the One Time shake")]
 		[MMFEnumCondition("Mode", (int)Modes.OneTime)]
@@ -100,6 +111,11 @@ namespace MoreMountains.Feedbacks
 		/// <param name="owner"></param>
 		protected override void CustomInitialization(MMF_Player owner)
 		{
+			if (TargetShaderControllerList == null)
+			{
+				TargetShaderControllerList = new List<ShaderController>();
+			}
+			
 			if (Active && (TargetShaderController != null))
 			{
 				_oneTimeDurationStorage = TargetShaderController.OneTimeDuration;
@@ -142,6 +158,7 @@ namespace MoreMountains.Feedbacks
 			if (Mode == Modes.OneTime)
 			{
 				shaderController.OneTimeDuration = FeedbackDuration;
+				shaderController.GetInitialValueOnOneTime = GetInitialValueOnOneTime;
 				shaderController.OneTimeAmplitude = OneTimeAmplitude;
 				shaderController.OneTimeCurve = OneTimeCurve;
 				if (NormalPlayDirection)
@@ -166,6 +183,24 @@ namespace MoreMountains.Feedbacks
 			}   
 		}
         
+		/// <summary>
+		/// Sets the final value on the target shader controller(s)
+		/// </summary>
+		/// <param name="position"></param>
+		/// <param name="feedbacksIntensity"></param>
+		protected override void CustomSkipToTheEnd(Vector3 position, float feedbacksIntensity = 1.0f)
+		{
+			if (Active && FeedbackTypeAuthorized)
+			{
+				TargetShaderController.SetFinalValue();     
+
+				foreach (ShaderController shaderController in TargetShaderControllerList)
+				{
+					shaderController.SetFinalValue();
+				}    
+			}
+		}
+		
 		/// <summary>
 		/// Stops this feedback
 		/// </summary>
@@ -239,3 +274,4 @@ namespace MoreMountains.Feedbacks
 		}
 	}
 }
+#endif

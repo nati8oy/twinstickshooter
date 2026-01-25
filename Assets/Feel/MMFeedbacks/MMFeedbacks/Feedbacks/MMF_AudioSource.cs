@@ -1,11 +1,16 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Audio;
+using UnityEngine.Scripting.APIUpdating;
+using Random = UnityEngine.Random;
 
 namespace MoreMountains.Feedbacks
 {
 	[AddComponentMenu("")]
+	[MovedFrom(false, null, "MoreMountains.Feedbacks")]
+	[System.Serializable]
 	[FeedbackPath("Audio/AudioSource")]
 	[FeedbackHelp("This feedback lets you play a target audio source, with some elements at random.")]
 	public class MMF_AudioSource : MMF_Feedback
@@ -20,11 +25,13 @@ namespace MoreMountains.Feedbacks
 		public override string RequiresSetupText { get { return "This feedback requires that a TargetAudioSource be set to be able to work properly. You can set one below."; } }
 		#endif
 		public override bool HasRandomness => true;
+		public override bool HasAutomatedTargetAcquisition => true;
+		protected override void AutomateTargetAcquisition() => TargetAudioSource = FindAutomatedTarget<AudioSource>();
 
 		/// the possible ways to interact with the audiosource
 		public enum Modes { Play, Pause, UnPause, Stop }
 
-		[MMFInspectorGroup("Audiosource", true, 28, true)]
+		[MMFInspectorGroup("Audiosource", true, 5, true)]
 		/// the target audio source to play
 		[Tooltip("the target audio source to play")]
 		public AudioSource TargetAudioSource;
@@ -65,6 +72,19 @@ namespace MoreMountains.Feedbacks
 
 		protected AudioClip _randomClip;
 		protected float _duration;
+		
+		protected override void CustomInitialization(MMF_Player owner)
+		{
+			base.CustomInitialization(owner);
+
+			if (Active)
+			{
+				if (RandomSfx == null)
+				{
+					RandomSfx = Array.Empty<AudioClip>();
+				}
+			}
+		}
         
 		/// <summary>
 		/// Plays either a random sound or the specified sfx
@@ -89,6 +109,11 @@ namespace MoreMountains.Feedbacks
 					}
 					float volume = Random.Range(MinVolume, MaxVolume) * intensityMultiplier;
 					float pitch = Random.Range(MinPitch, MaxPitch);
+					if (TargetAudioSource == null)
+					{
+						Debug.LogWarning("[AudioSource Feedback] The audio source feedback on "+Owner.name+" doesn't have a TargetAudioSource, it won't work. You need to specify one in its inspector.");
+						return;
+					}
 					_duration = TargetAudioSource.clip.length;
 					PlayAudioSource(TargetAudioSource, volume, pitch);
 					break;
@@ -140,7 +165,6 @@ namespace MoreMountains.Feedbacks
 		/// <param name="feedbacksIntensity"></param>
 		public override void Stop(Vector3 position, float feedbacksIntensity = 1.0f)
 		{
-			Debug.Log("stop");
 			base.Stop(position, feedbacksIntensity);
 			if (TargetAudioSource != null)
 			{
