@@ -74,6 +74,8 @@ public class CM_Hookshot : MonoBehaviour
     [SerializeField] private float hookshotSpeedMax = 40f;
 
     private State state;
+    public bool hookshotAutoPull;
+
     private enum State
     {
         Normal, HookshotLaunched, HookshotFlyingPlayer, HookshotPull, HookshotAttached, HookshotCarry,
@@ -164,8 +166,15 @@ public class CM_Hookshot : MonoBehaviour
                 hook.gameObject.SetActive(true);
                 break;
             case State.HookshotAttached:
-                HandleHookshotPull();
-//                HandleHookshotAttached();
+                if (hookshotAutoPull)
+                {
+                    HandleHookshotPull();
+                }
+                else
+                {
+                    HandleHookshotAttached(); 
+                }
+                
                 hook.gameObject.SetActive(true);
                 break;
             case State.HookshotCarry:
@@ -457,6 +466,11 @@ private void LateUpdate(){
                     hitTargetRB.useGravity = true;
                     hitTargetRB.freezeRotation = false;
 
+                    
+                    //throw it in the direction the player is facing
+                    hitTargetRB.AddForce(transform.forward * throwForce);
+                    
+                    /*
                     //check if the auto targeting is on and if the object you're throwing isn't an enemy
                     if (autoTargetScript != null && hitTarget.tag != "enemy")
                     {
@@ -467,6 +481,7 @@ private void LateUpdate(){
                     {
                         hitTargetRB.AddForce(transform.forward * throwForce);
                     }
+                    */
 
                     //add a bit spin to the object when you throw it
                     hitTargetRB.AddTorque(transform.forward * throwForce);

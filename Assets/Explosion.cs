@@ -13,7 +13,7 @@ public class Explosion : MonoBehaviour
 
     [SerializeField] LayerMask layerMask;
 
-
+    
     public void OnCollisionEnter(Collision collision)
     {
 
@@ -24,6 +24,7 @@ public class Explosion : MonoBehaviour
         }
 
     }
+    
 
     public void Explode()
     {

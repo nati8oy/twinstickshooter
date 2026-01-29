@@ -34,7 +34,7 @@ public class PlayFeedbacksGeneric : MonoBehaviour
     public void OnDisable()
     {
         onDisable.Invoke();
-        Debug.Log("Disabled object");
+        //Debug.Log("Disabled object");
     }
 
 }
