@@ -22,6 +22,12 @@ public class Explosion : MonoBehaviour
             Explode();
             collision.gameObject.GetComponent<EnemyHealth>().Damage(explosionDamage);
         }
+        
+        if(collision.gameObject.tag == "goal")
+        {
+            Explode();
+            Debug.Log("Goal Hit");
+        }
 
     }
     
