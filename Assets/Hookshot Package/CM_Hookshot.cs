@@ -527,7 +527,7 @@ private void LateUpdate(){
 
     }
 
-    private void CancelHookshot()
+    public void CancelHookshot()
     {
         stopFeedbacks.Invoke();
 

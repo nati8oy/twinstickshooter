@@ -17,14 +17,14 @@ public class GenericCollisions : MonoBehaviour
         if(collision.gameObject.tag == CollisionType.enemy.ToString())
         {
             
-            Debug.Log("enemy hit");
+            Debug.Log(collision.gameObject.tag + " hit");
             gameObject.SetActive(false);
             onHit.Invoke();
         }
         
         if(collision.gameObject.tag == CollisionType.goal.ToString())
         {
-            Debug.Log("Goal Hit");
+            Debug.Log(collision.gameObject.tag + " hit");
             gameObject.SetActive(false);
             onHit.Invoke();
             

@@ -11,6 +11,5 @@ public class HUD : MonoBehaviour
     {
         score++;
         scoreText.text = score.ToString();
-        Debug.Log(score);
     }
 }
