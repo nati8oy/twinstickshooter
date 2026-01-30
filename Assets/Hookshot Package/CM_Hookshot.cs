@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Security.Cryptography.X509Certificates;
@@ -30,7 +31,6 @@ public class CM_Hookshot : MonoBehaviour
     [SerializeField] private LineRenderer lr;
     public Vector3 characterVelocityMomentum;
 
-    [SerializeField] float hookshotSpeedMultiplier = 2f;
     private CharacterController controller;
 
     private bool hitSomething =false;
@@ -46,7 +46,7 @@ public class CM_Hookshot : MonoBehaviour
 
     [SerializeField] private CharacterController characterController;
 
-    [SerializeField] private float hookshotMaxRange = 10f;
+    private float hookshotMaxRange;
 
     public bool isGrappling = false;
 
@@ -68,11 +68,14 @@ public class CM_Hookshot : MonoBehaviour
     [SerializeField] private GameObject lockOnTarget;
 
 
-    [Header("Hookshot Speed")]
+    [Header("Hookshot")]
 
-    [SerializeField] private float hookshotSpeedMin = 10f;
-    [SerializeField] private float hookshotSpeedMax = 40f;
+    private float hookshotSpeedMin;
+    private float hookshotSpeedMax;
 
+    [SerializeField] private HookshotData hookshotData;
+    
+    //current state the player is in e.g. grappling, normal, carrying, hookshot attached
     private State state;
     public bool hookshotAutoPull;
 
@@ -81,6 +84,14 @@ public class CM_Hookshot : MonoBehaviour
         Normal, HookshotLaunched, HookshotFlyingPlayer, HookshotPull, HookshotAttached, HookshotCarry,
     }
 
+
+    private void OnEnable()
+    {   
+        //grab all the data from the hookshot data asset
+        hookshotMaxRange = hookshotData.maxRange;
+        hookshotSpeedMin = hookshotData.speedMin;
+        hookshotSpeedMax = hookshotData.speedMax;
+    }
 
     private void Awake()
     {

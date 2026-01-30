@@ -589,7 +589,7 @@ MonoBehaviour:
       m_Calls: []
   m_ActionEvents: []
   m_NeverAutoSwitchControlSchemes: 0
-  m_DefaultControlScheme: Gamepad
+  m_DefaultControlScheme: 
   m_DefaultActionMap: Controls
   m_SplitScreenIndex: -1
   m_Camera: {fileID: 0}
@@ -709,7 +709,6 @@ MonoBehaviour:
   hookshotSpeedMultiplier: 7
   joint: {fileID: 102278313849289433}
   characterController: {fileID: 102278313849289261}
-  hookshotMaxRange: 30
   isGrappling: 0
   onGrapple:
     m_PersistentCalls:
@@ -768,8 +767,7 @@ MonoBehaviour:
   crosshair: {fileID: 6460949521456873037}
   autoTargetScript: {fileID: 460407556482336877}
   lockOnTarget: {fileID: 0}
-  hookshotSpeedMin: 20
-  hookshotSpeedMax: 80
+  hookshotData: {fileID: 11400000, guid: 83fae043a370745a6b4197e1ea6d0cfb, type: 2}
   hookshotAutoPull: 0
 --- !u!120 &102278313849289253
 LineRenderer:
@@ -896,7 +894,7 @@ MonoBehaviour:
   acceleration: 100
   decceleration: 100
   damping: 5
-  targetSpeed: 15
+  targetSpeed: 3
   speedDif: 0
   accelRate: 0
   currentVelocity: {x: 0, y: 0, z: 0}

@@ -8474,10 +8474,6 @@ PrefabInstance:
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: 102278313849289249, guid: 623f5226bf49a25479dafb914b4aadb6, type: 3}
-      propertyPath: m_RootOrder
-      value: 5
-      objectReference: {fileID: 0}
-    - target: {fileID: 102278313849289249, guid: 623f5226bf49a25479dafb914b4aadb6, type: 3}
       propertyPath: m_LocalPosition.x
       value: -20.100006
       objectReference: {fileID: 0}
@@ -8521,41 +8517,9 @@ PrefabInstance:
       propertyPath: hook
       value: 
       objectReference: {fileID: 1429526708}
-    - target: {fileID: 102278313849289250, guid: 623f5226bf49a25479dafb914b4aadb6, type: 3}
-      propertyPath: hookshotAutoPull
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 102278313849289250, guid: 623f5226bf49a25479dafb914b4aadb6, type: 3}
-      propertyPath: cancelHookshot.m_Name
-      value: Cancel Hookshot
-      objectReference: {fileID: 0}
-    - target: {fileID: 102278313849289252, guid: 623f5226bf49a25479dafb914b4aadb6, type: 3}
-      propertyPath: targetSpeed
-      value: 3
-      objectReference: {fileID: 0}
-    - target: {fileID: 102278313849289253, guid: 623f5226bf49a25479dafb914b4aadb6, type: 3}
-      propertyPath: m_Enabled
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 102278313849289256, guid: 623f5226bf49a25479dafb914b4aadb6, type: 3}
       propertyPath: m_Name
       value: PlayerHookshot
-      objectReference: {fileID: 0}
-    - target: {fileID: 102278313849289258, guid: 623f5226bf49a25479dafb914b4aadb6, type: 3}
-      propertyPath: m_DefaultControlScheme
-      value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 460407556482336877, guid: 623f5226bf49a25479dafb914b4aadb6, type: 3}
-      propertyPath: m_Enabled
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 3850684314863834522, guid: 623f5226bf49a25479dafb914b4aadb6, type: 3}
-      propertyPath: managedReferences[4550405193861693446].OriginalLabel
-      value: Sound
-      objectReference: {fileID: 0}
-    - target: {fileID: 3850684314863834522, guid: 623f5226bf49a25479dafb914b4aadb6, type: 3}
-      propertyPath: managedReferences[4550405193861693450].OriginalLabel
-      value: Rotation
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
