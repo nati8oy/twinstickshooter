@@ -770,6 +770,7 @@ MonoBehaviour:
   lockOnTarget: {fileID: 0}
   hookshotSpeedMin: 20
   hookshotSpeedMax: 80
+  hookshotAutoPull: 0
 --- !u!120 &102278313849289253
 LineRenderer:
   serializedVersion: 3

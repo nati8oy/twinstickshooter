@@ -12,15 +12,22 @@ public class GenericCollisions : MonoBehaviour
     
     public void OnCollisionEnter(Collision collision)
     {
+        
+        
         if(collision.gameObject.tag == CollisionType.enemy.ToString())
         {
-            //onHit.Invoke();
+            
             Debug.Log("enemy hit");
+            gameObject.SetActive(false);
+            onHit.Invoke();
         }
         
         if(collision.gameObject.tag == CollisionType.goal.ToString())
         {
             Debug.Log("Goal Hit");
+            gameObject.SetActive(false);
+            onHit.Invoke();
+            
         }
 
     }
