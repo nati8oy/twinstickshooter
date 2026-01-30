@@ -9,17 +9,7 @@ public class EnemyStun : MonoBehaviour
 {
     [SerializeField] private UnityEvent onStun;
     [SerializeField] private UnityEvent onRecover;
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-            
-    }
+ 
 
     public void Stun(float stunTime)
     {
@@ -30,9 +20,7 @@ public class EnemyStun : MonoBehaviour
             gameObject.GetComponent<NavMeshAgent>().enabled = false;
             onStun.Invoke();  
         }
-
         
-
 
 
     }

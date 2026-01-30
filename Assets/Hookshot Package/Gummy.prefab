@@ -14,6 +14,8 @@ GameObject:
   - component: {fileID: 6042416643365614190}
   - component: {fileID: 8794676051887516284}
   - component: {fileID: 7454154907774550183}
+  - component: {fileID: 5748216717567061833}
+  - component: {fileID: 7222035785059331151}
   m_Layer: 11
   m_Name: Gummy
   m_TagString: Untagged
@@ -157,3 +159,42 @@ MonoBehaviour:
   onHit:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &5748216717567061833
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1070710326693234163}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7168325e1eee944d880f5293a9f5f593, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyMovement
+  roamingRadius: 10
+  detectionRadius: 5
+  chaseSpeed: 10
+  delayDuration: 2
+  currentPriorityTarget: {fileID: 0}
+--- !u!195 &7222035785059331151
+NavMeshAgent:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1070710326693234163}
+  m_Enabled: 0
+  m_AgentTypeID: 0
+  m_Radius: 0.5
+  m_Speed: 3.5
+  m_Acceleration: 8
+  avoidancePriority: 50
+  m_AngularSpeed: 120
+  m_StoppingDistance: 0
+  m_AutoTraverseOffMeshLink: 1
+  m_AutoBraking: 1
+  m_AutoRepath: 1
+  m_Height: 1
+  m_BaseOffset: 0.5
+  m_WalkableMask: 4294967295
+  m_ObstacleAvoidanceType: 4
