@@ -3,30 +3,25 @@ using UnityEngine.Events;
 
 public class GenericCollisions : MonoBehaviour
 {
- 
-   
-    public enum CollisionType { enemy, goal }
-    public CollisionType collisionType;
+    public UnityEvent onHitGoal;
+    public UnityEvent onHitHazard;
     
-    public UnityEvent onHit;
     
     public void OnCollisionEnter(Collision collision)
     {
         
-        
-        if(collision.gameObject.tag == CollisionType.enemy.ToString())
+        if(collision.gameObject.tag == "hazard")
         {
             
-            Debug.Log(collision.gameObject.tag + " hit");
             gameObject.SetActive(false);
-            onHit.Invoke();
+            onHitHazard.Invoke();
         }
         
-        if(collision.gameObject.tag == CollisionType.goal.ToString())
+        if(collision.gameObject.tag == "goal")
         {
             Debug.Log(collision.gameObject.tag + " hit");
             gameObject.SetActive(false);
-            onHit.Invoke();
+            onHitGoal.Invoke();
             
         }
 

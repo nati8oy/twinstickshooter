@@ -5,33 +5,18 @@ TagManager:
   serializedVersion: 3
   tags:
   - bullet
-  - explosion
   - enemy
-  - secondary
   - environment
   - nav point
-  - block
-  - tower
-  - defence
   - ghost
-  - fire
-  - fire resource
   - health
   - enemy bullet
   - ammo
-  - XP
   - fire point
   - grenade
-  - donut
-  - juice
-  - butter
-  - candy
-  - resource
-  - turret
-  - melee
   - grapple point
-  - enemy_lvl2
   - goal
+  - hazard
   layers:
   - Default
   - TransparentFX

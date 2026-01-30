@@ -155,8 +155,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a1ddd95fc029143bb90bbc3d45f584a0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GenericCollisions
-  collisionType: 1
-  onHit:
+  onHitGoal:
+    m_PersistentCalls:
+      m_Calls: []
+  onHitHazard:
     m_PersistentCalls:
       m_Calls: []
 --- !u!114 &5748216717567061833
@@ -166,7 +168,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1070710326693234163}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 7168325e1eee944d880f5293a9f5f593, type: 3}
   m_Name: 
@@ -183,7 +185,7 @@ NavMeshAgent:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1070710326693234163}
-  m_Enabled: 0
+  m_Enabled: 1
   m_AgentTypeID: 0
   m_Radius: 0.5
   m_Speed: 3.5

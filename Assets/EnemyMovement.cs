@@ -21,7 +21,7 @@ public class EnemyMovement : MonoBehaviour
     {   
         initialPosition = transform.position;
         navMeshAgent = GetComponent<NavMeshAgent>();
-        playerTransform = GameObject.Find("Player").transform;
+        playerTransform = GameObject.Find("PlayerHookshot").transform;
         endPointTransform = GameObject.Find("EndPoint").transform;
         currentPriorityTarget = playerTransform; // Set player as the initial priority target
         GenerateRandomDestination();

@@ -15,6 +15,7 @@ GameObject:
   - component: {fileID: 223871363996966822}
   - component: {fileID: 385989847601140540}
   - component: {fileID: 1635689421038038128}
+  - component: {fileID: 3369248403584213076}
   m_Layer: 11
   m_Name: Gummy_roaming
   m_TagString: enemy
@@ -71,7 +72,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 541802505096995604}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e11bc683e00fe49e3b80ed1fa1e171db, type: 3}
   m_Name: 
@@ -195,22 +196,29 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a1ddd95fc029143bb90bbc3d45f584a0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GenericCollisions
-  collisionType: 1
-  onHit:
+  onHitGoal:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: 
-        m_MethodName: 
-        m_Mode: 0
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: 
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
+  onHitHazard:
+    m_PersistentCalls:
+      m_Calls: []
+--- !u!114 &3369248403584213076
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 541802505096995604}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7168325e1eee944d880f5293a9f5f593, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyMovement
+  roamingRadius: 10
+  detectionRadius: 5
+  chaseSpeed: 10
+  delayDuration: 2
+  currentPriorityTarget: {fileID: 0}
 --- !u!1 &566864763347462508
 GameObject:
   m_ObjectHideFlags: 0
