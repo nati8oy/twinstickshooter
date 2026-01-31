@@ -76,10 +76,10 @@ public class CM_Hookshot : MonoBehaviour
     [SerializeField] private HookshotData hookshotData;
     
     //current state the player is in e.g. grappling, normal, carrying, hookshot attached
-    private State state;
+    public State state;
     public bool hookshotAutoPull;
 
-    private enum State
+    public enum State
     {
         Normal, HookshotLaunched, HookshotFlyingPlayer, HookshotPull, HookshotAttached, HookshotCarry,
     }
@@ -171,6 +171,7 @@ public class CM_Hookshot : MonoBehaviour
             case State.HookshotFlyingPlayer:
                 HandleHookshotMovement();
                 hook.gameObject.SetActive(true);
+                
                 break;
             case State.HookshotPull:
                 HandleHookshotPull();
@@ -391,9 +392,7 @@ private void LateUpdate(){
                 Destroy(hitTarget.GetComponent<FixedJoint>());
             }
 
-            float hookshotSpeedMin = 10f;
-            float hookshotSpeedMax = 40f;
-
+            
             Vector3 hookshotDir = (hookshotPosition + transform.position).normalized;
 
             //pull the hittarget towards the player

@@ -63,7 +63,7 @@ public class FrictionController : MonoBehaviour
 
     private void Update()
     {
-
+       
         //make sure the player is constantly on the ground
         playerVelocity.y += gravityValue * Time.deltaTime;
 
