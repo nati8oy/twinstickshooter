@@ -27,7 +27,7 @@ public class Shooting : MonoBehaviour
     public void Shoot()
     {
         GameObject bullet = ObjectPooler.SharedInstance.GetPooledObject(objectPoolerTag);
-
+        Debug.Log(bullet);
 
         if (bullet != null)
         {

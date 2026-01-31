@@ -18,10 +18,10 @@ public class EnemyMovement : MonoBehaviour
     [SerializeField] private Transform currentPriorityTarget; // Added variable to store the current priority target
 
     private void Start()
-    {
+    {   
         initialPosition = transform.position;
         navMeshAgent = GetComponent<NavMeshAgent>();
-        playerTransform = GameObject.Find("Player Alt").transform;
+        playerTransform = GameObject.Find("PlayerHookshot").transform;
         endPointTransform = GameObject.Find("EndPoint").transform;
         currentPriorityTarget = playerTransform; // Set player as the initial priority target
         GenerateRandomDestination();
