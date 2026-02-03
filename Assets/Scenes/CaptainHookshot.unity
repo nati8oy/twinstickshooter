@@ -9778,11 +9778,15 @@ PrefabInstance:
       objectReference: {fileID: 1429526708}
     - target: {fileID: 102278313849289252, guid: 623f5226bf49a25479dafb914b4aadb6, type: 3}
       propertyPath: targetSpeed
-      value: 3
+      value: 2.3
       objectReference: {fileID: 0}
     - target: {fileID: 102278313849289256, guid: 623f5226bf49a25479dafb914b4aadb6, type: 3}
       propertyPath: m_Name
       value: PlayerHookshot
+      objectReference: {fileID: 0}
+    - target: {fileID: 102278313849289259, guid: 623f5226bf49a25479dafb914b4aadb6, type: 3}
+      propertyPath: gamepadRotateSmoothing
+      value: 500
       objectReference: {fileID: 0}
     - target: {fileID: 102278313849289433, guid: 623f5226bf49a25479dafb914b4aadb6, type: 3}
       propertyPath: m_BreakForce

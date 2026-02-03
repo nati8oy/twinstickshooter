@@ -51,11 +51,13 @@ The hookshot is the primary interaction tool with multiple functions:
    - Automatically pulls items toward player
 
 **Controls:**
-- Right Mouse Button: Fire hookshot / Pull Gummy
-- Left Shift: Activate pull when attached
-- Space: Jump / Cancel hookshot
-- WASD: Movement
-- Mouse: Aim (can also use gamepad right stick)
+| Action | Keyboard/Mouse | Gamepad |
+|---|---|---|
+| Fire hookshot / Throw Gummy | Right Mouse Button | R1 (Right Shoulder) |
+| Activate pull when attached | Left Shift | South Button (X/A) |
+| Jump / Cancel hookshot | Space | L1 (Left Shoulder) |
+| Movement | WASD | Left Stick |
+| Aim | Mouse | Right Stick |
 
 ### Gummy System
 - **Weight Classes:** 3 classes via `GummyLevel.Weight` enum — Light (1), Medium (2), Heavy (3)
@@ -142,6 +144,8 @@ The hookshot is the primary interaction tool with multiple functions:
 - Supports keyboard/mouse and gamepad input
 - Auto-detects input device
 - Character Controller based movement
+- Proper gravity with `isGrounded` check (resets vertical velocity when grounded to prevent accumulation)
+- Combines horizontal movement and gravity into a single `controller.Move` call
 - Mouse aiming projects to ground plane
 - **Reads `CM_Hookshot.dragSpeedMultiplier`** to apply carry speed penalties per weight tier
 
@@ -177,12 +181,13 @@ The hookshot is the primary interaction tool with multiple functions:
 - **Multiple hookshot types can be created** as separate data assets
 - Allows easy balancing and progression
 
-**GenericCollisions.cs** - Pen/Goal detection for Gummies
+**GenericCollisions.cs** - Pen/Goal detection and hazard handling
 - Handles collision with goal pen (triggers scoring)
-- Handles collision with hazards (deactivates Gummy)
+- Handles collision with hazards (deactivates object, fires `onHitHazard` event)
+- **Hazard immunity while grappling** — if `CM_Hookshot.isGrappling` is true, hazard collisions are skipped (player-only; Gummies are unaffected)
 - **Calls Gummy.OnCollected() to award gold**
 - Uses Unity Events for flexible integration
-- Should be attached to each Gummy prefab
+- Attached to Gummy prefabs and the player
 
 **EnemyStun.cs** - Temporary disable Gummy movement
 - Disables NavMeshAgent for duration
@@ -204,9 +209,17 @@ The hookshot is the primary interaction tool with multiple functions:
 - **Optional upgrade button**
 - Subscribes to GameEconomy events for real-time updates
 
+**FrictionController.cs** - Acceleration and deceleration
+- Applies acceleration-based movement on top of `TwinStickMovement`
+- Velocity accumulates at `accelRate` while input is held, clamped to `targetSpeed`
+- Damping reduces velocity when input is released
+- Gravity is handled by `TwinStickMovement`, not this script
+
 ### Input System
 - Uses Unity's new Input System
-- `PlayerControls.inputactions` asset defines bindings
+- `PlayerControls.inputactions` asset defines bindings for movement and aim
+- `CM_Hookshot` creates its own `InputAction` objects with dual bindings (keyboard/mouse + gamepad)
+- All gamepad bindings use generic `<Gamepad>` (works with DualShock, Xbox, Switch Pro, etc.)
 - Supports both keyboard/mouse and gamepad
 - Auto-switching between control schemes
 
@@ -272,7 +285,7 @@ Assets/
 - [x] ScriptableObject based hookshot stats (HookshotData)
 - [x] Multiple hookshot types via data objects
 - [x] Pen/Goal trigger system (GenericCollisions)
-- [x] Input system with gamepad support (needs refinement)
+- [x] Input system with full gamepad support (generic `<Gamepad>` bindings for all controllers)
 - [x] **3 Gummy weight classes with visual size differences**
 - [x] **Gold economy (1/2/3 gold per weight class)**
 - [x] **Hookshot strength system (Light/Medium/Heavy enum)**
@@ -282,14 +295,16 @@ Assets/
 - [x] **Hookshot bounciness via HookshotData (drives SpringJoint spring)**
 - [x] **Carry speed penalties per weight tier (Light=1.0, Medium=0.7, Heavy=0.45, tunable in inspector)**
 - [x] **Upgrade system (spend gold to improve hookshot)**
+- [x] **Hazard immunity while grappling (player ignores hazard collisions during grapple)**
+- [x] **Proper gravity system (ground check prevents velocity accumulation)**
 
 ---
 
 ## Planned Features & Improvements
 
 ### High Priority
-1. **FIX INPUT SYSTEM** - Controller issues (see InputSystemFixGuide.md)
-   
+1. ~~**FIX INPUT SYSTEM**~~ (done — v0.5)
+
 2. ~~**Improved Gummy Behavior**~~ (done — GummyBehaviour.cs)
    - ~~Remove chase behavior~~ (replaced with configurable idle/reaction system)
    - ~~Idle/wander AI when not hooked~~ (WanderShort/Medium/Far)
@@ -357,16 +372,10 @@ Assets/
 ## Known Issues & Technical Debt
 
 ### Current Issues
-1. **INPUT SYSTEM - Controller buttons not triggering properly**
-   - CM_Hookshot creates InputActions manually, bypassing PlayerControls asset
-   - DualShockGamepad-specific bindings won't work with Xbox/other controllers
-   - Invalid `<Mouse>/press` binding (should be `<Mouse>/leftButton`)
-   - Manual control scheme detection may conflict with Unity's system
-   - See `InputSystemFixGuide.md` for detailed fix instructions
-
+1. ~~**INPUT SYSTEM - Controller buttons not triggering properly**~~ (fixed — v0.5)
 2. Some commented-out code in CM_Hookshot.cs (momentum system, auto-targeting)
 3. Enemy naming - referred to as "enemies" but should be "Gummies" throughout
-4. FrictionController.cs and Hookshot_spring.cs appear unused
+4. Hookshot_spring.cs appears unused
 5. PlayerAttackManager.cs appears incomplete/unused
 6. Grenade.cs exists but doesn't fit current game concept
 7. Pen collision detection could be more robust (currently uses basic OnCollisionEnter)
@@ -402,11 +411,7 @@ Assets/
 ## Next Development Steps
 
 ### Immediate Tasks
-1. **FIX INPUT SYSTEM** - Top priority (see InputSystemFixGuide.md)
-   - Update PlayerControls.inputactions to use generic Gamepad bindings
-   - Replace CM_Hookshot to use PlayerControls asset properly
-   - Fix mouse button bindings
-   - Test with multiple controller types
+1. ~~**FIX INPUT SYSTEM**~~ (done — v0.5)
 
 2. **Test Economy System** (see WeightEconomySetupGuide.md)
    - Create 3 Gummy prefabs with different GummyData
@@ -461,7 +466,21 @@ Assets/
 
 ## Changelog
 
-### [Current] - Prototype v0.4
+### [Current] - Prototype v0.5
+- **Input system fixed** — CM_Hookshot now uses dual bindings (keyboard/mouse + gamepad) for all actions:
+  - Hookshot fire/throw: Right Mouse + R1
+  - Pull: Left Shift + South Button (X/A)
+  - Jump/Cancel: Space + L1
+- **PlayerControls.inputactions** updated: all `<DualShockGamepad>` bindings replaced with generic `<Gamepad>` (supports Xbox, Switch Pro, etc.)
+- Fixed invalid `<Mouse>/press` binding to `<Mouse>/leftButton` in PlayerControls.inputactions
+- Added gamepad binding (L1) for Jump action in PlayerControls.inputactions
+- **Gravity consolidated into TwinStickMovement** — uses `controller.isGrounded` check to reset vertical velocity, preventing infinite accumulation
+- **Removed gravity from FrictionController** — gravity is now handled solely by TwinStickMovement
+- **Fixed FrictionController damping bug** — stray semicolon on `if` statement caused damping to run every frame (even during input), fighting acceleration
+- **Fixed FrictionController directional bias** — `speedDif` was calculated against world X axis only, causing resistance when moving right; replaced with direct input direction
+- **Hazard immunity while grappling** — `GenericCollisions` skips hazard collisions when `CM_Hookshot.isGrappling` is true (player only, Gummies unaffected)
+
+### Prototype v0.4
 - Added `GummyBehaviour.cs` — configurable Gummy AI with two enum dropdowns:
   - `IdleMovement`: WanderShort (3u), WanderMedium (7u), WanderFar (15u)
   - `PlayerReaction`: Follow, ScatterFar (20u), ScatterNearby (5u), Ignore

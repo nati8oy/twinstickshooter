@@ -116,29 +116,23 @@ public class CM_Hookshot : MonoBehaviour
        
 
         characterController = gameObject.GetComponent<CharacterController>();
-        ///twinStick = gameObject.GetComponent<TwinStickMovement>();
 
-        /*
-        hookshot = new InputAction(binding: "<Mouse>/leftButton");
-        //hookshot.performed += _ => LaunchHookshot();
-        hookshot.performed += _ => HandleHookshotStart();
-        hookshot.Enable();
-        */
-        
-        hookshotPull = new InputAction(binding: "<Mouse>/rightButton" );
-        //hookshotPull = new InputAction(binding: "<DualShockGamepad>/rightShoulder");
-        
+        hookshotPull = new InputAction();
+        hookshotPull.AddBinding("<Mouse>/rightButton");
+        hookshotPull.AddBinding("<Gamepad>/rightShoulder");
         hookshotPull.performed += _ => HandleHookshotStart();
         hookshotPull.performed += _ => ThrowCarriedObject();
-        //hookshotPull.performed += _ => HandleHookshotPull();
         hookshotPull.Enable();
 
-        
-        jump = new InputAction(binding: "<Keyboard>/space");
+        jump = new InputAction();
+        jump.AddBinding("<Keyboard>/space");
+        jump.AddBinding("<Gamepad>/leftShoulder");
         jump.performed += _ => Jump();
         jump.Enable();
 
-        pull = new InputAction(binding: "<Keyboard>/leftShift");
+        pull = new InputAction();
+        pull.AddBinding("<Keyboard>/leftShift");
+        pull.AddBinding("<Gamepad>/buttonSouth");
         pull.performed += _ => ActivateHookshotPull();
         pull.Enable();
 
