@@ -100,7 +100,8 @@ public class CM_Hookshot : MonoBehaviour
         hookshotSpeedMax = hookshotData.speedMax;
         hookshotStrength = (int)hookshotData.strength;
         hookshotBounciness = hookshotData.bounciness;
-        joint.spring = hookshotBounciness;
+        if (joint != null)
+            joint.spring = hookshotBounciness;
     }
 
     private void Awake()
@@ -408,7 +409,8 @@ private void LateUpdate(){
                 hitTarget.GetComponent<NavMeshAgent>().enabled = false;
             }
 
-            joint.connectedBody = hitTarget.GetComponent<Rigidbody>();
+            if (joint != null)
+                joint.connectedBody = hitTarget.GetComponent<Rigidbody>();
         }
 
         //if the player has jumped while attached, cancel the hookshot
@@ -647,7 +649,7 @@ private void LateUpdate(){
     private void DetachSpringJoint()
     {
         //if the spring joint is connect to something, disconnect it.
-        if (joint.connectedBody != null)
+        if (joint != null && joint.connectedBody != null)
         {
             joint.connectedBody = null;
         }

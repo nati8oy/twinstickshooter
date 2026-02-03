@@ -125,6 +125,12 @@ public class TwinStickMovement : MonoBehaviour
         */
 
 
+        // Ground check — reset vertical velocity when grounded to prevent accumulation
+        if (controller.isGrounded && playerVelocity.y < 0f)
+        {
+            playerVelocity.y = -2f;
+        }
+
         Vector3 move = new Vector3(movement.x, 0, movement.y);
 
         float speedMod = 1f;
@@ -134,23 +140,11 @@ public class TwinStickMovement : MonoBehaviour
             speedMod = hookshot.dragSpeedMultiplier;
         }
 
-        controller.Move(move * Time.deltaTime * playerSpeed * speedMod);
-
-        /*
-        if (CVM.magnitude >= 0f)
-        {
-            float momentumDrag = 3f;
-
-            CVM -= CVM * momentumDrag * Time.deltaTime;
-            if (CVM.magnitude < .0f)
-            {
-                CVM = Vector3.zero;
-            }
-        }
-
-        */
-
         playerVelocity.y += gravityValue * Time.deltaTime;
+
+        // Combine horizontal movement with vertical gravity
+        Vector3 finalMove = (move * playerSpeed * speedMod) + new Vector3(0, playerVelocity.y, 0);
+        controller.Move(finalMove * Time.deltaTime);
 
         
         

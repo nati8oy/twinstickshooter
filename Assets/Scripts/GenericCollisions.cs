@@ -9,10 +9,14 @@ public class GenericCollisions : MonoBehaviour
     
     public void OnCollisionEnter(Collision collision)
     {
-        
+
         if(collision.gameObject.tag == "hazard")
         {
-            
+            // Skip hazard collision if player is grappling
+            CM_Hookshot hookshot = GetComponent<CM_Hookshot>();
+            if (hookshot != null && hookshot.isGrappling)
+                return;
+
             gameObject.SetActive(false);
             onHitHazard.Invoke();
         }

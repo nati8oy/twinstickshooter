@@ -211,7 +211,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::GummyBehaviour
   idleMovement: 0
   playerReaction: 2
-  playerDetectionRadius: 20
+  playerDetectionRadius: 10
   wanderShortRadius: 3
   wanderMediumRadius: 7
   wanderFarRadius: 15
@@ -220,5 +220,5 @@ MonoBehaviour:
   scatterNearbyDistance: 10
   wanderSpeed: 2
   followSpeed: 4
-  scatterSpeed: 60
+  scatterSpeed: 30
   followStopDistance: 3

@@ -63,25 +63,16 @@ public class FrictionController : MonoBehaviour
 
     private void Update()
     {
-       
-        //make sure the player is constantly on the ground
-        playerVelocity.y += gravityValue * Time.deltaTime;
-
-        //move the player down at the speed of gravity
-        characterController.Move(playerVelocity * Time.deltaTime);
-
         currentVelocity = velocity;
         accelRate = (Mathf.Abs(targetSpeed)>0.01f) ? acceleration : decceleration;
-        speedDif = targetSpeed - characterController.velocity.x;
 
-       
-        //if a button is being held down call the onmoveperformed function
+
+        //if a button is being held down, accelerate in the input direction
 
         if(controls.Controls.Movement.ReadValue<Vector2>() != Vector2.zero)
         {
-            movement = Mathf.Pow(Mathf.Abs(speedDif) * accelRate, velPower) * Mathf.Sign(speedDif);
-            Vector2 movementInput = movement * controls.Controls.Movement.ReadValue<Vector2>();
-            Vector3 inputDirection = new Vector3(movementInput.x, 0f, movementInput.y).normalized;
+            Vector2 rawInput = controls.Controls.Movement.ReadValue<Vector2>();
+            Vector3 inputDirection = new Vector3(rawInput.x, 0f, rawInput.y).normalized;
 
             velocity += inputDirection * accelRate * Time.deltaTime;
             velocity = Vector3.ClampMagnitude(velocity, targetSpeed);
@@ -91,7 +82,7 @@ public class FrictionController : MonoBehaviour
 
 
         //if a button is not being held down call the onmovecanceled function
-        if (controls.Controls.Movement.ReadValue<Vector2>() == Vector2.zero);
+        if (controls.Controls.Movement.ReadValue<Vector2>() == Vector2.zero)
         {
             velocity -= velocity * damping * Time.deltaTime;
             //Debug.Log("current velocity: " + velocity);

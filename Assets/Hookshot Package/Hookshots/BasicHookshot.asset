@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: BasicHookshot
   m_EditorClassIdentifier: Assembly-CSharp::HookshotData
   strength: 3
-  maxRange: 6
+  maxRange: 10
   speedMin: 20
   speedMax: 80
   bounciness: 10
