@@ -47,6 +47,9 @@ public class CM_Hookshot : MonoBehaviour
     [SerializeField] private CharacterController characterController;
 
     private float hookshotMaxRange;
+    private int hookshotLevel;
+    private float hookshotBounciness;
+    private float hookshotMaxLineDistance;
 
     public bool isGrappling = false;
 
@@ -91,6 +94,10 @@ public class CM_Hookshot : MonoBehaviour
         hookshotMaxRange = hookshotData.maxRange;
         hookshotSpeedMin = hookshotData.speedMin;
         hookshotSpeedMax = hookshotData.speedMax;
+        hookshotLevel = hookshotData.level;
+        hookshotBounciness = hookshotData.bounciness;
+        hookshotMaxLineDistance = hookshotData.maxLineDistance;
+        joint.spring = hookshotBounciness;
     }
 
     private void Awake()
@@ -178,13 +185,13 @@ public class CM_Hookshot : MonoBehaviour
                 hook.gameObject.SetActive(true);
                 break;
             case State.HookshotAttached:
-                if (hookshotAutoPull)
+                if (hookshotAutoPull && !IsGummyTooStrong())
                 {
                     HandleHookshotPull();
                 }
                 else
                 {
-                    HandleHookshotAttached(); 
+                    HandleHookshotAttached();
                 }
                 
                 hook.gameObject.SetActive(true);
@@ -254,6 +261,17 @@ private void LateUpdate(){
                             hook.position = raycastHit.point;
                             hookshotPosition = raycastHit.point;
                             state = State.HookshotAttached;
+
+                            //if gummy level is lower than hookshot level, freeze it in place
+                            GummyLevel gummyLevel = raycastHit.collider.gameObject.GetComponent<GummyLevel>();
+                            if (gummyLevel != null && gummyLevel.level < hookshotLevel)
+                            {
+                                SimpleEnemyMovement enemyMovement = raycastHit.collider.gameObject.GetComponent<SimpleEnemyMovement>();
+                                if (enemyMovement != null)
+                                {
+                                    enemyMovement.enabled = false;
+                                }
+                            }
                         }
 
                         //this is the layer for collectibles that you can pull towards yourself
@@ -350,15 +368,23 @@ private void LateUpdate(){
             CancelHookshot();
         }
 
-        //deactivate the navmesh agent of the object you've hit
-        if (hitTarget.GetComponent<NavMeshAgent>())
+        if (!IsGummyTooStrong())
         {
-            hitTarget.GetComponent<NavMeshAgent>().enabled = false;
+            //deactivate the navmesh agent of the object you've hit
+            if (hitTarget.GetComponent<NavMeshAgent>())
+            {
+                hitTarget.GetComponent<NavMeshAgent>().enabled = false;
+            }
 
+            joint.connectedBody = hitTarget.GetComponent<Rigidbody>();
         }
 
-        joint.connectedBody = hitTarget.GetComponent<Rigidbody>();
-      
+        //cancel if the player gets too far from the attached target
+        if (Vector3.Distance(transform.position, hitTarget.transform.position) > hookshotMaxLineDistance)
+        {
+            CancelHookshot();
+            return;
+        }
 
         //if the player has jumped while attached, cancel the hookshot
         if (jump.ReadValue<float>() > 0)
@@ -579,11 +605,19 @@ private void LateUpdate(){
 
     private void ActivateHookshotPull()
     {
-        if(state == State.HookshotAttached)
+        if(state == State.HookshotAttached && !IsGummyTooStrong())
         {
             state = State.HookshotPull;
 
         }
+    }
+
+    private bool IsGummyTooStrong()
+    {
+        if (hitTarget == null) return false;
+        GummyLevel gummyLevel = hitTarget.GetComponent<GummyLevel>();
+        if (gummyLevel == null) return false;
+        return gummyLevel.level >= hookshotLevel || gummyLevel.weight > hookshotLevel;
     }
 
     private void DetachSpringJoint()
@@ -608,7 +642,12 @@ private void LateUpdate(){
             if (hitTarget.GetComponent<NavMeshAgent>())
             {
                 hitTarget.GetComponent<NavMeshAgent>().enabled = true;
+            }
 
+            SimpleEnemyMovement enemyMovement = hitTarget.GetComponent<SimpleEnemyMovement>();
+            if (enemyMovement != null)
+            {
+                enemyMovement.enabled = true;
             }
         }
        

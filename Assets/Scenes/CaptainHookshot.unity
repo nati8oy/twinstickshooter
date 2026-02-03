@@ -131,6 +131,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: Gummy
       objectReference: {fileID: 0}
+    - target: {fileID: 2737844223404662166, guid: 1060c4454accf4cca9387924e400ad5d, type: 3}
+      propertyPath: level
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 2737844223404662166, guid: 1060c4454accf4cca9387924e400ad5d, type: 3}
+      propertyPath: weight
+      value: 5
+      objectReference: {fileID: 0}
     - target: {fileID: 5554698053256250187, guid: 1060c4454accf4cca9387924e400ad5d, type: 3}
       propertyPath: m_LocalPosition.x
       value: -29
@@ -8233,7 +8241,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5554698053256250187, guid: 1060c4454accf4cca9387924e400ad5d, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -0.26
+      value: 8.2
       objectReference: {fileID: 0}
     - target: {fileID: 5554698053256250187, guid: 1060c4454accf4cca9387924e400ad5d, type: 3}
       propertyPath: m_LocalRotation.w
@@ -8360,6 +8368,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Gummy (4)
       objectReference: {fileID: 0}
+    - target: {fileID: 2737844223404662166, guid: 1060c4454accf4cca9387924e400ad5d, type: 3}
+      propertyPath: level
+      value: 3
+      objectReference: {fileID: 0}
     - target: {fileID: 5554698053256250187, guid: 1060c4454accf4cca9387924e400ad5d, type: 3}
       propertyPath: m_LocalPosition.x
       value: -32.449997
@@ -8370,7 +8382,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5554698053256250187, guid: 1060c4454accf4cca9387924e400ad5d, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -6
+      value: 11.5
       objectReference: {fileID: 0}
     - target: {fileID: 5554698053256250187, guid: 1060c4454accf4cca9387924e400ad5d, type: 3}
       propertyPath: m_LocalRotation.w

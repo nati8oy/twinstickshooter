@@ -16,6 +16,7 @@ GameObject:
   - component: {fileID: 7454154907774550183}
   - component: {fileID: 5748216717567061833}
   - component: {fileID: 7222035785059331151}
+  - component: {fileID: 2737844223404662166}
   m_Layer: 11
   m_Name: Gummy
   m_TagString: Untagged
@@ -200,3 +201,16 @@ NavMeshAgent:
   m_BaseOffset: 0.5
   m_WalkableMask: 4294967295
   m_ObstacleAvoidanceType: 4
+--- !u!114 &2737844223404662166
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1070710326693234163}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 40abd32338e844e48bee5920ac75fd25, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::GummyLevel
+  level: 1
