@@ -52,7 +52,10 @@ public class CM_Hookshot : MonoBehaviour
 
     public bool isGrappling = false;
     [HideInInspector] public float dragSpeedMultiplier = 1f;
-    [SerializeField] private float weightSlowdownPerUnit = 0.15f;
+    [Header("Carry Speed Multipliers")]
+    [SerializeField] private float lightCarrySpeed = 1f;
+    [SerializeField] private float mediumCarrySpeed = 0.7f;
+    [SerializeField] private float heavyCarrySpeed = 0.45f;
 
     [Header("Feedbacks")]
     [SerializeField] private UnityEvent onGrapple;
@@ -206,7 +209,19 @@ public class CM_Hookshot : MonoBehaviour
                 if (hitTarget != null)
                 {
                     GummyLevel gl = hitTarget.GetComponent<GummyLevel>();
-                    dragSpeedMultiplier = (gl != null) ? Mathf.Clamp01(1f - gl.WeightValue * weightSlowdownPerUnit) : 1f;
+                    if (gl != null)
+                    {
+                        switch (gl.weight)
+                        {
+                            case GummyLevel.Weight.Light:  dragSpeedMultiplier = lightCarrySpeed;  break;
+                            case GummyLevel.Weight.Medium: dragSpeedMultiplier = mediumCarrySpeed; break;
+                            case GummyLevel.Weight.Heavy:  dragSpeedMultiplier = heavyCarrySpeed;  break;
+                        }
+                    }
+                    else
+                    {
+                        dragSpeedMultiplier = 1f;
+                    }
                 }
 
                 break;
@@ -275,10 +290,18 @@ private void LateUpdate(){
                             GummyLevel gummyLevel = raycastHit.collider.gameObject.GetComponent<GummyLevel>();
                             if (gummyLevel != null && hookshotStrength >= gummyLevel.WeightValue)
                             {
-                                SimpleEnemyMovement enemyMovement = raycastHit.collider.gameObject.GetComponent<SimpleEnemyMovement>();
-                                if (enemyMovement != null)
+                                GummyBehaviour gummyBehaviour = raycastHit.collider.gameObject.GetComponent<GummyBehaviour>();
+                                if (gummyBehaviour != null)
                                 {
-                                    enemyMovement.enabled = false;
+                                    gummyBehaviour.enabled = false;
+                                }
+                                else
+                                {
+                                    SimpleEnemyMovement enemyMovement = raycastHit.collider.gameObject.GetComponent<SimpleEnemyMovement>();
+                                    if (enemyMovement != null)
+                                    {
+                                        enemyMovement.enabled = false;
+                                    }
                                 }
                             }
                         }
@@ -573,10 +596,9 @@ private void LateUpdate(){
         ResetEnemyMovement();
         DetachSpringJoint();
 
-        if (hitTarget.GetComponent<NavMeshAgent>())
+        if (hitTarget != null && hitTarget.GetComponent<NavMeshAgent>())
         {
             hitTarget.GetComponent<NavMeshAgent>().enabled = true;
-
         }
 
         //characterController.enabled = false;
@@ -646,10 +668,18 @@ private void LateUpdate(){
                 hitTarget.GetComponent<NavMeshAgent>().enabled = true;
             }
 
-            SimpleEnemyMovement enemyMovement = hitTarget.GetComponent<SimpleEnemyMovement>();
-            if (enemyMovement != null)
+            GummyBehaviour gummyBehaviour = hitTarget.GetComponent<GummyBehaviour>();
+            if (gummyBehaviour != null)
             {
-                enemyMovement.enabled = true;
+                gummyBehaviour.enabled = true;
+            }
+            else
+            {
+                SimpleEnemyMovement enemyMovement = hitTarget.GetComponent<SimpleEnemyMovement>();
+                if (enemyMovement != null)
+                {
+                    enemyMovement.enabled = true;
+                }
             }
         }
        

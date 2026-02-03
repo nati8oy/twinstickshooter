@@ -8,7 +8,7 @@
 **Status:** Prototype with core hookshot mechanics implemented
 
 ### Core Concept
-A collection game where the player uses a hookshot to round up creatures called "Gummies" and herd them into a pen. Gummies vary in size and weight, requiring different hookshot levels to move and carry them effectively.
+A collection game where the player uses a hookshot to round up creatures called "Gummies" and herd them into a pen. Gummies have a weight class (Light, Medium, Heavy), and the hookshot must have sufficient strength to pull and carry them.
 
 ---
 
@@ -58,24 +58,29 @@ The hookshot is the primary interaction tool with multiple functions:
 - Mouse: Aim (can also use gamepad right stick)
 
 ### Gummy System
-- **Weight Classes:** 3 classes - Light (1), Medium (2), Heavy (3)
+- **Weight Classes:** 3 classes via `GummyLevel.Weight` enum — Light (1), Medium (2), Heavy (3)
 - **Gold Economy:** Light = 1 gold, Medium = 2 gold, Heavy = 3 gold
 - **Visual Distinction:** Size scales with weight (1x, 1.5x, 2x)
-- **Hookshot Level Requirements:** 
-  - Light Gummies: Require Level 1 hookshot
-  - Medium Gummies: Require Level 2 hookshot
-  - Heavy Gummies: Require Level 3 hookshot
-- **Movement Penalties When Carrying:**
-  - Light: No slowdown (0%)
-  - Medium: 30% slower
-  - Heavy: 50% slower
-- **Pull Speed:** Heavier Gummies pull slower (40 → 30 → 20 units/sec)
-- **Level-Gated Interaction:** Hookshot always attaches to Gummies, but:
-  - If Gummy `level >= hookshot level`: hook attaches but player cannot pull, carry, or drag — must cancel
-  - If Gummy `weight > hookshot level`: same restriction — hook attaches but no pull/carry/drag
-  - If both checks pass: full pull, carry, and throw functionality
-- **Movement Freeze:** When hooked by a stronger hookshot (level > Gummy level), the Gummy's SimpleEnemyMovement is disabled so it stops running. Re-enabled on cancel.
-- **Behavior:** Gummies use NavMesh pathfinding to move around
+- **Strength-Gated Interaction:** Hookshot always attaches to Gummies, but:
+  - If Gummy weight > hookshot strength: hook attaches but player cannot pull, carry, or drag — must cancel
+  - If hookshot strength >= Gummy weight: full pull, carry, and throw functionality
+- **Carry Speed Penalties (explicit per-tier values, tunable in inspector):**
+  - Light: `lightCarrySpeed = 1.0` (no slowdown)
+  - Medium: `mediumCarrySpeed = 0.7` (30% slower)
+  - Heavy: `heavyCarrySpeed = 0.45` (55% slower)
+- **Movement Freeze:** When hooked by a strong enough hookshot, the Gummy's `GummyBehaviour` (or `SimpleEnemyMovement`) is disabled so it stops running. Re-enabled on cancel.
+- **Behaviour System (`GummyBehaviour.cs`):** Each Gummy has two configurable behaviour layers:
+  - **Idle Movement** (when player is not nearby):
+    - `WanderShort` — roams within a small area near spawn (3 units)
+    - `WanderMedium` — roams a moderate area (7 units)
+    - `WanderFar` — roams a large area (15 units)
+  - **Player Reaction** (triggered when player enters detection radius):
+    - `Follow` — moves toward the player, stops at a set distance
+    - `ScatterFar` — flees far away from the player (20 units)
+    - `ScatterNearby` — scoots a short distance away (5 units)
+    - `Ignore` — keeps wandering, doesn't react to player
+  - When the player leaves the detection radius, the Gummy returns to idle with a fresh wander destination
+  - All distances, speeds, pause duration, and detection radius are tunable in the inspector
 - **Stun System:** Gummies can be stunned temporarily (disables NavMesh)
 
 ### Scoring
@@ -84,11 +89,10 @@ The hookshot is the primary interaction tool with multiple functions:
 
 ### Economy & Progression
 - **Gold System:** Collecting Gummies awards gold based on weight class
-- **Hookshot Upgrades:**
-  - Level 1 (Starting): Can pull Light Gummies only
-  - Level 2 (5 gold): Can pull Light & Medium Gummies
-  - Level 3 (10 gold): Can pull all Gummies
-- **Total gold needed:** 15 gold to reach max level
+- **Hookshot Strength Upgrades:**
+  - Light (Starting): Can pull Light Gummies only
+  - Medium: Can pull Light & Medium Gummies
+  - Heavy: Can pull all Gummies
 - **Economy managed by GameEconomy singleton**
 
 ---
@@ -102,11 +106,12 @@ The hookshot is the primary interaction tool with multiple functions:
 - Raycasting for targeting (max range configurable)
 - Player and Gummy movement during hookshot
 - Carry system for smaller Gummies
-- **Level/Weight Gating via `IsGummyTooStrong()`:**
+- **Weight/Strength Gating via `IsGummyTooStrong()`:**
   - Hookshot always attaches to Layer 11 objects
-  - Checks `GummyLevel.level >= hookshotLevel` or `GummyLevel.weight > hookshotLevel`
+  - Checks `GummyLevel.WeightValue > hookshotStrength`
   - If too strong: blocks pull state transition, blocks auto-pull, skips SpringJoint connection and NavMeshAgent disable (prevents dragging)
-  - If within level: disables `SimpleEnemyMovement` on attach so Gummy stops fleeing, re-enables on cancel
+  - If strong enough: disables `GummyBehaviour` (or `SimpleEnemyMovement` fallback) on attach so Gummy stops fleeing, re-enables on cancel
+- **Carry speed penalties** — explicit per-tier multipliers (`lightCarrySpeed`, `mediumCarrySpeed`, `heavyCarrySpeed`) applied via `TwinStickMovement`
 - **SpringJoint bounciness** set from `HookshotData.bounciness`
 - Uses `HookshotData` ScriptableObject for stats
 
@@ -138,29 +143,39 @@ The hookshot is the primary interaction tool with multiple functions:
 - Auto-detects input device
 - Character Controller based movement
 - Mouse aiming projects to ground plane
-- **Speed can be modified by hookshot carry penalties**
+- **Reads `CM_Hookshot.dragSpeedMultiplier`** to apply carry speed penalties per weight tier
 
-**GummyLevel.cs** - Component for Gummy level/weight gating
-- `level` (int) - The Gummy's level; must be below the hookshot's level to be pulled/carried
-- `weight` (int) - The Gummy's weight; if higher than the hookshot's level, pull/carry/drag is blocked
-- Attach to any Gummy prefab to enable level/weight gating
+**GummyLevel.cs** - Component for Gummy weight gating
+- `weight` - `Weight` enum (Light, Medium, Heavy); if heavier than hookshot strength, pull/carry/drag is blocked
+- `WeightValue` property returns the int value (1, 2, or 3) for comparisons and speed calculations
+- Attach to any Gummy prefab to enable weight gating
 - Gummies without this component can always be pulled normally
 
-**SimpleEnemyMovement.cs** - Gummy AI
-- NavMesh based pathfinding
-- Currently chases player (to be changed for herding behavior)
-- Integrates with stun system
-- **Disabled on hookshot attach** when Gummy level is below hookshot level (prevents running away while hooked)
-- **Re-enabled on hookshot cancel** so Gummy resumes AI
+**GummyBehaviour.cs** - Gummy AI (replaces SimpleEnemyMovement)
+- NavMesh based pathfinding with configurable idle and player-reaction behaviours
+- **Two enum dropdowns** in inspector, independently configurable per Gummy:
+  - `IdleMovement`: WanderShort, WanderMedium, WanderFar
+  - `PlayerReaction`: Follow, ScatterFar, ScatterNearby, Ignore
+- Stores spawn position as `homePosition` — idle wander radiates from this point
+- Player detection via configurable `playerDetectionRadius` (default 8f)
+- Idle wander includes configurable pause at each destination (`idlePauseDuration`)
+- Scatter is one-shot (runs once, then waits) — prevents jittery re-scattering
+- `OnEnable()` resets state and generates fresh destination (hookshot re-enable compatible)
+- `OnDisable()` calls `ResetPath()` (hookshot disable compatible)
+- `SetHomePosition(Vector3)` public method for object pooling support
+- Configurable speeds per mode: `wanderSpeed`, `followSpeed`, `scatterSpeed`
+
+**SimpleEnemyMovement.cs** - Legacy Gummy AI (kept for backward compatibility)
+- Simple NavMesh player-chasing behaviour
+- Still supported as fallback by CM_Hookshot if GummyBehaviour is not present
 
 **HookshotData.cs** - ScriptableObject for hookshot stats
-- `strength` - Pull force
-- `level` - Hookshot level (int), determines which Gummies can be pulled/carried
+- `strength` - `GummyLevel.Weight` enum (Light/Medium/Heavy); determines which Gummies can be pulled/carried
 - `maxRange` - Maximum hookshot distance
 - `speedMin` / `speedMax` - Player movement speed during grapple
 - `bounciness` - SpringJoint spring value, controls how bouncy the hookshot line is when attached
 - **Multiple hookshot types can be created** as separate data assets
-- Allows easy balancing and level progression
+- Allows easy balancing and progression
 
 **GenericCollisions.cs** - Pen/Goal detection for Gummies
 - Handles collision with goal pen (triggers scoring)
@@ -184,7 +199,7 @@ The hookshot is the primary interaction tool with multiple functions:
 **HUD.cs** - UI display
 - Score counter
 - **Gold display**
-- **Hookshot level display**
+- **Hookshot strength display**
 - **Upgrade cost display**
 - **Optional upgrade button**
 - Subscribes to GameEconomy events for real-time updates
@@ -209,7 +224,8 @@ Assets/
 │   │   └── TwinStickMovement.cs (player movement)
 │   ├── Gummy/
 │   │   ├── Gummy.cs (individual Gummy instance)
-│   │   ├── SimpleEnemyMovement.cs (Gummy AI)
+│   │   ├── GummyBehaviour.cs (configurable idle/reaction AI)
+│   │   ├── SimpleEnemyMovement.cs (legacy Gummy AI)
 │   │   ├── EnemyStun.cs
 │   │   ├── EnemyHealth.cs
 │   │   └── GenericCollisions.cs (pen/goal detection)
@@ -249,7 +265,7 @@ Assets/
 - [x] Pull Gummies toward player
 - [x] Carry smaller Gummies
 - [x] Throw carried Gummies
-- [x] Basic Gummy AI (NavMesh pathfinding)
+- [x] Basic Gummy AI (NavMesh pathfinding) — now replaced by GummyBehaviour system
 - [x] Gummy stun system
 - [x] Score tracking
 - [x] Visual targeting (laser sight)
@@ -259,12 +275,12 @@ Assets/
 - [x] Input system with gamepad support (needs refinement)
 - [x] **3 Gummy weight classes with visual size differences**
 - [x] **Gold economy (1/2/3 gold per weight class)**
-- [x] **Hookshot progression system (3 levels)**
-- [x] **Level-gated Gummy pulling (attach always, pull/carry blocked if too strong)**
-- [x] **Weight-gated Gummy pulling (weight > hookshot level blocks pull/carry/drag)**
-- [x] **Gummy movement freeze on hookshot attach (SimpleEnemyMovement disabled)**
+- [x] **Hookshot strength system (Light/Medium/Heavy enum)**
+- [x] **Strength-gated Gummy pulling (attach always, pull/carry blocked if gummy too heavy)**
+- [x] **Gummy movement freeze on hookshot attach (GummyBehaviour/SimpleEnemyMovement disabled)**
+- [x] **Configurable Gummy behaviour system (GummyBehaviour.cs) with idle movement and player reaction enums**
 - [x] **Hookshot bounciness via HookshotData (drives SpringJoint spring)**
-- [x] **Movement speed penalties when carrying heavy Gummies**
+- [x] **Carry speed penalties per weight tier (Light=1.0, Medium=0.7, Heavy=0.45, tunable in inspector)**
 - [x] **Upgrade system (spend gold to improve hookshot)**
 
 ---
@@ -274,9 +290,9 @@ Assets/
 ### High Priority
 1. **FIX INPUT SYSTEM** - Controller issues (see InputSystemFixGuide.md)
    
-2. **Improved Gummy Behavior**
-   - Remove chase behavior
-   - Idle/wander AI when not hooked
+2. ~~**Improved Gummy Behavior**~~ (done — GummyBehaviour.cs)
+   - ~~Remove chase behavior~~ (replaced with configurable idle/reaction system)
+   - ~~Idle/wander AI when not hooked~~ (WanderShort/Medium/Far)
    - Leading behavior for Gummies that can't be carried
    - Better pathfinding around obstacles
 
@@ -287,7 +303,7 @@ Assets/
    - Obstacles and hazards
 
 4. **Visual/Audio Polish**
-   - Feedback when trying to pull Gummy above level
+   - Feedback when trying to pull Gummy above hookshot strength
    - Collection effects per weight class
    - Upgrade purchase celebration
    - Weight-appropriate sound effects
@@ -305,13 +321,13 @@ Assets/
 
 3. **Tutorial/Onboarding**
    - Teach hookshot controls
-   - Explain weight/level system
+   - Explain weight/strength system
    - Show upgrade system
 
 4. **UI Improvements**
    - Better upgrade shop interface
-   - Visual hookshot level indicator
-   - "Too heavy!" message when insufficient level
+   - Visual hookshot strength indicator
+   - "Too heavy!" message when insufficient strength
    - Gold collection popup (+1, +2, +3)
 
 ### Lower Priority
@@ -359,23 +375,22 @@ Assets/
 1. Clean up unused scripts and commented code
 2. Rename "enemy" references to "Gummy" throughout codebase
 3. Consolidate hookshot implementations (CM_Hookshot vs Hookshot_spring)
-4. Implement weight resistance in pull logic
+4. ~~Implement weight resistance in pull logic~~ (done)
 5. State machine could be more robust (consider Finite State Machine pattern)
 
 ---
 
 ## Design Considerations
 
-### Gummy Weight Classes (Example)
-- **Light:** Hookshot Level 1 - Can pull and carry
-- **Medium:** Hookshot Level 2 - Can pull but cannot carry, must lead
-- **Heavy:** Hookshot Level 3 - Cannot pull, can only attach and lead
+### Gummy Weight Classes
+- **Light:** Hookshot Strength Light or above — Can pull and carry (no speed penalty)
+- **Medium:** Hookshot Strength Medium or above — Can pull and carry (30% slower)
+- **Heavy:** Hookshot Strength Heavy — Can pull and carry (55% slower)
 
-### Hookshot Upgrade Path
-- Level 1: Basic hookshot, traversal only
-- Level 2: Can pull Light Gummies
-- Level 3: Can pull Medium Gummies
-- Level 4: Can attach to Heavy Gummies
+### Hookshot Strength Tiers
+- Light: Can pull Light Gummies only
+- Medium: Can pull Light & Medium Gummies
+- Heavy: Can pull all Gummies
 
 ### Gameplay Flow
 1. Early levels: Only Light Gummies, teach basic mechanics
@@ -396,12 +411,12 @@ Assets/
 2. **Test Economy System** (see WeightEconomySetupGuide.md)
    - Create 3 Gummy prefabs with different GummyData
    - Test gold collection and hookshot upgrades
-   - Verify level-gating works correctly
+   - Verify strength-gating works correctly
    - Balance speed penalties
 
-3. **Improve Gummy AI**
-   - Remove player-chasing behavior
-   - Add idle/wander states
+3. ~~**Improve Gummy AI**~~ (done — GummyBehaviour.cs)
+   - ~~Remove player-chasing behavior~~ (replaced with enum-based reactions)
+   - ~~Add idle/wander states~~ (WanderShort/Medium/Far with pause)
    - Better NavMesh avoidance
 
 4. **Refactor Terminology**
@@ -411,16 +426,16 @@ Assets/
 ### This Sprint
 - [ ] Build first complete level with pen and Gummies
 - [ ] Test full gameplay loop (find → hook → deposit → score)
-- [ ] Implement basic weight resistance
-- [ ] Add visual feedback for hookshot level vs Gummy requirements
+- [x] ~~Implement basic weight resistance~~ (done — carry speed penalties per weight tier)
+- [ ] Add visual feedback for hookshot strength vs Gummy weight
 
 ---
 
 ## Questions for Discussion
 
 1. Should there be a stamina/cooldown system for the hookshot?
-2. ~~What happens if player tries to hook a Gummy above their level?~~ **Resolved:** Hook attaches but pull/carry/drag is blocked. Player must cancel.
-3. Should heavier Gummies slow player movement when leading them?
+2. ~~What happens if player tries to hook a Gummy above their strength?~~ **Resolved:** Hook attaches but pull/carry/drag is blocked. Player must cancel.
+3. ~~Should heavier Gummies slow player movement?~~ **Resolved:** Yes, when carrying. Explicit per-tier speed multipliers (Light=1.0, Medium=0.7, Heavy=0.45).
 4. Are there environmental hazards that could free/scatter Gummies?
 5. Multiple pens or single pen per level?
 
@@ -438,16 +453,39 @@ Assets/
 - Weight-based pull speed differences
 - Gummy leading behavior at distance
 - Pen collision detection reliability
+- GummyBehaviour: test each IdleMovement + PlayerReaction combination
+- GummyBehaviour: verify hookshot attach/pull/carry/throw/cancel all resume behaviour correctly
+- GummyBehaviour: confirm no SetDestination errors when agent is off NavMesh
 
 ---
 
 ## Changelog
 
-### [Current] - Prototype v0.2
-- Added `level` (int) and `bounciness` (float) fields to `HookshotData` ScriptableObject
-- Added `GummyLevel` component with `level` and `weight` fields for per-Gummy gating
-- Hookshot now always attaches to Gummies, but blocks pull/carry/drag if Gummy level >= hookshot level or Gummy weight > hookshot level
-- When a Gummy is hooked and its level is below the hookshot's, its `SimpleEnemyMovement` is disabled (stops fleeing); re-enabled on cancel
+### [Current] - Prototype v0.4
+- Added `GummyBehaviour.cs` — configurable Gummy AI with two enum dropdowns:
+  - `IdleMovement`: WanderShort (3u), WanderMedium (7u), WanderFar (15u)
+  - `PlayerReaction`: Follow, ScatterFar (20u), ScatterNearby (5u), Ignore
+- Gummies return to idle when player leaves detection radius, generating a fresh wander destination
+- All distances, speeds, pause duration, and detection radius tunable in inspector
+- OnEnable/OnDisable handle hookshot integration (reset state on re-enable, clear path on disable)
+- Updated `CM_Hookshot.cs` to try `GummyBehaviour` first, fall back to `SimpleEnemyMovement` — backward compatible
+- `SimpleEnemyMovement` kept as legacy fallback for non-gummy enemies
+
+### Prototype v0.3
+- Removed `level` system from `GummyLevel`, `HookshotData`, and `CM_Hookshot` — replaced by weight/strength enum
+- `HookshotData.strength` is now a `GummyLevel.Weight` enum (Light/Medium/Heavy) — determines which Gummies can be pulled/carried
+- `GummyLevel.weight` is now a `Weight` enum (Light/Medium/Heavy) instead of a free int
+- `IsGummyTooStrong()` simplified to: `gummyWeight > hookshotStrength`
+- Carry speed penalties are now explicit per-tier values (`lightCarrySpeed=1.0`, `mediumCarrySpeed=0.7`, `heavyCarrySpeed=0.45`), tunable in inspector on CM_Hookshot
+- `TwinStickMovement` reads `CM_Hookshot.dragSpeedMultiplier` to apply carry speed penalty
+- Speed penalty only applies when carrying, not when attached/dragging
+- Fixed `EnemyMovement.cs` — added `navMeshAgent.isOnNavMesh` guards to `ChasePlayer()`, `ChaseEndPoint()`, `MoveToDestination()`, and `HasReachedDestination()` to prevent errors when agent is off NavMesh
+
+### Prototype v0.2
+- Added `bounciness` (float) field to `HookshotData` ScriptableObject
+- Added `GummyLevel` component for per-Gummy weight gating
+- Hookshot now always attaches to Gummies, but blocks pull/carry/drag if Gummy is too heavy
+- When hooked, Gummy's `SimpleEnemyMovement` is disabled (stops fleeing); re-enabled on cancel
 - SpringJoint spring value is now driven by `HookshotData.bounciness`
 - Fixed `EnemyNavMesh.Awake()` NullReferenceException caused by `GameManager.Instance.player` being null during object pooling — moved lookup to `OnEnable` with null guards
 
