@@ -12,10 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f65969cc6a4674c9abadeff923c17c49, type: 3}
   m_Name: BasicHookshot
   m_EditorClassIdentifier: Assembly-CSharp::HookshotData
-  strength: 1
-  level: 1
+  strength: 2
+  level: 20
   maxRange: 20
   speedMin: 20
   speedMax: 80
   bounciness: 10
-  maxLineDistance: 20

@@ -47,11 +47,12 @@ public class CM_Hookshot : MonoBehaviour
     [SerializeField] private CharacterController characterController;
 
     private float hookshotMaxRange;
-    private int hookshotLevel;
+    private int hookshotStrength;
     private float hookshotBounciness;
-    private float hookshotMaxLineDistance;
 
     public bool isGrappling = false;
+    [HideInInspector] public float dragSpeedMultiplier = 1f;
+    [SerializeField] private float weightSlowdownPerUnit = 0.15f;
 
     [Header("Feedbacks")]
     [SerializeField] private UnityEvent onGrapple;
@@ -94,9 +95,8 @@ public class CM_Hookshot : MonoBehaviour
         hookshotMaxRange = hookshotData.maxRange;
         hookshotSpeedMin = hookshotData.speedMin;
         hookshotSpeedMax = hookshotData.speedMax;
-        hookshotLevel = hookshotData.level;
+        hookshotStrength = (int)hookshotData.strength;
         hookshotBounciness = hookshotData.bounciness;
-        hookshotMaxLineDistance = hookshotData.maxLineDistance;
         joint.spring = hookshotBounciness;
     }
 
@@ -171,6 +171,7 @@ public class CM_Hookshot : MonoBehaviour
             case State.Normal:
             lr.enabled = false;
             isGrappling = false;
+            dragSpeedMultiplier = 1f;
                 break;
             case State.HookshotLaunched:
                 LaunchHookshot();
@@ -193,13 +194,21 @@ public class CM_Hookshot : MonoBehaviour
                 {
                     HandleHookshotAttached();
                 }
-                
+
                 hook.gameObject.SetActive(true);
                 break;
             case State.HookshotCarry:
                 HandleHookshotCarry();
                 hook.gameObject.SetActive(false);
                 isGrappling = false;
+
+                //slow player based on gummy weight when carrying
+                if (hitTarget != null)
+                {
+                    GummyLevel gl = hitTarget.GetComponent<GummyLevel>();
+                    dragSpeedMultiplier = (gl != null) ? Mathf.Clamp01(1f - gl.WeightValue * weightSlowdownPerUnit) : 1f;
+                }
+
                 break;
         }
 
@@ -262,9 +271,9 @@ private void LateUpdate(){
                             hookshotPosition = raycastHit.point;
                             state = State.HookshotAttached;
 
-                            //if gummy level is lower than hookshot level, freeze it in place
+                            //if hookshot is strong enough, freeze the gummy in place
                             GummyLevel gummyLevel = raycastHit.collider.gameObject.GetComponent<GummyLevel>();
-                            if (gummyLevel != null && gummyLevel.level < hookshotLevel)
+                            if (gummyLevel != null && hookshotStrength >= gummyLevel.WeightValue)
                             {
                                 SimpleEnemyMovement enemyMovement = raycastHit.collider.gameObject.GetComponent<SimpleEnemyMovement>();
                                 if (enemyMovement != null)
@@ -377,13 +386,6 @@ private void LateUpdate(){
             }
 
             joint.connectedBody = hitTarget.GetComponent<Rigidbody>();
-        }
-
-        //cancel if the player gets too far from the attached target
-        if (Vector3.Distance(transform.position, hitTarget.transform.position) > hookshotMaxLineDistance)
-        {
-            CancelHookshot();
-            return;
         }
 
         //if the player has jumped while attached, cancel the hookshot
@@ -617,7 +619,7 @@ private void LateUpdate(){
         if (hitTarget == null) return false;
         GummyLevel gummyLevel = hitTarget.GetComponent<GummyLevel>();
         if (gummyLevel == null) return false;
-        return gummyLevel.level >= hookshotLevel || gummyLevel.weight > hookshotLevel;
+        return gummyLevel.WeightValue > hookshotStrength;
     }
 
     private void DetachSpringJoint()

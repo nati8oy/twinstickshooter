@@ -126,7 +126,15 @@ public class TwinStickMovement : MonoBehaviour
 
 
         Vector3 move = new Vector3(movement.x, 0, movement.y);
-        controller.Move(move * Time.deltaTime * playerSpeed);
+
+        float speedMod = 1f;
+        CM_Hookshot hookshot = GetComponent<CM_Hookshot>();
+        if (hookshot != null)
+        {
+            speedMod = hookshot.dragSpeedMultiplier;
+        }
+
+        controller.Move(move * Time.deltaTime * playerSpeed * speedMod);
 
         /*
         if (CVM.magnitude >= 0f)
