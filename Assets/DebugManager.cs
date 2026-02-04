@@ -6,6 +6,7 @@ public class DebugManager : Singleton<DebugManager>
 {
     public bool godMode = false;
     public bool infiniteAmmo = true;
+    public bool autoTargetEnabled = false;
 
 
     // Start is called before the first frame update

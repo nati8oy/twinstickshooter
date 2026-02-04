@@ -305,7 +305,30 @@ Assets/
 ### High Priority
 1. ~~**FIX INPUT SYSTEM**~~ (done — v0.5)
 
-2. ~~**Improved Gummy Behavior**~~ (done — GummyBehaviour.cs)
+2. **Fuzzy Hookshot Targeting**
+   - Replace single raycast with a cone/arc-based detection so the hookshot is more forgiving
+   - If no direct raycast hit, check within a configurable arc angle for valid targets (Grappleable/Pullable/Collectible)
+   - Prefer the closest valid target within the arc
+   - Arc angle should be tunable in the inspector (e.g., `hookshotArcAngle`)
+   - Applies to CM_Hookshot.HandleHookshotStart() targeting logic
+
+3. **Auto-Target Control Scheme**
+   - Simplified control scheme for less experienced players — removes the need to aim with the right stick
+   - Toggleable on/off during gameplay via a debug toggle (e.g., `DebugManager` or inspector bool)
+   - **Detection radius** — configurable sphere around the player that detects Gummies only (Layer 11)
+   - **Default rotation:** When no gummy is in range, the player rotates to face their movement direction (left stick). This replaces right-stick aiming when auto-target is enabled
+   - **Target tracking:** When a gummy enters the detection radius, the player automatically rotates to face and track the closest one. Tracking follows the gummy's movement while it stays in range
+   - **Target cycling:** Defaults to closest gummy, but a button press can cycle to the next target in the radius
+   - **Hookshot interaction:** Hookshot still fires via raycast as normal — auto-target just handles the player's facing direction, so the raycast naturally points at the tracked gummy
+   - **Does NOT target grapple points (Layer 10)** — traversal still requires manual aiming
+   - **Implementation notes:**
+     - New script (e.g., `AutoTargetController.cs`) on the player
+     - Overrides `TwinStickMovement.HandleRotation()` when enabled
+     - Uses `Physics.OverlapSphere` to find Layer 11 objects in radius
+     - Smooth rotation toward target (reuse `gamepadRotateSmoothing` or separate tunable)
+     - Needs a visual indicator showing which gummy is currently targeted (e.g., highlight, reticle)
+
+4. ~~**Improved Gummy Behavior**~~ (done — GummyBehaviour.cs)
    - ~~Remove chase behavior~~ (replaced with configurable idle/reaction system)
    - ~~Idle/wander AI when not hooked~~ (WanderShort/Medium/Far)
    - Leading behavior for Gummies that can't be carried

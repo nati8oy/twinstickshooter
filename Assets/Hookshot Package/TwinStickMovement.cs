@@ -45,6 +45,7 @@ public class TwinStickMovement : MonoBehaviour
 
     private PlayerControls playerControls;
     private PlayerInput playerInput;
+    private AutoTarget autoTarget;
 
 
     private void Awake()
@@ -52,6 +53,7 @@ public class TwinStickMovement : MonoBehaviour
         controller = GetComponent<CharacterController>();
         playerControls = new PlayerControls();
         playerInput = GetComponent<PlayerInput>();
+        autoTarget = GetComponent<AutoTarget>();
     }
 
 
@@ -153,15 +155,44 @@ public class TwinStickMovement : MonoBehaviour
 
     public void HandleRotation()
     {
+        // Auto-target mode: face tracked gummy, or face movement direction if no target/carrying
+        if (DebugManager.Instance != null && DebugManager.Instance.autoTargetEnabled)
+        {
+            // When carrying a gummy, face movement direction instead of target
+            CM_Hookshot hookshot = GetComponent<CM_Hookshot>();
+            bool isCarrying = hookshot != null && hookshot.state == CM_Hookshot.State.HookshotCarry;
+
+            if (!isCarrying && autoTarget != null && autoTarget.HasTarget)
+            {
+                Vector3 targetDir = autoTarget.closestTarget.transform.position - transform.position;
+                targetDir.y = 0f;
+
+                if (targetDir.sqrMagnitude > 0.01f)
+                {
+                    Quaternion targetRotation = Quaternion.LookRotation(targetDir, Vector3.up);
+                    transform.rotation = Quaternion.RotateTowards(transform.rotation, targetRotation, gamepadRotateSmoothing * Time.deltaTime);
+                }
+            }
+            else if (movement.sqrMagnitude > controllerDeadZone * controllerDeadZone)
+            {
+                // No target — face movement direction
+                Vector3 moveDir = new Vector3(movement.x, 0f, movement.y);
+
+                if (moveDir.sqrMagnitude > 0.01f)
+                {
+                    Quaternion moveRotation = Quaternion.LookRotation(moveDir, Vector3.up);
+                    transform.rotation = Quaternion.RotateTowards(transform.rotation, moveRotation, gamepadRotateSmoothing * Time.deltaTime);
+                }
+            }
+            return;
+        }
+
+        // Standard mode: gamepad right stick or mouse
         if (isGamepad)
         {
-            //rotate player
             if (Mathf.Abs(aim.x) > controllerDeadZone || Mathf.Abs(aim.y) > controllerDeadZone)
             {
                 Vector3 playerDirection = Vector3.right * aim.x + Vector3.forward * aim.y;
-
-                //shoots whenever the player is rotating 
-                //Shoot();
 
                 if (playerDirection.sqrMagnitude > 0.0f)
                 {
@@ -170,7 +201,6 @@ public class TwinStickMovement : MonoBehaviour
                 }
             }
         }
-
         else
         {
             Ray ray = Camera.main.ScreenPointToRay(aim);

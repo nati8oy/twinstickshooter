@@ -17,6 +17,9 @@ public class CM_Hookshot : MonoBehaviour
     [SerializeField] private InputAction hookshotPull;
     [SerializeField] private InputAction jump;
     [SerializeField] private InputAction pull;
+    private InputAction cycleTarget;
+    private InputAction autoAction;
+    private InputAction autoCancel;
 
     [SerializeField] private LayerMask layerMask;
 
@@ -102,6 +105,10 @@ public class CM_Hookshot : MonoBehaviour
         hookshotBounciness = hookshotData.bounciness;
         if (joint != null)
             joint.spring = hookshotBounciness;
+
+        // Sync auto-target detection radius to hookshot range
+        if (autoTargetScript != null)
+            autoTargetScript.detectionRadius = hookshotMaxRange;
     }
 
     private void Awake()
@@ -136,6 +143,52 @@ public class CM_Hookshot : MonoBehaviour
         pull.performed += _ => ActivateHookshotPull();
         pull.Enable();
 
+        cycleTarget = new InputAction();
+        cycleTarget.AddBinding("<Keyboard>/tab");
+        cycleTarget.AddBinding("<Gamepad>/buttonWest");
+        cycleTarget.performed += _ =>
+        {
+            if (DebugManager.Instance != null && DebugManager.Instance.autoTargetEnabled && autoTargetScript != null)
+            {
+                autoTargetScript.CycleTarget();
+            }
+        };
+        cycleTarget.Enable();
+
+        // Auto-target mode: South button is contextual (fire/pull/throw)
+        autoAction = new InputAction(binding: "<Gamepad>/buttonSouth");
+        autoAction.performed += _ =>
+        {
+            if (DebugManager.Instance == null || !DebugManager.Instance.autoTargetEnabled) return;
+
+            switch (state)
+            {
+                case State.Normal:
+                case State.HookshotFlyingPlayer:
+                    HandleHookshotStart();
+                    break;
+                case State.HookshotAttached:
+                    ActivateHookshotPull();
+                    break;
+                case State.HookshotCarry:
+                    ThrowCarriedObject();
+                    break;
+            }
+        };
+        autoAction.Enable();
+
+        // Auto-target mode: East button cancels hookshot
+        autoCancel = new InputAction(binding: "<Gamepad>/buttonEast");
+        autoCancel.performed += _ =>
+        {
+            if (DebugManager.Instance == null || !DebugManager.Instance.autoTargetEnabled) return;
+
+            if (state != State.Normal)
+            {
+                CancelHookshot();
+            }
+        };
+        autoCancel.Enable();
 
     }
 
@@ -356,14 +409,10 @@ private void LateUpdate(){
             // characterController.enabled = false;
         }
 
-        //if the player has jumped while hookshotting, cancel the hookshot
-        if (jump.ReadValue<float>() > 0)
+        //if the player has jumped/cancelled while hookshotting, cancel the hookshot
+        if (IsCancelPressed())
         {
-            
-            //also maintain momentum
-            float momentumExtraSpeed = 3f;
             CancelHookshot();
-
         }
 
         //dampen speed of momentum
@@ -407,16 +456,10 @@ private void LateUpdate(){
                 joint.connectedBody = hitTarget.GetComponent<Rigidbody>();
         }
 
-        //if the player has jumped while attached, cancel the hookshot
-        if (jump.ReadValue<float>() > 0)
+        //if the player has jumped/cancelled while attached, cancel the hookshot
+        if (IsCancelPressed())
         {
-
-            //also maintain momentum
-
-            float momentumExtraSpeed = 3f;
-
             CancelHookshot();
-
         }
 
     }
@@ -469,12 +512,10 @@ private void LateUpdate(){
 
             }
 
-            //if the player has jumped while hookshotting, cancel the hookshot
-            if (jump.ReadValue<float>() > 0)
+            //if the player has jumped/cancelled while pulling, cancel the hookshot
+            if (IsCancelPressed())
             {
-
                 CancelHookshot();
-
             }
         }
 
@@ -638,6 +679,15 @@ private void LateUpdate(){
         GummyLevel gummyLevel = hitTarget.GetComponent<GummyLevel>();
         if (gummyLevel == null) return false;
         return gummyLevel.WeightValue > hookshotStrength;
+    }
+
+    private bool IsCancelPressed()
+    {
+        if (DebugManager.Instance != null && DebugManager.Instance.autoTargetEnabled)
+        {
+            return autoCancel.ReadValue<float>() > 0 || jump.ReadValue<float>() > 0;
+        }
+        return jump.ReadValue<float>() > 0;
     }
 
     private void DetachSpringJoint()

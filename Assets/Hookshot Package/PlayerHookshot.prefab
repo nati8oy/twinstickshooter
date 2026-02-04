@@ -1451,16 +1451,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 29b4e58926ad9ac4e9ce54efd5693a8a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  lockToClosestTarget: 0
-  furthestTarget: 0
-  hookshotAutoTargeting: 0
-  targets: []
-  grapplePoints: []
-  attackRange: 10
-  attackDirection: {x: 0, y: 0, z: 0}
-  grappleDirection: {x: 0, y: 0, z: 0}
+  detectionRadius: 15
+  targetLayerMask:
+    serializedVersion: 2
+    m_Bits: 2048
+  drawDebugLines: 1
   closestTarget: {fileID: 0}
   closestGrapplePoint: {fileID: 0}
+  attackDirection: {x: 0, y: 0, z: 0}
+  grappleDirection: {x: 0, y: 0, z: 0}
 --- !u!114 &575609992
 MonoBehaviour:
   m_ObjectHideFlags: 0

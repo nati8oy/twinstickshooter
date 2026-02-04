@@ -1143,6 +1143,11 @@ Mesh:
       - serializedVersion: 1
         m_IndexStart: 0
         m_IndexCount: 0
+--- !u!4 &385947488 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 5576472789481637840, guid: 86d8f599f2253411690424ff682c54d8, type: 3}
+  m_PrefabInstance: {fileID: 747229819}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &418114975
 GameObject:
   m_ObjectHideFlags: 0
@@ -2970,6 +2975,67 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 50, y: -30, z: 0}
+--- !u!1001 &747229819
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 1966224406}
+    m_Modifications:
+    - target: {fileID: 5576472789481637840, guid: 86d8f599f2253411690424ff682c54d8, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 1.775713
+      objectReference: {fileID: 0}
+    - target: {fileID: 5576472789481637840, guid: 86d8f599f2253411690424ff682c54d8, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0.00011
+      objectReference: {fileID: 0}
+    - target: {fileID: 5576472789481637840, guid: 86d8f599f2253411690424ff682c54d8, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 52.442158
+      objectReference: {fileID: 0}
+    - target: {fileID: 5576472789481637840, guid: 86d8f599f2253411690424ff682c54d8, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5576472789481637840, guid: 86d8f599f2253411690424ff682c54d8, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5576472789481637840, guid: 86d8f599f2253411690424ff682c54d8, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5576472789481637840, guid: 86d8f599f2253411690424ff682c54d8, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5576472789481637840, guid: 86d8f599f2253411690424ff682c54d8, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5576472789481637840, guid: 86d8f599f2253411690424ff682c54d8, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5576472789481637840, guid: 86d8f599f2253411690424ff682c54d8, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5576472789481637841, guid: 86d8f599f2253411690424ff682c54d8, type: 3}
+      propertyPath: autoTargetEnabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5576472789481637843, guid: 86d8f599f2253411690424ff682c54d8, type: 3}
+      propertyPath: m_Name
+      value: DebugManager
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 86d8f599f2253411690424ff682c54d8, type: 3}
 --- !u!1 &763293914
 GameObject:
   m_ObjectHideFlags: 0
@@ -8568,6 +8634,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 385947488}
   - {fileID: 418114977}
   - {fileID: 1653307945}
   - {fileID: 1689987705}
@@ -9790,11 +9857,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 102278313849289433, guid: 623f5226bf49a25479dafb914b4aadb6, type: 3}
       propertyPath: m_BreakForce
-      value: 0.005
+      value: Infinity
       objectReference: {fileID: 0}
     - target: {fileID: 102278313849289433, guid: 623f5226bf49a25479dafb914b4aadb6, type: 3}
       propertyPath: m_BreakTorque
-      value: 0.005
+      value: Infinity
       objectReference: {fileID: 0}
     - target: {fileID: 2252515777435932134, guid: 623f5226bf49a25479dafb914b4aadb6, type: 3}
       propertyPath: onHitHazard.m_PersistentCalls.m_Calls.Array.data[0].m_Target
