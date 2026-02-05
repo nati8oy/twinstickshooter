@@ -11,4 +11,5 @@ public class HookshotData : ScriptableObject
     public float speedMin;
     public float speedMax;
     public float bounciness;
+    public float throwForce = 2000f;
 }

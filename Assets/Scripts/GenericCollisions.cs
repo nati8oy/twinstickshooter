@@ -24,9 +24,14 @@ public class GenericCollisions : MonoBehaviour
         if(collision.gameObject.tag == "goal")
         {
             Debug.Log(collision.gameObject.tag + " hit");
-            gameObject.SetActive(false);
+
+            // Only deactivate if this is NOT the player (Gummies get collected, player walks through)
+            if (GetComponent<CM_Hookshot>() == null)
+            {
+                gameObject.SetActive(false);
+            }
+
             onHitGoal.Invoke();
-            
         }
 
     }

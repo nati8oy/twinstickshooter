@@ -50,7 +50,7 @@ The hookshot is the primary interaction tool with multiple functions:
 3. **Item Collection** - Pull collectibles (Layer 12)
    - Automatically pulls items toward player
 
-**Controls:**
+**Controls (Standard Mode):**
 | Action | Keyboard/Mouse | Gamepad |
 |---|---|---|
 | Fire hookshot / Throw Gummy | Right Mouse Button | R1 (Right Shoulder) |
@@ -58,6 +58,17 @@ The hookshot is the primary interaction tool with multiple functions:
 | Jump / Cancel hookshot | Space | L1 (Left Shoulder) |
 | Movement | WASD | Left Stick |
 | Aim | Mouse | Right Stick |
+
+**Controls (Auto-Target Mode):**
+| Action | Keyboard/Mouse | Gamepad |
+|---|---|---|
+| Fire / Pull / Throw (contextual) | Right Mouse / Left Shift | South Button (X/A) |
+| Cancel hookshot | Space | East Button (Circle/B) |
+| Cycle target | Tab | West Button (Square/X) |
+| Movement | WASD | Left Stick |
+| Aim | Automatic (faces closest gummy or movement direction) | Automatic |
+
+Auto-target is toggled via `DebugManager.autoTargetEnabled` in the inspector. When carrying a gummy, the player faces movement direction instead of tracking a target.
 
 ### Gummy System
 - **Weight Classes:** 3 classes via `GummyLevel.Weight` enum — Light (1), Medium (2), Heavy (3)
@@ -116,6 +127,9 @@ The hookshot is the primary interaction tool with multiple functions:
 - **Carry speed penalties** — explicit per-tier multipliers (`lightCarrySpeed`, `mediumCarrySpeed`, `heavyCarrySpeed`) applied via `TwinStickMovement`
 - **SpringJoint bounciness** set from `HookshotData.bounciness`
 - Uses `HookshotData` ScriptableObject for stats
+- **Auto-target mode inputs:** South button contextual (fire/pull/throw based on state), East button cancel, West button cycle target — only active when `DebugManager.autoTargetEnabled` is true
+- **`IsCancelPressed()`** helper — checks East (auto mode) or L1/Space (standard mode) for all cancel points
+- **Syncs auto-target detection radius** to `hookshotData.maxRange` on enable
 
 **Gummy.cs** - Individual Gummy instance
 - References GummyData ScriptableObject
@@ -148,6 +162,11 @@ The hookshot is the primary interaction tool with multiple functions:
 - Combines horizontal movement and gravity into a single `controller.Move` call
 - Mouse aiming projects to ground plane
 - **Reads `CM_Hookshot.dragSpeedMultiplier`** to apply carry speed penalties per weight tier
+- **Auto-target rotation override:** When `DebugManager.autoTargetEnabled` is true:
+  - **Hooked state priority:** When attached/pulling/flying toward a gummy, player faces the hooked target (not auto-target's closest)
+  - Tracks closest gummy via `AutoTarget` component (smooth rotation using `gamepadRotateSmoothing`)
+  - Faces movement direction (left stick) when no target is in range or when carrying a gummy
+  - Completely bypasses standard right-stick/mouse aiming
 
 **GummyLevel.cs** - Component for Gummy weight gating
 - `weight` - `Weight` enum (Light, Medium, Heavy); if heavier than hookshot strength, pull/carry/drag is blocked
@@ -178,6 +197,7 @@ The hookshot is the primary interaction tool with multiple functions:
 - `maxRange` - Maximum hookshot distance
 - `speedMin` / `speedMax` - Player movement speed during grapple
 - `bounciness` - SpringJoint spring value, controls how bouncy the hookshot line is when attached
+- `throwForce` - Force applied when throwing a carried Gummy (default 2000)
 - **Multiple hookshot types can be created** as separate data assets
 - Allows easy balancing and progression
 
@@ -208,6 +228,21 @@ The hookshot is the primary interaction tool with multiple functions:
 - **Upgrade cost display**
 - **Optional upgrade button**
 - Subscribes to GameEconomy events for real-time updates
+
+**AutoTarget.cs** - Auto-targeting system for simplified controls
+- `Physics.OverlapSphere` with configurable `detectionRadius` and `targetLayerMask` (set to Layer 11 for Gummies)
+- Maintains a distance-sorted list of targets in radius, updated every 0.2s via coroutine
+- Defaults to closest target; `CycleTarget()` advances to next target in list
+- `HasTarget` property — true when a valid active target is in range
+- `attackDirection` — normalized direction to current target
+- `detectionRadius` synced to `hookshotData.maxRange` by CM_Hookshot on enable
+- `FindClosestGrapplePoint()` for grapple point targeting (separate from auto-target)
+- **Setup:** Set `targetLayerMask` to Layer 11 ("Pullable") in the inspector
+
+**DebugManager.cs** - Debug toggles (Singleton)
+- `godMode` — disables player damage
+- `infiniteAmmo` — unlimited ammo
+- `autoTargetEnabled` — toggles auto-target control scheme on/off
 
 **FrictionController.cs** - Acceleration and deceleration
 - Applies acceleration-based movement on top of `TwinStickMovement`
@@ -297,6 +332,12 @@ Assets/
 - [x] **Upgrade system (spend gold to improve hookshot)**
 - [x] **Hazard immunity while grappling (player ignores hazard collisions during grapple)**
 - [x] **Proper gravity system (ground check prevents velocity accumulation)**
+- [x] **Auto-target control scheme** — simplified controls for less experienced players:
+  - Toggleable via `DebugManager.autoTargetEnabled`
+  - Auto-rotates player to face closest gummy in detection radius (Layer 11)
+  - Faces movement direction when no target or when carrying a gummy
+  - Contextual South button (fire/pull/throw), East cancel, West cycle target
+  - Detection radius synced to hookshot max range
 
 ---
 
@@ -312,21 +353,7 @@ Assets/
    - Arc angle should be tunable in the inspector (e.g., `hookshotArcAngle`)
    - Applies to CM_Hookshot.HandleHookshotStart() targeting logic
 
-3. **Auto-Target Control Scheme**
-   - Simplified control scheme for less experienced players — removes the need to aim with the right stick
-   - Toggleable on/off during gameplay via a debug toggle (e.g., `DebugManager` or inspector bool)
-   - **Detection radius** — configurable sphere around the player that detects Gummies only (Layer 11)
-   - **Default rotation:** When no gummy is in range, the player rotates to face their movement direction (left stick). This replaces right-stick aiming when auto-target is enabled
-   - **Target tracking:** When a gummy enters the detection radius, the player automatically rotates to face and track the closest one. Tracking follows the gummy's movement while it stays in range
-   - **Target cycling:** Defaults to closest gummy, but a button press can cycle to the next target in the radius
-   - **Hookshot interaction:** Hookshot still fires via raycast as normal — auto-target just handles the player's facing direction, so the raycast naturally points at the tracked gummy
-   - **Does NOT target grapple points (Layer 10)** — traversal still requires manual aiming
-   - **Implementation notes:**
-     - New script (e.g., `AutoTargetController.cs`) on the player
-     - Overrides `TwinStickMovement.HandleRotation()` when enabled
-     - Uses `Physics.OverlapSphere` to find Layer 11 objects in radius
-     - Smooth rotation toward target (reuse `gamepadRotateSmoothing` or separate tunable)
-     - Needs a visual indicator showing which gummy is currently targeted (e.g., highlight, reticle)
+3. ~~**Auto-Target Control Scheme**~~ (done — v0.6)
 
 4. ~~**Improved Gummy Behavior**~~ (done — GummyBehaviour.cs)
    - ~~Remove chase behavior~~ (replaced with configurable idle/reaction system)
@@ -340,7 +367,12 @@ Assets/
    - Gummy spawn locations
    - Obstacles and hazards
 
-4. **Visual/Audio Polish**
+4. **Throw Landing Marker**
+   - When throwing a carried Gummy, display a ground marker (decal/projector) showing the predicted landing spot
+   - Gives players visual feedback on where the Gummy will land before and during the throw
+   - Helps with aiming Gummies into the pen
+
+5. **Visual/Audio Polish**
    - Feedback when trying to pull Gummy above hookshot strength
    - Collection effects per weight class
    - Upgrade purchase celebration
@@ -414,6 +446,11 @@ Assets/
 
 ## Design Considerations
 
+### Level Design Pillars
+1. **Have a clear goal** — every level should communicate what the player needs to do without ambiguity
+2. **Don't waste space** — every area and object in a level should serve a purpose; no filler
+3. **Keep it fresh** — incrementally introduce mechanics so the player is always learning something new
+
 ### Gummy Weight Classes
 - **Light:** Hookshot Strength Light or above — Can pull and carry (no speed penalty)
 - **Medium:** Hookshot Strength Medium or above — Can pull and carry (30% slower)
@@ -477,6 +514,16 @@ Assets/
 - Use Unity Events for hookshot feedback/game feel
 
 ### Testing Priorities
+- **Auto-target:** toggle on/off, verify rotation switches between target tracking and movement direction
+- **Auto-target:** walk near gummies, confirm player auto-faces closest one
+- **Auto-target:** carry a gummy, confirm player faces movement direction instead of target
+- **Auto-target:** cycle target with West/Tab when multiple gummies in range
+- **Auto-target:** South button contextual behavior (fire in Normal, pull in Attached, throw in Carry)
+- **Auto-target:** East button cancels hookshot in all hookshot states
+- **Auto-target:** detection radius matches hookshot max range
+- **Auto-target:** when hooked onto a gummy, player should face the hooked target (not cycle to closest)
+- **Auto-target:** standard controls (R1/L1) still work when auto-target is off
+- **Throw force:** verify different HookshotData assets can have different throw forces
 - Hookshot range and feel
 - Weight-based pull speed differences
 - Gummy leading behavior at distance
@@ -489,7 +536,28 @@ Assets/
 
 ## Changelog
 
-### [Current] - Prototype v0.5
+### [Current] - Prototype v0.7
+- **Throw force now data-driven** — `HookshotData.throwForce` field added so throw force can be tuned per hookshot type via ScriptableObject
+- **Hooked-target rotation priority** — when auto-target is active and the player is in an attached/pull/flying state, the player faces the hooked gummy instead of switching to the auto-target's closest target
+- **Fixed player deactivating on goal collision** — `GenericCollisions` now skips `SetActive(false)` for the player when hitting the goal; only Gummies are deactivated on deposit
+- **Fixed MissingReferenceException in HandleHookshotStart** — added null check for `shotPoint` to prevent error when input fires after player is destroyed
+
+### Prototype v0.6
+- **Auto-target control scheme** — simplified controls for less experienced players:
+  - Toggle via `DebugManager.autoTargetEnabled` in inspector
+  - `AutoTarget.cs` rewritten: uses `Physics.OverlapSphere` with `targetLayerMask` (Layer 11) and configurable `detectionRadius`
+  - Targets sorted by distance, defaults to closest; `CycleTarget()` cycles to next
+  - `TwinStickMovement.HandleRotation()` overridden when auto-target is on:
+    - Smooth-rotates toward tracked gummy when target is in range
+    - Faces movement direction (left stick) when no target or when carrying a gummy
+  - **Auto-target gamepad controls:** South = contextual fire/pull/throw (state-dependent), East = cancel, West = cycle target
+  - Standard mode controls (R1/L1/South) unchanged and still work
+  - Keyboard controls (right mouse/space/shift/tab) work in both modes
+  - `IsCancelPressed()` helper checks East (auto) or L1/Space (standard) for all cancel points
+  - Detection radius synced to `hookshotData.maxRange` by CM_Hookshot on enable
+  - Fixed `FindClosestGrapplePoint()` bug: was using `closestTarget` instead of `closestGrapplePoint`
+
+### Prototype v0.5
 - **Input system fixed** — CM_Hookshot now uses dual bindings (keyboard/mouse + gamepad) for all actions:
   - Hookshot fire/throw: Right Mouse + R1
   - Pull: Left Shift + South Button (X/A)

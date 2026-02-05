@@ -80,6 +80,9 @@ public class CM_Hookshot : MonoBehaviour
 
     [Header("Hookshot")]
 
+    [Header("Fuzzy Targeting")]
+    [SerializeField] private float hookshotArcAngle = 20f;
+
     private float hookshotSpeedMin;
     private float hookshotSpeedMax;
 
@@ -103,6 +106,8 @@ public class CM_Hookshot : MonoBehaviour
         hookshotSpeedMax = hookshotData.speedMax;
         hookshotStrength = (int)hookshotData.strength;
         hookshotBounciness = hookshotData.bounciness;
+        throwForce = hookshotData.throwForce;
+        
         if (joint != null)
             joint.spring = hookshotBounciness;
 
@@ -127,8 +132,22 @@ public class CM_Hookshot : MonoBehaviour
         hookshotPull = new InputAction();
         hookshotPull.AddBinding("<Mouse>/rightButton");
         hookshotPull.AddBinding("<Gamepad>/rightShoulder");
-        hookshotPull.performed += _ => HandleHookshotStart();
-        hookshotPull.performed += _ => ThrowCarriedObject();
+        hookshotPull.performed += _ =>
+        {
+            switch (state)
+            {
+                case State.Normal:
+                case State.HookshotFlyingPlayer:
+                    HandleHookshotStart();
+                    break;
+                case State.HookshotAttached:
+                    ActivateHookshotPull();
+                    break;
+                case State.HookshotCarry:
+                    ThrowCarriedObject();
+                    break;
+            }
+        };
         hookshotPull.Enable();
 
         jump = new InputAction();
@@ -183,7 +202,11 @@ public class CM_Hookshot : MonoBehaviour
         {
             if (DebugManager.Instance == null || !DebugManager.Instance.autoTargetEnabled) return;
 
-            if (state != State.Normal)
+            if (state == State.HookshotCarry)
+            {
+                ReleaseCarriedObject();
+            }
+            else if (state != State.Normal)
             {
                 CancelHookshot();
             }
@@ -272,6 +295,11 @@ public class CM_Hookshot : MonoBehaviour
                     }
                 }
 
+                if (IsCancelPressed())
+                {
+                    ReleaseCarriedObject();
+                }
+
                 break;
         }
 
@@ -288,9 +316,44 @@ private void LateUpdate(){
     lr.SetPosition(0, shotPoint.position);
 }
 
+    private bool FindFuzzyTarget(out RaycastHit fuzzyHit)
+    {
+        fuzzyHit = default;
+        Collider[] colliders = Physics.OverlapSphere(shotPoint.position, hookshotMaxRange, layerMask);
+
+        float bestAngle = float.MaxValue;
+        Collider bestCollider = null;
+
+        foreach (Collider col in colliders)
+        {
+            Vector3 dirToTarget = (col.transform.position - shotPoint.position).normalized;
+            float angle = Vector3.Angle(shotPoint.forward, dirToTarget);
+
+            if (angle < hookshotArcAngle && angle < bestAngle)
+            {
+                bestAngle = angle;
+                bestCollider = col;
+            }
+        }
+
+        if (bestCollider == null)
+            return false;
+
+        // Raycast toward the chosen target to get a proper RaycastHit struct
+        Vector3 direction = (bestCollider.transform.position - shotPoint.position).normalized;
+        float distance = Vector3.Distance(shotPoint.position, bestCollider.transform.position);
+        if (Physics.Raycast(shotPoint.position, direction, out fuzzyHit, distance + 1f, layerMask))
+        {
+            return true;
+        }
+
+        return false;
+    }
+
     private void HandleHookshotStart()
     {
-   
+        if (shotPoint == null) return;
+
         //if you are normal or flying through the air then shoot the hookshot
         if (state == State.Normal || state == State.HookshotFlyingPlayer)
         {
@@ -309,7 +372,14 @@ private void LateUpdate(){
 
 
                 
-                if (Physics.Raycast(shotPoint.position, shotPoint.forward, out raycastHit, hookshotMaxRange))
+                bool directHit = Physics.Raycast(shotPoint.position, shotPoint.forward, out raycastHit, hookshotMaxRange, layerMask);
+
+                if (!directHit && DebugManager.Instance != null && DebugManager.Instance.fuzzyTargetingEnabled)
+                {
+                    directHit = FindFuzzyTarget(out raycastHit);
+                }
+
+                if (directHit)
                     {
 
                         //check the layer of the object that was hit
@@ -623,6 +693,32 @@ private void LateUpdate(){
             state = State.Normal;
         }
 
+    }
+
+    private void ReleaseCarriedObject()
+    {
+        if (hitTarget != null)
+        {
+            var hitTargetRB = hitTarget.GetComponent<Rigidbody>();
+            if (hitTargetRB != null)
+            {
+                hitTargetRB.useGravity = true;
+                hitTargetRB.freezeRotation = false;
+                hitTargetRB.AddForce(transform.forward * throwForce * 0.15f);
+            }
+
+            if (hitTarget.GetComponent<NavMeshAgent>())
+            {
+                hitTarget.GetComponent<NavMeshAgent>().enabled = false;
+                Invoke("ResetEnemyMovement", 1f);
+            }
+        }
+
+        stopFeedbacks.Invoke();
+        ResetEnemyMovement();
+        DetachSpringJoint();
+        state = State.Normal;
+        lr.enabled = false;
     }
 
     public void CancelHookshot()

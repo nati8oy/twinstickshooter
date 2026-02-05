@@ -158,10 +158,29 @@ public class TwinStickMovement : MonoBehaviour
         // Auto-target mode: face tracked gummy, or face movement direction if no target/carrying
         if (DebugManager.Instance != null && DebugManager.Instance.autoTargetEnabled)
         {
-            // When carrying a gummy, face movement direction instead of target
             CM_Hookshot hookshot = GetComponent<CM_Hookshot>();
             bool isCarrying = hookshot != null && hookshot.state == CM_Hookshot.State.HookshotCarry;
+            bool isHooked = hookshot != null && (hookshot.state == CM_Hookshot.State.HookshotAttached
+                || hookshot.state == CM_Hookshot.State.HookshotPull
+                || hookshot.state == CM_Hookshot.State.HookshotFlyingPlayer);
 
+            // When hooked onto a gummy, face the hooked target instead of auto-target
+            if (isHooked && hookshot.hitTarget != null)
+            {
+                Vector3 hookedDir = hookshot.hitTarget.transform.position - transform.position;
+                hookedDir.y = 0f;
+
+                if (hookedDir.sqrMagnitude > 0.01f)
+                {
+                    Quaternion hookedRotation = Quaternion.LookRotation(hookedDir, Vector3.up);
+                    transform.rotation = Quaternion.RotateTowards(transform.rotation, hookedRotation, gamepadRotateSmoothing * Time.deltaTime);
+                }
+                return;
+            }
+
+            // When carrying, face movement direction
+            // When no target, face movement direction
+            // Otherwise, track closest gummy
             if (!isCarrying && autoTarget != null && autoTarget.HasTarget)
             {
                 Vector3 targetDir = autoTarget.closestTarget.transform.position - transform.position;
