@@ -116,7 +116,8 @@ Auto-target is toggled via `DebugManager.autoTargetEnabled` in the inspector. Wh
 
 **CM_Hookshot.cs** - Main hookshot logic
 - Handles all hookshot states and transitions
-- Raycasting for targeting (max range configurable)
+- Raycasting for targeting (max range configurable) via `FindBestTarget()` (direct raycast + fuzzy fallback)
+- **Targeting decal integration** — drives `TargetIndicator` to show a ground decal beneath the current target in Normal state
 - Player and Gummy movement during hookshot
 - Carry system for smaller Gummies
 - **Weight/Strength Gating via `IsGummyTooStrong()`:**
@@ -218,8 +219,15 @@ Auto-target is toggled via `DebugManager.autoTargetEnabled` in the inspector. Wh
 - Damage system
 - Unity Events on hit
 
-**LaserSight.cs** - Visual targeting aid
+**LaserSight.cs** - Legacy visual targeting aid (disabled — replaced by TargetIndicator)
 - Line renderer from player to target point
+
+**TargetIndicator.cs** - Ground-projected targeting decal
+- Shows a decal on the ground beneath the hookshot's current target
+- Only visible when in Normal state and a valid target is in range
+- Works with both direct raycast and fuzzy targeting
+- Auto-target mode: decal follows AutoTarget's closest target
+- Configurable decal size, ground offset, ground layer, and material
 
 **HUD.cs** - UI display
 - Score counter
@@ -316,7 +324,7 @@ Assets/
 - [x] Basic Gummy AI (NavMesh pathfinding) — now replaced by GummyBehaviour system
 - [x] Gummy stun system
 - [x] Score tracking
-- [x] Visual targeting (laser sight)
+- [x] Visual targeting (ground decal via TargetIndicator — replaced laser sight line renderer)
 - [x] ScriptableObject based hookshot stats (HookshotData)
 - [x] Multiple hookshot types via data objects
 - [x] Pen/Goal trigger system (GenericCollisions)
@@ -536,7 +544,15 @@ Assets/
 
 ## Changelog
 
-### [Current] - Prototype v0.7
+### [Current] - Prototype v0.8
+- **Targeting decal** — replaced LaserSight line renderer with `TargetIndicator.cs`, a ground-projected decal that appears beneath the current hookshot target
+  - Only visible in Normal state when a valid target is in range
+  - Works with direct raycast and fuzzy targeting (shows what the hookshot will actually hit)
+  - Auto-target mode: decal follows AutoTarget's closest target
+  - Configurable size, ground offset, ground layer, and material via inspector
+- **`FindBestTarget()` method** — consolidated targeting logic (direct raycast + fuzzy fallback) into a reusable method used by both the targeting preview and the fire action
+
+### Prototype v0.7
 - **Throw force now data-driven** — `HookshotData.throwForce` field added so throw force can be tuned per hookshot type via ScriptableObject
 - **Hooked-target rotation priority** — when auto-target is active and the player is in an attached/pull/flying state, the player faces the hooked gummy instead of switching to the auto-target's closest target
 - **Fixed player deactivating on goal collision** — `GenericCollisions` now skips `SetActive(false)` for the player when hitting the goal; only Gummies are deactivated on deposit

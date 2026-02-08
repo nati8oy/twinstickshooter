@@ -75,6 +75,7 @@ public class CM_Hookshot : MonoBehaviour
     [SerializeField] Transform crosshair;
     private RaycastHit targetingRaycast;
     [SerializeField] private AutoTarget autoTargetScript;
+    [SerializeField] private TargetIndicator targetIndicator;
     [SerializeField] private GameObject lockOnTarget;
 
 
@@ -221,21 +222,28 @@ public class CM_Hookshot : MonoBehaviour
         //stores the lock on target in the variable
         lockOnTarget = GetComponent<AutoTarget>().closestTarget;
 
-        //visualises a target/crosshair for the hookshot
-        if (targetVisible)
+        // Target highlight: show emission glow on the targeted object when in Normal state
+        if (state == State.Normal && targetIndicator != null)
         {
-            //set the crosshair object to a distance of hookshotMaxRange in front of the shotpoint
-            crosshair.position = shotPoint.position + shotPoint.forward * hookshotMaxRange;
-
-            
-            //raycast from the shotpoint to the crosshair
-            if (Physics.Raycast(shotPoint.position, shotPoint.forward, out targetingRaycast, hookshotMaxRange, layerMask))
+            // Auto-target mode: use the tracked closest target
+            if (DebugManager.Instance != null && DebugManager.Instance.autoTargetEnabled
+                && autoTargetScript != null && autoTargetScript.HasTarget)
             {
-                //if the raycast hits something then set the crosshair position to the hit point
-                crosshair.position = targetingRaycast.point;
-                //hitTarget = targetingRaycast.collider.gameObject;
+                targetIndicator.ShowAtTarget(autoTargetScript.closestTarget);
             }
-            
+            // Standard mode: raycast + fuzzy targeting
+            else if (FindBestTarget(out targetingRaycast))
+            {
+                targetIndicator.ShowAtTarget(targetingRaycast.collider.gameObject);
+            }
+            else
+            {
+                targetIndicator.Hide();
+            }
+        }
+        else if (targetIndicator != null)
+        {
+            targetIndicator.Hide();
         }
 
 
@@ -350,6 +358,25 @@ private void LateUpdate(){
         return false;
     }
 
+    /// <summary>
+    /// Finds the best hookshot target: direct raycast first, then fuzzy targeting as fallback.
+    /// </summary>
+    private bool FindBestTarget(out RaycastHit bestHit)
+    {
+        if (Physics.Raycast(shotPoint.position, shotPoint.forward, out bestHit, hookshotMaxRange, layerMask))
+        {
+            return true;
+        }
+
+        if (DebugManager.Instance != null && DebugManager.Instance.fuzzyTargetingEnabled)
+        {
+            return FindFuzzyTarget(out bestHit);
+        }
+
+        bestHit = default;
+        return false;
+    }
+
     private void HandleHookshotStart()
     {
         if (shotPoint == null) return;
@@ -372,12 +399,7 @@ private void LateUpdate(){
 
 
                 
-                bool directHit = Physics.Raycast(shotPoint.position, shotPoint.forward, out raycastHit, hookshotMaxRange, layerMask);
-
-                if (!directHit && DebugManager.Instance != null && DebugManager.Instance.fuzzyTargetingEnabled)
-                {
-                    directHit = FindFuzzyTarget(out raycastHit);
-                }
+                bool directHit = FindBestTarget(out raycastHit);
 
                 if (directHit)
                     {

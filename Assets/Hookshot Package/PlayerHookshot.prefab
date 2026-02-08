@@ -432,6 +432,7 @@ GameObject:
   - component: {fileID: 460407556482336877}
   - component: {fileID: 575609992}
   - component: {fileID: 2252515777435932134}
+  - component: {fileID: 7114731805574233136}
   m_Layer: 0
   m_Name: PlayerHookshot
   m_TagString: Player
@@ -770,7 +771,9 @@ MonoBehaviour:
   targetVisible: 1
   crosshair: {fileID: 6460949521456873037}
   autoTargetScript: {fileID: 460407556482336877}
+  targetIndicator: {fileID: 7114731805574233136}
   lockOnTarget: {fileID: 0}
+  hookshotArcAngle: 20
   hookshotData: {fileID: 11400000, guid: 83fae043a370745a6b4197e1ea6d0cfb, type: 2}
   state: 0
   hookshotAutoPull: 0
@@ -1511,6 +1514,26 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+--- !u!114 &7114731805574233136
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 102278313849289256}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b348c1d2b9de5ff4d88564433c85598e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TargetIndicator
+  decalSize: 2
+  groundOffset: 0.05
+  groundRaycastDistance: 50
+  groundLayer:
+    serializedVersion: 2
+    m_Bits: 8
+  decalColor: {r: 1, g: 1, b: 0, a: 0.8}
+  ringThickness: 0.15
 --- !u!1 &102278314314392664
 GameObject:
   m_ObjectHideFlags: 0
@@ -1965,7 +1988,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 102278314406291480}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 28efc77f63e442041be2de4520f3a559, type: 3}
   m_Name: 
