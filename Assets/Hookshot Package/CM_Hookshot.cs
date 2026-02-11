@@ -779,7 +779,7 @@ private void LateUpdate(){
 
         state = State.Normal;
         lr.enabled = false;
-       
+
     }
 
     private bool Jump()
@@ -851,7 +851,7 @@ private void LateUpdate(){
                 }
             }
         }
-       
+
 
     }
 

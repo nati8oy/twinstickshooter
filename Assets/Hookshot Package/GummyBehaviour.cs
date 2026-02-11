@@ -223,4 +223,18 @@ public class GummyBehaviour : MonoBehaviour
     {
         homePosition = position;
     }
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (collision.gameObject.CompareTag("goal"))
+        {
+            HUD hud = FindObjectOfType<HUD>();
+            if (hud != null)
+            {
+                hud.IncreaseScore();
+            }
+
+            gameObject.SetActive(false);
+        }
+    }
 }
