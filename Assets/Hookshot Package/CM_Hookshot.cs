@@ -15,7 +15,7 @@ public class CM_Hookshot : MonoBehaviour
     [Header("Inputs")]
     [SerializeField] private InputAction hookshot;
     [SerializeField] private InputAction hookshotPull;
-    [SerializeField] private InputAction jump;
+    [SerializeField] private InputAction cancel;
     [SerializeField] private InputAction pull;
     private InputAction cycleTarget;
     private InputAction autoAction;
@@ -156,21 +156,20 @@ public class CM_Hookshot : MonoBehaviour
         };
         hookshotPull.Enable();
 
-        jump = new InputAction();
-        jump.AddBinding("<Keyboard>/space");
-        jump.AddBinding("<Gamepad>/leftShoulder");
-        jump.performed += _ => Jump();
-        jump.Enable();
+        cancel = new InputAction();
+        cancel.AddBinding("<Keyboard>/leftShift");
+        cancel.AddBinding("<Gamepad>/leftShoulder");
+        cancel.Enable();
 
         pull = new InputAction();
-        pull.AddBinding("<Keyboard>/leftShift");
+        pull.AddBinding("<Keyboard>/e");
         pull.AddBinding("<Gamepad>/buttonSouth");
         pull.performed += _ => ActivateHookshotPull();
         pull.Enable();
 
         cycleTarget = new InputAction();
         cycleTarget.AddBinding("<Keyboard>/tab");
-        cycleTarget.AddBinding("<Gamepad>/buttonWest");
+        cycleTarget.AddBinding("<Gamepad>/buttonNorth");
         cycleTarget.performed += _ =>
         {
             if (DebugManager.Instance != null && DebugManager.Instance.autoTargetEnabled && autoTargetScript != null)
@@ -431,6 +430,10 @@ private void LateUpdate(){
                             hookshotPosition = raycastHit.point;
                             state = State.HookshotAttached;
 
+                            // Disable gravity so the object doesn't drop while being hooked/pulled
+                            var rb = raycastHit.collider.gameObject.GetComponent<Rigidbody>();
+                            if (rb != null) rb.useGravity = false;
+
                             //if hookshot is strong enough, freeze the gummy in place
                             GummyLevel gummyLevel = raycastHit.collider.gameObject.GetComponent<GummyLevel>();
                             if (gummyLevel != null && hookshotStrength >= gummyLevel.WeightValue)
@@ -459,6 +462,9 @@ private void LateUpdate(){
                             hookshotPosition = raycastHit.point;
                             state = State.HookshotPull;
 
+                            // Disable gravity so the object doesn't drop while being pulled
+                            var rb = raycastHit.collider.gameObject.GetComponent<Rigidbody>();
+                            if (rb != null) rb.useGravity = false;
                         }
 
                         //this is the layer for moveable objects that can be pulled but not carried
@@ -467,6 +473,10 @@ private void LateUpdate(){
                             hook.position = raycastHit.point;
                             hookshotPosition = raycastHit.point;
                             state = State.HookshotAttached;
+
+                            // Disable gravity so the object doesn't drop while being hooked/pulled
+                            var rb = raycastHit.collider.gameObject.GetComponent<Rigidbody>();
+                            if (rb != null) rb.useGravity = false;
                         }
 
 
@@ -760,6 +770,16 @@ private void LateUpdate(){
     {
         stopFeedbacks.Invoke();
 
+        // Re-enable gravity on the hooked object
+        if (hitTarget != null)
+        {
+            var hitTargetRB = hitTarget.GetComponent<Rigidbody>();
+            if (hitTargetRB != null)
+            {
+                hitTargetRB.useGravity = true;
+            }
+        }
+
         //reset the enemy movement
         ResetEnemyMovement();
         DetachSpringJoint();
@@ -790,9 +810,12 @@ private void LateUpdate(){
 
     }
 
-    private bool Jump()
+    public void OnPlayerJump()
     {
-        return true;
+        if (state != State.Normal)
+        {
+            CancelHookshot();
+        }
     }
 
     private void ActivateHookshotPull()
@@ -816,9 +839,9 @@ private void LateUpdate(){
     {
         if (DebugManager.Instance != null && DebugManager.Instance.autoTargetEnabled)
         {
-            return autoCancel.ReadValue<float>() > 0 || jump.ReadValue<float>() > 0;
+            return autoCancel.ReadValue<float>() > 0 || cancel.ReadValue<float>() > 0;
         }
-        return jump.ReadValue<float>() > 0;
+        return cancel.ReadValue<float>() > 0;
     }
 
     private void DetachSpringJoint()

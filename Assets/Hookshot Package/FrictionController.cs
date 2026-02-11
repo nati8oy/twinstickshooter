@@ -27,6 +27,11 @@ public class FrictionController : MonoBehaviour
     [SerializeField] private Vector3 currentVelocity;
     [SerializeField] private float velPower;
 
+    /// <summary>
+    /// The friction-based velocity for TwinStickMovement to read and combine into a single Move() call.
+    /// </summary>
+    public Vector3 FrictionVelocity => velocity;
+
     private bool isButtonHeld;
     private float movement;
 
@@ -92,7 +97,8 @@ public class FrictionController : MonoBehaviour
 
     
 
-        characterController.Move(velocity * Time.deltaTime);
+        // Velocity is now read by TwinStickMovement via FrictionVelocity property
+        // instead of calling Move() directly, to avoid dual Move() conflicts with jump/gravity.
     }
  }
 

@@ -10,7 +10,7 @@ public class TwinStickMovement : MonoBehaviour
 {
 
     [SerializeField] private float playerSpeed = 5f;
-    [SerializeField] private float gravityValue = -9.81f;
+    [SerializeField] private float gravityValue = -20.98f;
     [SerializeField] private float controllerDeadZone = 0.1f;
     [SerializeField] private float gamepadRotateSmoothing = 1000f;
 
@@ -46,6 +46,7 @@ public class TwinStickMovement : MonoBehaviour
     private PlayerControls playerControls;
     private PlayerInput playerInput;
     private AutoTarget autoTarget;
+    private FrictionController frictionController;
 
 
     private void Awake()
@@ -54,6 +55,7 @@ public class TwinStickMovement : MonoBehaviour
         playerControls = new PlayerControls();
         playerInput = GetComponent<PlayerInput>();
         autoTarget = GetComponent<AutoTarget>();
+        frictionController = GetComponent<FrictionController>();
     }
 
 
@@ -133,19 +135,35 @@ public class TwinStickMovement : MonoBehaviour
             playerVelocity.y = -2f;
         }
 
+        CM_Hookshot hookshot = GetComponent<CM_Hookshot>();
+
         Vector3 move = new Vector3(movement.x, 0, movement.y);
 
         float speedMod = 1f;
-        CM_Hookshot hookshot = GetComponent<CM_Hookshot>();
         if (hookshot != null)
         {
             speedMod = hookshot.dragSpeedMultiplier;
         }
 
-        playerVelocity.y += gravityValue * Time.deltaTime;
+        // Disable gravity while grappling so player travels in a straight line to the grapple point
+        if (hookshot != null && hookshot.isGrappling)
+        {
+            playerVelocity.y = 0f;
+        }
+        else
+        {
+            playerVelocity.y += gravityValue * Time.deltaTime;
+        }
 
-        // Combine horizontal movement with vertical gravity
-        Vector3 finalMove = (move * playerSpeed * speedMod) + new Vector3(0, playerVelocity.y, 0);
+        // Include friction-based velocity if FrictionController is present
+        Vector3 frictionMove = Vector3.zero;
+        if (frictionController != null)
+        {
+            frictionMove = frictionController.FrictionVelocity;
+        }
+
+        // Combine horizontal movement, friction velocity, and vertical gravity into a single Move call
+        Vector3 finalMove = (move * playerSpeed * speedMod) + frictionMove + new Vector3(0, playerVelocity.y, 0);
         controller.Move(finalMove * Time.deltaTime);
 
         

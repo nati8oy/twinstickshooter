@@ -55,7 +55,7 @@ The hookshot is the primary interaction tool with multiple functions:
 |---|---|---|
 | Fire hookshot / Throw Gummy | Right Mouse Button | R1 (Right Shoulder) |
 | Activate pull when attached | Left Shift | South Button (X/A) |
-| Jump / Cancel hookshot | Space | L1 (Left Shoulder) |
+| Cancel hookshot | Space | L1 (Left Shoulder) |
 | Movement | WASD | Left Stick |
 | Aim | Mouse | Right Stick |
 
@@ -160,7 +160,7 @@ Auto-target is toggled via `DebugManager.autoTargetEnabled` in the inspector. Wh
 - Auto-detects input device
 - Character Controller based movement
 - Proper gravity with `isGrounded` check (resets vertical velocity when grounded to prevent accumulation)
-- Combines horizontal movement and gravity into a single `controller.Move` call
+- Combines horizontal movement, FrictionController velocity, and gravity into a single `controller.Move` call (prevents dual-Move conflicts)
 - Mouse aiming projects to ground plane
 - **Reads `CM_Hookshot.dragSpeedMultiplier`** to apply carry speed penalties per weight tier
 - **Auto-target rotation override:** When `DebugManager.autoTargetEnabled` is true:
@@ -253,10 +253,10 @@ Auto-target is toggled via `DebugManager.autoTargetEnabled` in the inspector. Wh
 - `autoTargetEnabled` — toggles auto-target control scheme on/off
 
 **FrictionController.cs** - Acceleration and deceleration
-- Applies acceleration-based movement on top of `TwinStickMovement`
+- Calculates acceleration-based velocity and exposes it via `FrictionVelocity` property
 - Velocity accumulates at `accelRate` while input is held, clamped to `targetSpeed`
 - Damping reduces velocity when input is released
-- Gravity is handled by `TwinStickMovement`, not this script
+- Does **not** call `characterController.Move()` directly — `TwinStickMovement` reads `FrictionVelocity` and combines it into a single Move call to avoid dual-Move conflicts with gravity/grappling
 
 ### Input System
 - Uses Unity's new Input System
@@ -340,6 +340,7 @@ Assets/
 - [x] **Upgrade system (spend gold to improve hookshot)**
 - [x] **Hazard immunity while grappling (player ignores hazard collisions during grapple)**
 - [x] **Proper gravity system (ground check prevents velocity accumulation)**
+- [x] **Consolidated movement** — FrictionController velocity merged into TwinStickMovement's single `controller.Move()` call
 - [x] **Auto-target control scheme** — simplified controls for less experienced players:
   - Toggleable via `DebugManager.autoTargetEnabled`
   - Auto-rotates player to face closest gummy in detection radius (Layer 11)
@@ -544,7 +545,11 @@ Assets/
 
 ## Changelog
 
-### [Current] - Prototype v0.8
+### [Current] - Prototype v0.9
+- **Removed jump** — jump functionality removed from `TwinStickMovement`; game is now ground-based with grapple traversal
+- **Consolidated movement calls** — `FrictionController` no longer calls `characterController.Move()` directly; exposes velocity via `FrictionVelocity` property, which `TwinStickMovement` reads and combines with player input and gravity into a single `controller.Move()` call (fixes jump/gravity conflicts caused by dual Move calls)
+
+### Prototype v0.8
 - **Targeting decal** — replaced LaserSight line renderer with `TargetIndicator.cs`, a ground-projected decal that appears beneath the current hookshot target
   - Only visible in Normal state when a valid target is in range
   - Works with direct raycast and fuzzy targeting (shows what the hookshot will actually hit)
