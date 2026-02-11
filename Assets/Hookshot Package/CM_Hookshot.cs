@@ -52,6 +52,7 @@ public class CM_Hookshot : MonoBehaviour
     private float hookshotMaxRange;
     private int hookshotStrength;
     private float hookshotBounciness;
+    private float hookshotThrowAngle;
 
     public bool isGrappling = false;
     [HideInInspector] public float dragSpeedMultiplier = 1f;
@@ -59,6 +60,9 @@ public class CM_Hookshot : MonoBehaviour
     [SerializeField] private float lightCarrySpeed = 1f;
     [SerializeField] private float mediumCarrySpeed = 0.7f;
     [SerializeField] private float heavyCarrySpeed = 0.45f;
+
+    [Header("Throw")]
+    [SerializeField] private float throwResetDelay = 1f;
 
     [Header("Feedbacks")]
     [SerializeField] private UnityEvent onGrapple;
@@ -108,7 +112,8 @@ public class CM_Hookshot : MonoBehaviour
         hookshotStrength = (int)hookshotData.strength;
         hookshotBounciness = hookshotData.bounciness;
         throwForce = hookshotData.throwForce;
-        
+        hookshotThrowAngle = hookshotData.throwAngle;
+
         if (joint != null)
             joint.spring = hookshotBounciness;
 
@@ -656,10 +661,11 @@ private void LateUpdate(){
                     hitTargetRB.useGravity = true;
                     hitTargetRB.freezeRotation = false;
 
-                    
-                    //throw it in the direction the player is facing
-                    hitTargetRB.AddForce(transform.forward * throwForce);
-                    
+
+                    //throw it in the direction the player is facing, angled upward
+                    Vector3 throwDir = Quaternion.AngleAxis(-hookshotThrowAngle, transform.right) * transform.forward;
+                    hitTargetRB.AddForce(throwDir * throwForce);
+
                     /*
                     //check if the auto targeting is on and if the object you're throwing isn't an enemy
                     if (autoTargetScript != null && hitTarget.tag != "enemy")
@@ -682,8 +688,7 @@ private void LateUpdate(){
                 if (hitTarget.GetComponent<NavMeshAgent>())
                 {
                     hitTarget.GetComponent<NavMeshAgent>().enabled = false;
-                    Invoke("ResetEnemyMovement", 1f);
-
+                    Invoke("ResetEnemyMovement", throwResetDelay);
                 }
             }
         }

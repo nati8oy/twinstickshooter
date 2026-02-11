@@ -705,7 +705,7 @@ MonoBehaviour:
   shotPoint: {fileID: 102278314551979599}
   hook: {fileID: 0}
   carryPoint: {fileID: 102278313375156193}
-  throwForce: 1250
+  throwForce: 0.1
   lr: {fileID: 102278313849289253}
   characterVelocityMomentum: {x: 0, y: 0, z: 0}
   joint: {fileID: 102278313849289433}
