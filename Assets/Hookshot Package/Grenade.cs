@@ -17,6 +17,8 @@ public class Grenade : MonoBehaviour
     public UnityEvent onExplode;
 
     [SerializeField] private GameObject explosionPrefab;
+    [SerializeField] private LayerMask affectedLayers = ~0;
+    [SerializeField] private float explosionSize = 2f;
 
     private void OnEnable()
     {
@@ -25,27 +27,16 @@ public class Grenade : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
-
-        //set the enemy layer up so the bullet knows when it collides with it.
-        int enemyLayerIndex = LayerMask.NameToLayer("Enemies");
-        int environmentLayerIndex = LayerMask.NameToLayer("Environment");
+        // Check if the collided object's layer is in our affected layers mask
+        if ((affectedLayers & (1 << collision.gameObject.layer)) == 0) return;
 
         IDamagable damagable = collision.gameObject.GetComponent<IDamagable>();
-
         if (damagable != null)
         {
             damagable.Damage(damageInflicted);
-            Explode();
-
         }
 
-        //check the layers and see if they are the enemy or environment layers
-        if (collision.gameObject.layer == environmentLayerIndex  || collision.gameObject.layer == enemyLayerIndex)
-        {
-            Explode();
-            hasExploded = true;
-        }
-
+        Explode();
     }
 
 
@@ -54,16 +45,46 @@ public class Grenade : MonoBehaviour
         if (hasExploded) return;
         hasExploded = true;
 
-        Collider[] colliders = Physics.OverlapSphere(transform.position, blastRadius);
+        Collider[] colliders = Physics.OverlapSphere(transform.position, blastRadius, affectedLayers);
         foreach (Collider nearbyObject in colliders)
         {
-            Rigidbody rb = nearbyObject.GetComponent<Rigidbody>();
-            EnemyBehaviour enemyBehaviour = nearbyObject.GetComponent<EnemyBehaviour>();
+            if (nearbyObject.gameObject == gameObject) continue;
 
-            if (rb != null && enemyBehaviour != null)
+            // Disable NavMeshAgent so physics force actually applies
+            UnityEngine.AI.NavMeshAgent agent = nearbyObject.GetComponent<UnityEngine.AI.NavMeshAgent>();
+            if (agent != null && agent.enabled)
             {
-                enemyBehaviour.Damage(damageInflicted);
+                agent.enabled = false;
+            }
+
+            // Apply damage to anything damageable
+            EnemyHealth enemyHealth = nearbyObject.GetComponent<EnemyHealth>();
+            if (enemyHealth != null)
+            {
+                enemyHealth.Damage(damageInflicted);
+            }
+
+            // Apply explosion force to anything with a rigidbody
+            Rigidbody rb = nearbyObject.GetComponent<Rigidbody>();
+            if (rb != null)
+            {
+                rb.isKinematic = false;
                 rb.AddExplosionForce(explosionForce, transform.position, blastRadius);
+            }
+
+            // Destroy gummies caught in the blast and trigger their explosion effect
+            GummyBehaviour gummy = nearbyObject.GetComponent<GummyBehaviour>();
+            if (gummy != null)
+            {
+                GenericCollisions gc = nearbyObject.GetComponent<GenericCollisions>();
+                if (gc != null)
+                {
+                    gc.TriggerHazardExplosion();
+                }
+                else
+                {
+                    nearbyObject.gameObject.SetActive(false);
+                }
             }
         }
 
@@ -75,6 +96,14 @@ public class Grenade : MonoBehaviour
         if (explosionPrefab != null)
         {
             Instantiate(explosionPrefab, transform.position, transform.rotation);
+            explosionPrefab.transform.localScale = new Vector3(explosionSize, explosionSize, explosionSize);
+        }
+
+        // If the player is holding/pulling this object, cancel the hookshot
+        CM_Hookshot hookshot = FindObjectOfType<CM_Hookshot>();
+        if (hookshot != null && hookshot.hitTarget == gameObject)
+        {
+            hookshot.CancelHookshot();
         }
 
         gameObject.GetComponent<Rigidbody>().linearVelocity = Vector3.zero;

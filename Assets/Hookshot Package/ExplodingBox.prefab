@@ -27,7 +27,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7637749116731166076}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -26.75, y: 0.25, z: 43.540607}
   m_LocalScale: {x: 1.25, y: 1.25, z: 1.25}
   m_ConstrainProportionsScale: 1
@@ -54,7 +54,7 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 1, y: 1, z: 1}
+  m_Size: {x: 1.2, y: 1.25, z: 1.25}
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!54 &6026478078877244229
 Rigidbody:
@@ -64,7 +64,7 @@ Rigidbody:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7637749116731166076}
   serializedVersion: 5
-  m_Mass: 3
+  m_Mass: 5
   m_LinearDamping: 0
   m_AngularDamping: 0.05
   m_CenterOfMass: {x: 0, y: 0, z: 0}
@@ -95,13 +95,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9b83f4a06cc994285953918f16ee6bb9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Grenade
-  blastRadius: 5
-  explosionForce: 500
+  blastRadius: 10
+  explosionForce: 5000
   damageInflicted: 3
   onExplode:
     m_PersistentCalls:
       m_Calls: []
-  explosionPrefab: {fileID: 1391537856956348, guid: f59a2181e7715914bb2ee531a43afc1f, type: 3}
+  explosionPrefab: {fileID: 1298315647077242, guid: 72160083e1a24a94b88cb874c61f8d39, type: 3}
+  affectedLayers:
+    serializedVersion: 2
+    m_Bits: 15168
+  explosionSize: 4
 --- !u!1001 &1111310193345738678
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -128,7 +132,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: a6183e62b2cb14e02b5397f9caa95f3f, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: -0.39999995
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: a6183e62b2cb14e02b5397f9caa95f3f, type: 3}
       propertyPath: m_LocalPosition.z

@@ -33,6 +33,9 @@ public class GummyBehaviour : MonoBehaviour
     [Header("Follow Settings")]
     [SerializeField] private float followStopDistance = 3f;
 
+    [Header("Effects")]
+    [SerializeField] private GameObject goalExplosionPrefab;
+
     private NavMeshAgent navMeshAgent;
     private Transform playerTransform;
     private Vector3 homePosition;
@@ -236,6 +239,11 @@ public class GummyBehaviour : MonoBehaviour
             if (hud != null)
             {
                 hud.IncreaseScore();
+            }
+
+            if (goalExplosionPrefab != null)
+            {
+                Instantiate(goalExplosionPrefab, transform.position, transform.rotation);
             }
 
             gameObject.SetActive(false);
