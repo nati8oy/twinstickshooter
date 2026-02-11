@@ -85,6 +85,29 @@ public class CM_Hookshot : MonoBehaviour
 
     [Header("Hookshot")]
 
+    [Header("Rope Animation")]
+    [Tooltip("Number of segments in the line renderer. Higher = smoother curve.")]
+    [SerializeField] private int ropeQuality = 20;
+    [Tooltip("How fast the wave settles. Higher = wave dies out faster.")]
+    [SerializeField] private float ropeDamper = 7f;
+    [Tooltip("Spring stiffness. Higher = wave snaps back faster with tighter oscillation.")]
+    [SerializeField] private float ropeStrength = 40f;
+    [Tooltip("Initial kick when hookshot fires. Higher = bigger starting wave.")]
+    [SerializeField] private float ropeVelocity = 20f;
+    [Tooltip("Number of sine wave peaks along the rope.")]
+    [SerializeField] private float ropeWaveCount = 3f;
+    [Tooltip("Wave amplitude multiplier. Higher = wider sideways curves.")]
+    [SerializeField] private float ropeWaveHeight = 3f;
+    [Tooltip("How fast the rope visually travels from gun to target. Higher = faster.")]
+    [SerializeField] private float ropeLerpSpeed = 12f;
+    [Tooltip("Controls where the wave is strongest along the rope. Peaks in the middle by default.")]
+    [SerializeField] private AnimationCurve ropeAffectCurve = new AnimationCurve(
+        new Keyframe(0f, 0f), new Keyframe(0.5f, 1f), new Keyframe(1f, 0f)
+    );
+    private Spring ropeSpring;
+    private Vector3 currentGrapplePosition;
+    private State pendingState;
+
     [Header("Fuzzy Targeting")]
     [SerializeField] private float hookshotArcAngle = 20f;
 
@@ -113,6 +136,9 @@ public class CM_Hookshot : MonoBehaviour
         hookshotBounciness = hookshotData.bounciness;
         throwForce = hookshotData.throwForce;
         hookshotThrowAngle = hookshotData.throwAngle;
+
+        ropeSpring = new Spring();
+        ropeSpring.SetTarget(0);
 
         if (joint != null)
             joint.spring = hookshotBounciness;
@@ -256,6 +282,7 @@ public class CM_Hookshot : MonoBehaviour
             default:
             case State.Normal:
             lr.enabled = false;
+            lr.positionCount = 0;
             isGrappling = false;
             dragSpeedMultiplier = 1f;
                 break;
@@ -323,9 +350,56 @@ public class CM_Hookshot : MonoBehaviour
     }
 
 private void LateUpdate(){
-   // lr.SetPosition(1, hookshotPosition);
-    //set the line renderer start point to that of the shot point
-    lr.SetPosition(0, shotPoint.position);
+    if (!lr.enabled) return;
+
+    // Update the spring simulation for rope wave decay
+    ropeSpring.SetDamper(ropeDamper);
+    ropeSpring.SetStrength(ropeStrength);
+    ropeSpring.Update(Time.deltaTime);
+
+    // Determine the actual target endpoint for the rope
+    Vector3 ropeTarget = hookshotPosition;
+    if ((state == State.HookshotPull || state == State.HookshotAttached) && hitTarget != null)
+    {
+        ropeTarget = hitTarget.transform.position;
+    }
+
+    // Lerp the rope endpoint toward the target (animates the rope shooting out during launch)
+    currentGrapplePosition = Vector3.Lerp(currentGrapplePosition, ropeTarget, Time.deltaTime * ropeLerpSpeed);
+
+    // Check if rope reached target during launch — transition to pending state
+    if (state == State.HookshotLaunched && Vector3.Distance(currentGrapplePosition, hookshotPosition) < 0.5f)
+    {
+        if (pendingState == State.HookshotFlyingPlayer)
+        {
+            onGrapple.Invoke();
+            OnHookshotHit.Invoke();
+        }
+        state = pendingState;
+    }
+
+    var gunTipPosition = shotPoint.position;
+
+    // Use the FINAL target direction for the up vector (not currentGrapplePosition)
+    // so it's stable from the first frame and never zero
+    var ropeDirection = (ropeTarget - gunTipPosition).normalized;
+    if (ropeDirection.sqrMagnitude < 0.01f) return;
+    var up = Quaternion.LookRotation(ropeDirection) * Vector3.right;
+
+    // Ensure line renderer has enough points for the curve
+    if (lr.positionCount != ropeQuality + 1)
+    {
+        lr.positionCount = ropeQuality + 1;
+    }
+
+    for (var i = 0; i < ropeQuality + 1; i++)
+    {
+        var delta = i / (float)ropeQuality;
+        var offset = up * ropeWaveHeight * Mathf.Sin(delta * ropeWaveCount * Mathf.PI) * ropeSpring.Value *
+                     ropeAffectCurve.Evaluate(delta);
+
+        lr.SetPosition(i, Vector3.Lerp(gunTipPosition, currentGrapplePosition, delta) + offset);
+    }
 }
 
     private bool FindFuzzyTarget(out RaycastHit fuzzyHit)
@@ -413,22 +487,17 @@ private void LateUpdate(){
                         //if not, then set the hookshot position to the maximum distance of the hookshot
                         if (raycastHit.collider.gameObject.layer == 10)
                         {
-                            // Debug.Log("hit grappleable object");
                             hook.position = raycastHit.point;
                             hookshotPosition = raycastHit.point;
-                            state = State.HookshotFlyingPlayer;
-                            onGrapple.Invoke();
-                            OnHookshotHit.Invoke();
-
+                            pendingState = State.HookshotFlyingPlayer;
                         }
 
                         //this is the pullable object layer
                         if (raycastHit.collider.gameObject.layer == 11)
                         {
-                            //Debug.Log("hit pullable object");
                             hook.position = raycastHit.point;
                             hookshotPosition = raycastHit.point;
-                            state = State.HookshotAttached;
+                            pendingState = State.HookshotAttached;
 
                             // Disable gravity so the object doesn't drop while being hooked/pulled
                             var rb = raycastHit.collider.gameObject.GetComponent<Rigidbody>();
@@ -457,10 +526,9 @@ private void LateUpdate(){
                         //this is the layer for collectibles that you can pull towards yourself
                         if (raycastHit.collider.gameObject.layer == 12)
                         {
-                            // Debug.Log("hit collectible object");
                             hook.position = raycastHit.point;
                             hookshotPosition = raycastHit.point;
-                            state = State.HookshotPull;
+                            pendingState = State.HookshotPull;
 
                             // Disable gravity so the object doesn't drop while being pulled
                             var rb = raycastHit.collider.gameObject.GetComponent<Rigidbody>();
@@ -472,7 +540,7 @@ private void LateUpdate(){
                         {
                             hook.position = raycastHit.point;
                             hookshotPosition = raycastHit.point;
-                            state = State.HookshotAttached;
+                            pendingState = State.HookshotAttached;
 
                             // Disable gravity so the object doesn't drop while being hooked/pulled
                             var rb = raycastHit.collider.gameObject.GetComponent<Rigidbody>();
@@ -486,15 +554,21 @@ private void LateUpdate(){
 
                     //make the raycast ignore the hook object's collider
                     Physics.IgnoreCollision(raycastHit.collider, hook.GetComponent<Collider>());
+
+                    // Enter launched state — rope animates toward target before transitioning
+                    state = State.HookshotLaunched;
+                    currentGrapplePosition = shotPoint.position;
+                    ropeSpring.Reset();
+                    ropeSpring.SetVelocity(ropeVelocity);
+                    lr.positionCount = ropeQuality + 1;
                 }
-                
+
 
             }
 
         }
-        
+
         lr.enabled = true;
-        lr.SetPosition(1, hookshotPosition);
     }
 
     private void HandleHookshotMovement()
@@ -521,6 +595,7 @@ private void LateUpdate(){
             // Reached hookshot position
             state = State.Normal;
             lr.enabled = false;
+            lr.positionCount = 0;
             // characterController.enabled = false;
         }
 
@@ -549,7 +624,6 @@ private void LateUpdate(){
     private void HandleHookshotAttached()
     {
         lr.enabled = true;
-        lr.SetPosition(1, hookshotPosition);
         hook.gameObject.transform.position = hookshotPosition;
         hookshotPosition = hitTarget.transform.position;
 
@@ -609,7 +683,6 @@ private void LateUpdate(){
 
 
             lr.enabled = true;
-            lr.SetPosition(1, hitTarget.transform.position);
 
             //check the distance between the hookshot position and the player
             //and if it's less than 1f, then cancel the hookshot
@@ -650,6 +723,7 @@ private void LateUpdate(){
             hitTarget.transform.position = carryPoint.transform.position;
 
             lr.enabled = false;
+            lr.positionCount = 0;
 
         }
     }
@@ -714,30 +788,13 @@ private void LateUpdate(){
 
     private void LaunchHookshot()
     {
-        state = State.HookshotLaunched;
+        lr.enabled = true;
 
-
-        if (!hitSomething)
+        // Allow cancel during launch
+        if (IsCancelPressed())
         {
-            // shoot the hook at the object
-            //hook.position = shotPoint.position;
-            hook.position = Vector3.MoveTowards(shotPoint.position, shotPoint.position + transform.forward * 10f, 4f * Time.deltaTime);
-            //when the hook reaches 10f in front of the player, set the hook.position back to the shotpoint.position
-            if (Vector3.Distance(hook.position, shotPoint.position) < 1f)
-            {
-                hitSomething = true;
-                
-                
-            }
+            CancelHookshot();
         }
-
-        else if (hitSomething)
-        {
-            hook.position = Vector3.MoveTowards(shotPoint.position + transform.forward * 10f, hook.position, 40f * Time.deltaTime);
-            hitSomething = false;
-            state = State.Normal;
-        }
-
     }
 
     private void ReleaseCarriedObject()
@@ -764,6 +821,7 @@ private void LateUpdate(){
         DetachSpringJoint();
         state = State.Normal;
         lr.enabled = false;
+            lr.positionCount = 0;
     }
 
     public void CancelHookshot()
@@ -807,6 +865,7 @@ private void LateUpdate(){
 
         state = State.Normal;
         lr.enabled = false;
+            lr.positionCount = 0;
 
     }
 
