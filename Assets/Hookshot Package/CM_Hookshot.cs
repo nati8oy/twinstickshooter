@@ -461,6 +461,14 @@ private void LateUpdate(){
 
                         }
 
+                        //this is the layer for moveable objects that can be pulled but not carried
+                        if (raycastHit.collider.gameObject.layer == 13)
+                        {
+                            hook.position = raycastHit.point;
+                            hookshotPosition = raycastHit.point;
+                            state = State.HookshotAttached;
+                        }
+
 
                     //set the hit target to whatever the raycast has hit
                     hitTarget = raycastHit.collider.gameObject;
