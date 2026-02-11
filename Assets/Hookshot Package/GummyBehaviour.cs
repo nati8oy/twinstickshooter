@@ -3,7 +3,7 @@ using UnityEngine.AI;
 
 public class GummyBehaviour : MonoBehaviour
 {
-    public enum IdleMovement { WanderShort, WanderMedium, WanderFar }
+    public enum IdleMovement { Still, WanderShort, WanderMedium, WanderFar }
     public enum PlayerReaction { Follow, ScatterFar, ScatterNearby, Ignore }
 
     [Header("Behaviour Type")]
@@ -108,6 +108,8 @@ public class GummyBehaviour : MonoBehaviour
 
     private void HandleIdleWander()
     {
+        if (idleMovement == IdleMovement.Still) return;
+
         if (HasReachedDestination())
         {
             if (!isIdlePausing)
@@ -129,6 +131,8 @@ public class GummyBehaviour : MonoBehaviour
 
     private void GenerateIdleDestination()
     {
+        if (idleMovement == IdleMovement.Still) return;
+
         float radius = idleMovement switch
         {
             IdleMovement.WanderShort => wanderShortRadius,

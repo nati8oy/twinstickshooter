@@ -18,7 +18,7 @@ GameObject:
   - component: {fileID: 4904306181996186228}
   - component: {fileID: 1784795950484679826}
   m_Layer: 11
-  m_Name: SimpleEnemy 1
+  m_Name: Simple Gummy
   m_TagString: enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -78,7 +78,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 01763a1c279a5cd4d8f897f6b6cdbae5, type: 2}
+  - {fileID: 2100000, guid: 9ca80467a033e954a8b9ad8601d6f4c7, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -159,7 +159,7 @@ Rigidbody:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 541802505096995604}
   serializedVersion: 5
-  m_Mass: 5
+  m_Mass: 3.5
   m_LinearDamping: 2
   m_AngularDamping: 0.1
   m_CenterOfMass: {x: 0, y: 0, z: 0}

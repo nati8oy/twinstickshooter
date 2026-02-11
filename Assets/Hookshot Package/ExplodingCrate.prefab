@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 9060581815775661958}
   - component: {fileID: 488036013391193380}
+  - component: {fileID: 945573426538709092}
   m_Layer: 0
   m_Name: ExplodingCrate
   m_TagString: Untagged
@@ -45,10 +46,39 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a1ddd95fc029143bb90bbc3d45f584a0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: '::'
-  collisionType: 0
-  onHit:
+  onHitGoal:
     m_PersistentCalls:
       m_Calls: []
+  onHitHazard:
+    m_PersistentCalls:
+      m_Calls: []
+--- !u!54 &945573426538709092
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8572170352000259388}
+  serializedVersion: 5
+  m_Mass: 1
+  m_LinearDamping: 0
+  m_AngularDamping: 0.05
+  m_CenterOfMass: {x: 0, y: 0, z: 0}
+  m_InertiaTensor: {x: 1, y: 1, z: 1}
+  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ImplicitCom: 1
+  m_ImplicitTensor: 1
+  m_UseGravity: 1
+  m_IsKinematic: 0
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 0
 --- !u!1 &9129004372045039553
 GameObject:
   m_ObjectHideFlags: 0
