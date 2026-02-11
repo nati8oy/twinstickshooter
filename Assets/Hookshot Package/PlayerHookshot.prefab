@@ -433,6 +433,8 @@ GameObject:
   - component: {fileID: 575609992}
   - component: {fileID: 2252515777435932134}
   - component: {fileID: 7114731805574233136}
+  - component: {fileID: 4080762008965059151}
+  - component: {fileID: 8671097692815596257}
   m_Layer: 0
   m_Name: PlayerHookshot
   m_TagString: Player
@@ -577,7 +579,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 62899f850307741f2a39c98a8b639597, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Actions: {fileID: -944628639613478452, guid: 1b9b5c6c58d0b4303b566bb764fc5a0c, type: 3}
+  m_Actions: {fileID: 0}
   m_NotificationBehavior: 0
   m_UIInputModule: {fileID: 0}
   m_DeviceLostEvent:
@@ -610,7 +612,7 @@ MonoBehaviour:
   playerSpeed: 12
   gravityValue: -9.81
   controllerDeadZone: 0.1
-  gamepadRotateSmoothing: 1000
+  gamepadRotateSmoothing: 500
   maxSpeed: 10
   acceleration: 10
   aeceleration: 10
@@ -632,7 +634,7 @@ Rigidbody:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 102278313849289256}
   serializedVersion: 5
-  m_Mass: 1
+  m_Mass: 5
   m_LinearDamping: 0
   m_AngularDamping: 0.05
   m_CenterOfMass: {x: 0, y: 0, z: 0}
@@ -681,11 +683,11 @@ MonoBehaviour:
     m_Interactions: 
     m_SingletonActionBindings: []
     m_Flags: 0
-  jump:
-    m_Name: Jump
+  cancel:
+    m_Name: Cancel
     m_Type: 0
     m_ExpectedControlType: 
-    m_Id: c3e10deb-e3f0-482f-82a6-14d6c5b7dc9d
+    m_Id: c6e1a428-83a9-443f-b91c-75daf2cd3d58
     m_Processors: 
     m_Interactions: 
     m_SingletonActionBindings: []
@@ -701,7 +703,7 @@ MonoBehaviour:
     m_Flags: 0
   layerMask:
     serializedVersion: 2
-    m_Bits: 3072
+    m_Bits: 11264
   shotPoint: {fileID: 102278314551979599}
   hook: {fileID: 0}
   carryPoint: {fileID: 102278313375156193}
@@ -715,6 +717,7 @@ MonoBehaviour:
   lightCarrySpeed: 1
   mediumCarrySpeed: 0.5
   heavyCarrySpeed: 0.25
+  throwResetDelay: 2
   onGrapple:
     m_PersistentCalls:
       m_Calls:
@@ -773,7 +776,8 @@ MonoBehaviour:
   autoTargetScript: {fileID: 460407556482336877}
   targetIndicator: {fileID: 7114731805574233136}
   lockOnTarget: {fileID: 0}
-  hookshotArcAngle: 20
+  ropeLerpSpeed: 25
+  hookshotArcAngle: 50
   hookshotData: {fileID: 11400000, guid: 83fae043a370745a6b4197e1ea6d0cfb, type: 2}
   state: 0
   hookshotAutoPull: 0
@@ -902,7 +906,7 @@ MonoBehaviour:
   acceleration: 100
   decceleration: 100
   damping: 5
-  targetSpeed: 3
+  targetSpeed: 2.3
   speedDif: 0
   accelRate: 0
   currentVelocity: {x: 0, y: 0, z: 0}
@@ -1532,8 +1536,222 @@ MonoBehaviour:
   groundLayer:
     serializedVersion: 2
     m_Bits: 8
+  decalShader: {fileID: 10750, guid: 0000000000000000f000000000000000, type: 0}
   decalColor: {r: 1, g: 1, b: 0, a: 0.8}
   ringThickness: 0.15
+--- !u!114 &4080762008965059151
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 102278313849289256}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8abe6344b7148db4687d3c84e7712904, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: MoreMountains.Tools::MoreMountains.Tools.MMHealthBar
+  HealthBarType: 1
+  TimeScale: 0
+  HealthBarPrefab: {fileID: 0}
+  TargetProgressBar: {fileID: 0}
+  Size: {x: 2, y: 1.25}
+  BackgroundPadding: {x: 0.1, y: 0.1}
+  InitialRotationAngles: {x: 0, y: 0, z: 0}
+  ForegroundColor:
+    serializedVersion: 2
+    key0: {r: 1, g: 0.09411765, b: 0, a: 1}
+    key1: {r: 1, g: 0.09411765, b: 0, a: 1}
+    key2: {r: 0, g: 0, b: 0, a: 0}
+    key3: {r: 0, g: 0, b: 0, a: 0}
+    key4: {r: 0, g: 0, b: 0, a: 0}
+    key5: {r: 0, g: 0, b: 0, a: 0}
+    key6: {r: 0, g: 0, b: 0, a: 0}
+    key7: {r: 0, g: 0, b: 0, a: 0}
+    ctime0: 0
+    ctime1: 65535
+    ctime2: 0
+    ctime3: 0
+    ctime4: 0
+    ctime5: 0
+    ctime6: 0
+    ctime7: 0
+    atime0: 0
+    atime1: 65535
+    atime2: 0
+    atime3: 0
+    atime4: 0
+    atime5: 0
+    atime6: 0
+    atime7: 0
+    m_Mode: 0
+    m_ColorSpace: -1
+    m_NumColorKeys: 2
+    m_NumAlphaKeys: 2
+  DelayedColor:
+    serializedVersion: 2
+    key0: {r: 1, g: 0.64705884, b: 0, a: 1}
+    key1: {r: 1, g: 0.64705884, b: 0, a: 1}
+    key2: {r: 0, g: 0, b: 0, a: 0}
+    key3: {r: 0, g: 0, b: 0, a: 0}
+    key4: {r: 0, g: 0, b: 0, a: 0}
+    key5: {r: 0, g: 0, b: 0, a: 0}
+    key6: {r: 0, g: 0, b: 0, a: 0}
+    key7: {r: 0, g: 0, b: 0, a: 0}
+    ctime0: 0
+    ctime1: 65535
+    ctime2: 0
+    ctime3: 0
+    ctime4: 0
+    ctime5: 0
+    ctime6: 0
+    ctime7: 0
+    atime0: 0
+    atime1: 65535
+    atime2: 0
+    atime3: 0
+    atime4: 0
+    atime5: 0
+    atime6: 0
+    atime7: 0
+    m_Mode: 0
+    m_ColorSpace: -1
+    m_NumColorKeys: 2
+    m_NumAlphaKeys: 2
+  BorderColor:
+    serializedVersion: 2
+    key0: {r: 0.24528301, g: 0.17040889, b: 0.070576705, a: 1}
+    key1: {r: 0.24705882, g: 0.17254902, b: 0.07058824, a: 1}
+    key2: {r: 0, g: 0, b: 0, a: 0}
+    key3: {r: 0, g: 0, b: 0, a: 0}
+    key4: {r: 0, g: 0, b: 0, a: 0}
+    key5: {r: 0, g: 0, b: 0, a: 0}
+    key6: {r: 0, g: 0, b: 0, a: 0}
+    key7: {r: 0, g: 0, b: 0, a: 0}
+    ctime0: 0
+    ctime1: 65535
+    ctime2: 0
+    ctime3: 0
+    ctime4: 0
+    ctime5: 0
+    ctime6: 0
+    ctime7: 0
+    atime0: 0
+    atime1: 65535
+    atime2: 0
+    atime3: 0
+    atime4: 0
+    atime5: 0
+    atime6: 0
+    atime7: 0
+    m_Mode: 0
+    m_ColorSpace: -1
+    m_NumColorKeys: 2
+    m_NumAlphaKeys: 2
+  BackgroundColor:
+    serializedVersion: 2
+    key0: {r: 0, g: 0, b: 0, a: 1}
+    key1: {r: 0, g: 0, b: 0, a: 1}
+    key2: {r: 0, g: 0, b: 0, a: 0}
+    key3: {r: 0, g: 0, b: 0, a: 0}
+    key4: {r: 0, g: 0, b: 0, a: 0}
+    key5: {r: 0, g: 0, b: 0, a: 0}
+    key6: {r: 0, g: 0, b: 0, a: 0}
+    key7: {r: 0, g: 0, b: 0, a: 0}
+    ctime0: 0
+    ctime1: 65535
+    ctime2: 0
+    ctime3: 0
+    ctime4: 0
+    ctime5: 0
+    ctime6: 0
+    ctime7: 0
+    atime0: 0
+    atime1: 65535
+    atime2: 0
+    atime3: 0
+    atime4: 0
+    atime5: 0
+    atime6: 0
+    atime7: 0
+    m_Mode: 0
+    m_ColorSpace: -1
+    m_NumColorKeys: 2
+    m_NumAlphaKeys: 2
+  SortingLayerName: UI
+  Delay: 0.5
+  LerpFrontBar: 1
+  LerpFrontBarSpeed: 15
+  LerpDelayedBar: 1
+  LerpDelayedBarSpeed: 15
+  BumpScaleOnChange: 1
+  BumpDuration: 0.2
+  BumpAnimationCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  FollowTargetMode: 2
+  FollowRotation: 0
+  FollowScale: 1
+  NestDrawnHealthBar: 0
+  Billboard: 0
+  InstantiatedOnDeath: {fileID: 0}
+  HealthBarOffset: {x: 0, y: 2, z: 0}
+  AlwaysVisible: 0
+  DisplayDurationOnHit: 1
+  HideBarAtZero: 1
+  HideBarAtZeroDelay: 1
+  TestMinHealth: 0
+  TestMaxHealth: 100
+  TestCurrentHealth: 25
+  TestUpdateHealthButton: 0
+--- !u!114 &8671097692815596257
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 102278313849289256}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7aae72f692a684ce5ac73d598bf9bf71, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerHealth
+  healthBar: {fileID: 4080762008965059151}
+  maxHealth: 100
+  currentHealth: 100
+  hazardDamage: 10
+  invincibilityDuration: 1.5
+  blinkInterval: 0.1
+  knockbackForce: 30
+  knockbackDrag: 8
+  knockbackVelocity: {x: 0, y: 0, z: 0}
+  onDamage:
+    m_PersistentCalls:
+      m_Calls: []
+  onDeath:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1 &102278314314392664
 GameObject:
   m_ObjectHideFlags: 0

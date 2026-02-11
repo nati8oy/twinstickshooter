@@ -162,8 +162,16 @@ public class TwinStickMovement : MonoBehaviour
             frictionMove = frictionController.FrictionVelocity;
         }
 
-        // Combine horizontal movement, friction velocity, and vertical gravity into a single Move call
-        Vector3 finalMove = (move * playerSpeed * speedMod) + frictionMove + new Vector3(0, playerVelocity.y, 0);
+        // Include knockback velocity if PlayerHealth is present
+        Vector3 knockback = Vector3.zero;
+        PlayerHealth playerHealth = GetComponent<PlayerHealth>();
+        if (playerHealth != null)
+        {
+            knockback = playerHealth.knockbackVelocity;
+        }
+
+        // Combine horizontal movement, friction velocity, knockback, and vertical gravity into a single Move call
+        Vector3 finalMove = (move * playerSpeed * speedMod) + frictionMove + knockback + new Vector3(0, playerVelocity.y, 0);
         controller.Move(finalMove * Time.deltaTime);
 
         

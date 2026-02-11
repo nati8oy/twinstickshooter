@@ -9,6 +9,7 @@ public class TargetIndicator : MonoBehaviour
     [SerializeField] private LayerMask groundLayer;
 
     [Header("Appearance")]
+    [SerializeField] private Shader decalShader;
     [SerializeField] private Color decalColor = new Color(1f, 1f, 1f, 0.8f);
     [SerializeField] private float ringThickness = 0.15f;
 
@@ -38,7 +39,8 @@ public class TargetIndicator : MonoBehaviour
 
         // Create material with procedural circle texture
         MeshRenderer renderer = decalQuad.GetComponent<MeshRenderer>();
-        Material mat = new Material(Shader.Find("Unlit/Transparent"));
+        Shader shader = decalShader != null ? decalShader : Shader.Find("Unlit/Transparent");
+        Material mat = new Material(shader);
         mat.mainTexture = GenerateCircleTexture(128);
         mat.color = decalColor;
         renderer.material = mat;

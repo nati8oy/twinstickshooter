@@ -17,6 +17,15 @@ public class GenericCollisions : MonoBehaviour
             if (hookshot != null && hookshot.isGrappling)
                 return;
 
+            // If the player has a health component, deal damage instead of instant death
+            PlayerHealth playerHealth = GetComponent<PlayerHealth>();
+            if (playerHealth != null)
+            {
+                if (playerHealth.IsInvincible) return;
+                playerHealth.TakeHazardDamage(collision.transform.position);
+                return;
+            }
+
             gameObject.SetActive(false);
             onHitHazard.Invoke();
         }
