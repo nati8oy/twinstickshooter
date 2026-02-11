@@ -31,7 +31,7 @@ The hookshot is the primary interaction tool with multiple functions:
 
 **States:**
 - `Normal` - Default player state, can initiate hookshot
-- `HookshotLaunched` - Hook is traveling (currently not used in main flow)
+- `HookshotLaunched` - Hook is traveling toward target (rope animation plays, delays state transition until rope arrives)
 - `HookshotFlyingPlayer` - Player is being pulled toward grapple point (traversal)
 - `HookshotPull` - Gummy is being pulled toward player
 - `HookshotAttached` - Hook attached to Gummy, can pull or lead
@@ -133,6 +133,12 @@ Auto-target is toggled via `DebugManager.autoTargetEnabled` in the inspector. Wh
 - **Auto-target mode inputs:** South button contextual (fire/pull/throw based on state), East button cancel, West button cycle target — only active when `DebugManager.autoTargetEnabled` is true
 - **`IsCancelPressed()`** helper — checks East (auto mode) or L1/Space (standard mode) for all cancel points
 - **Gravity management on hooked objects** — disables `useGravity` on Rigidbody when attaching to Layer 11/12/13 objects; re-enables on cancel, release, or throw
+- **Rope animation system** — uses `HookshotLaunched` state with `Spring.cs` simulation:
+  - Rope visually travels from gun tip to target before grapple/pull begins (configurable `ropeLerpSpeed`)
+  - Multi-point LineRenderer with sine wave offset for curved rope shape
+  - Spring-driven wave amplitude decays over time (wavy on fire, settles to straight)
+  - `AnimationCurve ropeAffectCurve` controls wave distribution along the rope (peaks in center by default)
+  - All parameters tunable in inspector with tooltips: `ropeQuality`, `ropeDamper`, `ropeStrength`, `ropeVelocity`, `ropeWaveCount`, `ropeWaveHeight`, `ropeLerpSpeed`, `ropeAffectCurve`
 - **Syncs auto-target detection radius** to `hookshotData.maxRange` on enable
 
 **Gummy.cs** - Individual Gummy instance
@@ -222,6 +228,11 @@ Auto-target is toggled via `DebugManager.autoTargetEnabled` in the inspector. Wh
 - Health bar integration (MoreMountains)
 - Damage system
 - Unity Events on hit
+
+**Spring.cs** - Spring simulation for rope wave animation
+- Used by `CM_Hookshot` rope animation system
+- Starts with a velocity kick, oscillates toward target (0), creating decaying wave
+- Configurable strength, damper, and initial velocity
 
 **LaserSight.cs** - Legacy visual targeting aid (disabled — replaced by TargetIndicator)
 - Line renderer from player to target point
@@ -346,6 +357,7 @@ Assets/
 - [x] **Zero-gravity hookshot** — player gravity zeroed during grapple; object gravity (`useGravity`) disabled on all hooked objects (Layers 11/12/13) while attached/pulled/carried, re-enabled on cancel/release/throw — enables multi-level traversal
 - [x] **Proper gravity system (ground check prevents velocity accumulation)**
 - [x] **Consolidated movement** — FrictionController velocity merged into TwinStickMovement's single `controller.Move()` call
+- [x] **Animated hookshot rope** — rope visually shoots from gun to target with spring-driven wave that decays to straight line; uses `HookshotLaunched` state to delay grapple/pull until rope arrives; curved shape via multi-point LineRenderer, sine wave, and AnimationCurve
 - [x] **Auto-target control scheme** — simplified controls for less experienced players:
   - Toggleable via `DebugManager.autoTargetEnabled`
   - Auto-rotates player to face closest gummy in detection radius (Layer 11)
@@ -555,6 +567,15 @@ Assets/
 - **Zero-gravity grappling (player)** — `TwinStickMovement` zeroes `playerVelocity.y` when `CM_Hookshot.isGrappling` is true, so the player travels in a straight line to grapple points without dropping (enables horizontal traversal across gaps and multi-level play)
 - **Zero-gravity hookshot (objects)** — `CM_Hookshot` disables `Rigidbody.useGravity` on all hooked objects (Layer 11 Pullable, Layer 12 Collectible, Layer 13 Moveable) on attach; re-enables gravity on cancel, release, or throw
 - **Consolidated movement calls** — `FrictionController` no longer calls `characterController.Move()` directly; exposes velocity via `FrictionVelocity` property, which `TwinStickMovement` reads and combines with player input and gravity into a single `controller.Move()` call (fixes jump/gravity conflicts caused by dual Move calls)
+- **Animated hookshot rope** — `HookshotLaunched` state now used as visual delay before grapple/pull:
+  - Rope lerps from gun tip to target (`ropeLerpSpeed`); grapple/pull/attach doesn't begin until rope arrives
+  - Multi-point LineRenderer (configurable `ropeQuality`) with sine wave offset for curved rope shape
+  - `Spring.cs` simulation drives wave amplitude — starts with velocity kick on fire, oscillates and decays to straight line
+  - `AnimationCurve ropeAffectCurve` shapes wave distribution along the rope (peaks in center, tapers at ends)
+  - Wave curves sideways (perpendicular to rope on ground plane) for visibility from top-down camera
+  - All rope parameters have inspector tooltips
+  - `pendingState` tracks intended post-launch state; events (onGrapple, OnHookshotHit) fire on transition
+  - Cancel available during launch via `IsCancelPressed()`
 
 ### Prototype v0.8
 - **Targeting decal** — replaced LaserSight line renderer with `TargetIndicator.cs`, a ground-projected decal that appears beneath the current hookshot target

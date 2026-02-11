@@ -86,25 +86,8 @@ public class CM_Hookshot : MonoBehaviour
     [Header("Hookshot")]
 
     [Header("Rope Animation")]
-    [Tooltip("Number of segments in the line renderer. Higher = smoother curve.")]
-    [SerializeField] private int ropeQuality = 20;
-    [Tooltip("How fast the wave settles. Higher = wave dies out faster.")]
-    [SerializeField] private float ropeDamper = 7f;
-    [Tooltip("Spring stiffness. Higher = wave snaps back faster with tighter oscillation.")]
-    [SerializeField] private float ropeStrength = 40f;
-    [Tooltip("Initial kick when hookshot fires. Higher = bigger starting wave.")]
-    [SerializeField] private float ropeVelocity = 20f;
-    [Tooltip("Number of sine wave peaks along the rope.")]
-    [SerializeField] private float ropeWaveCount = 3f;
-    [Tooltip("Wave amplitude multiplier. Higher = wider sideways curves.")]
-    [SerializeField] private float ropeWaveHeight = 3f;
     [Tooltip("How fast the rope visually travels from gun to target. Higher = faster.")]
     [SerializeField] private float ropeLerpSpeed = 12f;
-    [Tooltip("Controls where the wave is strongest along the rope. Peaks in the middle by default.")]
-    [SerializeField] private AnimationCurve ropeAffectCurve = new AnimationCurve(
-        new Keyframe(0f, 0f), new Keyframe(0.5f, 1f), new Keyframe(1f, 0f)
-    );
-    private Spring ropeSpring;
     private Vector3 currentGrapplePosition;
     private State pendingState;
 
@@ -136,9 +119,6 @@ public class CM_Hookshot : MonoBehaviour
         hookshotBounciness = hookshotData.bounciness;
         throwForce = hookshotData.throwForce;
         hookshotThrowAngle = hookshotData.throwAngle;
-
-        ropeSpring = new Spring();
-        ropeSpring.SetTarget(0);
 
         if (joint != null)
             joint.spring = hookshotBounciness;
@@ -352,11 +332,6 @@ public class CM_Hookshot : MonoBehaviour
 private void LateUpdate(){
     if (!lr.enabled) return;
 
-    // Update the spring simulation for rope wave decay
-    ropeSpring.SetDamper(ropeDamper);
-    ropeSpring.SetStrength(ropeStrength);
-    ropeSpring.Update(Time.deltaTime);
-
     // Determine the actual target endpoint for the rope
     Vector3 ropeTarget = hookshotPosition;
     if ((state == State.HookshotPull || state == State.HookshotAttached) && hitTarget != null)
@@ -378,28 +353,14 @@ private void LateUpdate(){
         state = pendingState;
     }
 
-    var gunTipPosition = shotPoint.position;
-
-    // Use the FINAL target direction for the up vector (not currentGrapplePosition)
-    // so it's stable from the first frame and never zero
-    var ropeDirection = (ropeTarget - gunTipPosition).normalized;
-    if (ropeDirection.sqrMagnitude < 0.01f) return;
-    var up = Quaternion.LookRotation(ropeDirection) * Vector3.right;
-
-    // Ensure line renderer has enough points for the curve
-    if (lr.positionCount != ropeQuality + 1)
+    // Draw straight line from gun tip to current rope position
+    if (lr.positionCount != 2)
     {
-        lr.positionCount = ropeQuality + 1;
+        lr.positionCount = 2;
     }
 
-    for (var i = 0; i < ropeQuality + 1; i++)
-    {
-        var delta = i / (float)ropeQuality;
-        var offset = up * ropeWaveHeight * Mathf.Sin(delta * ropeWaveCount * Mathf.PI) * ropeSpring.Value *
-                     ropeAffectCurve.Evaluate(delta);
-
-        lr.SetPosition(i, Vector3.Lerp(gunTipPosition, currentGrapplePosition, delta) + offset);
-    }
+    lr.SetPosition(0, shotPoint.position);
+    lr.SetPosition(1, currentGrapplePosition);
 }
 
     private bool FindFuzzyTarget(out RaycastHit fuzzyHit)
@@ -558,9 +519,6 @@ private void LateUpdate(){
                     // Enter launched state — rope animates toward target before transitioning
                     state = State.HookshotLaunched;
                     currentGrapplePosition = shotPoint.position;
-                    ropeSpring.Reset();
-                    ropeSpring.SetVelocity(ropeVelocity);
-                    lr.positionCount = ropeQuality + 1;
                 }
 
 
