@@ -86,6 +86,7 @@ Auto-target is toggled via `DebugManager.autoTargetEnabled` in the inspector. Wh
 - **Gravity Freeze:** Rigidbody gravity disabled on all hooked objects (Pullable/Collectible/Moveable) while attached/pulled/carried. Re-enabled on cancel, release, or throw.
 - **Behaviour System (`GummyBehaviour.cs`):** Each Gummy has two configurable behaviour layers:
   - **Idle Movement** (when player is not nearby):
+    - `Still` — stays in place, does not move at all
     - `WanderShort` — roams within a small area near spawn (3 units)
     - `WanderMedium` — roams a moderate area (7 units)
     - `WanderFar` — roams a large area (15 units)
@@ -170,7 +171,7 @@ Auto-target is toggled via `DebugManager.autoTargetEnabled` in the inspector. Wh
 - Character Controller based movement
 - Proper gravity with `isGrounded` check (resets vertical velocity when grounded to prevent accumulation)
 - **Gravity zeroed while grappling** — when `CM_Hookshot.isGrappling` is true, `playerVelocity.y` is set to 0 instead of accumulating gravity, enabling straight-line traversal across gaps
-- Combines horizontal movement, FrictionController velocity, and gravity into a single `controller.Move` call (prevents dual-Move conflicts)
+- Combines horizontal movement, FrictionController velocity, knockback velocity, and gravity into a single `controller.Move` call (prevents dual-Move conflicts)
 - Mouse aiming projects to ground plane
 - **Reads `CM_Hookshot.dragSpeedMultiplier`** to apply carry speed penalties per weight tier
 - **Auto-target rotation override:** When `DebugManager.autoTargetEnabled` is true:
@@ -188,8 +189,9 @@ Auto-target is toggled via `DebugManager.autoTargetEnabled` in the inspector. Wh
 **GummyBehaviour.cs** - Gummy AI (replaces SimpleEnemyMovement)
 - NavMesh based pathfinding with configurable idle and player-reaction behaviours
 - **Two enum dropdowns** in inspector, independently configurable per Gummy:
-  - `IdleMovement`: WanderShort, WanderMedium, WanderFar
+  - `IdleMovement`: Still, WanderShort, WanderMedium, WanderFar
   - `PlayerReaction`: Follow, ScatterFar, ScatterNearby, Ignore
+- `Still` idle mode — Gummy stays in place and never wanders
 - Stores spawn position as `homePosition` — idle wander radiates from this point
 - Player detection via configurable `playerDetectionRadius` (default 8f)
 - Idle wander includes configurable pause at each destination (`idlePauseDuration`)
@@ -213,10 +215,12 @@ Auto-target is toggled via `DebugManager.autoTargetEnabled` in the inspector. Wh
 - Allows easy balancing and progression
 
 **GenericCollisions.cs** - Pen/Goal detection and hazard handling
-- Handles collision with goal pen (triggers scoring)
-- Handles collision with hazards (deactivates object, fires `onHitHazard` event)
+- Handles collision and trigger events with goal pen and hazards
 - **Hazard immunity while grappling** — if `CM_Hookshot.isGrappling` is true, hazard collisions are skipped (player-only; Gummies are unaffected)
-- **Calls Gummy.OnCollected() to award gold**
+- **Player health integration** — if `PlayerHealth` is present, hazards deal damage instead of instant death
+- **Explosion effects** — configurable `goalExplosionPrefab` and `hazardExplosionPrefab` instantiated at gummy position on goal deposit or hazard death, with `explosionScale` control
+- **Hookshot auto-cancel** — if the player's hookshot is attached to a gummy that hits a goal or hazard, the hookshot automatically cancels
+- **`TriggerHazardExplosion()`** — public method allowing external systems (e.g. grenade blast radius) to destroy gummies with the same explosion effect
 - Uses Unity Events for flexible integration
 - Attached to Gummy prefabs and the player
 
@@ -234,6 +238,25 @@ Auto-target is toggled via `DebugManager.autoTargetEnabled` in the inspector. Wh
 - Starts with a velocity kick, oscillates toward target (0), creating decaying wave
 - Configurable strength, damper, and initial velocity
 
+**PlayerHealth.cs** - Player health and damage system
+- Uses `MMHealthBar` from MoreMountains for health bar display
+- Configurable `maxHealth`, `hazardDamage` per hit
+- **Invincibility frames** — after taking damage, player is invincible for `invincibilityDuration` (default 1.5s) with visual blink
+- **Knockback** — player is pushed away from hazard on hit; `knockbackForce` and `knockbackDrag` tunable in inspector
+- `knockbackVelocity` read by `TwinStickMovement` and applied via CharacterController
+- `onDamage` event (per-hit feedback) and `onDeath` event (fires before scene reload)
+- Reloads current scene on death
+
+**Grenade.cs** - Explosive projectile
+- Explodes on collision with configurable `affectedLayers` mask (both trigger and blast radius)
+- `blastRadius` — sphere overlap for area damage and force
+- `explosionForce` — applied to all rigidbodies in radius (disables NavMeshAgent and kinematic first)
+- `explosionPrefab` — instantiated at grenade position on explode, with `explosionSize` scale
+- `damageInflicted` — applied to `EnemyHealth` and `IDamagable` components in radius
+- **Destroys gummies in blast radius** — triggers `GenericCollisions.TriggerHazardExplosion()` for explosion effect and hookshot cancel
+- **Hookshot auto-cancel** — if the player's hookshot is attached to the grenade, cancels on explode
+- `onExplode` Unity Event for feedback
+
 **LaserSight.cs** - Legacy visual targeting aid (disabled — replaced by TargetIndicator)
 - Line renderer from player to target point
 
@@ -242,6 +265,7 @@ Auto-target is toggled via `DebugManager.autoTargetEnabled` in the inspector. Wh
 - Only visible when in Normal state and a valid target is in range
 - Works with both direct raycast and fuzzy targeting
 - Auto-target mode: decal follows AutoTarget's closest target
+- Serialized `decalShader` field for build compatibility (avoids `Shader.Find` stripping)
 - Configurable decal size, ground offset, ground layer, and material
 
 **HUD.cs** - UI display
@@ -364,6 +388,20 @@ Assets/
   - Faces movement direction when no target or when carrying a gummy
   - Contextual South button (fire/pull/throw), East cancel, West cycle target
   - Detection radius synced to hookshot max range
+- [x] **Player health system** — hazards deal damage instead of instant death:
+  - MMHealthBar integration on player prefab
+  - Configurable health, damage per hit
+  - Invincibility frames with visual blink after taking damage
+  - Knockback away from hazard on hit
+  - Scene reloads on death
+- [x] **Grenade/explosion system** — throwable explosives with area-of-effect:
+  - Configurable blast radius, force, damage, and affected layers
+  - Spawns explosion prefab at impact point with configurable scale
+  - Destroys gummies in blast radius with their hazard explosion effect
+  - Auto-cancels hookshot if attached to exploding object
+- [x] **Gummy destruction effects** — configurable explosion prefabs on goal deposit and hazard death
+- [x] **Hookshot auto-cancel** — hookshot resets when its target is destroyed (goal, hazard, or explosion)
+- [x] **Still idle behaviour** — gummies can be set to not move at all via `IdleMovement.Still`
 
 ---
 
@@ -458,8 +496,8 @@ Assets/
 3. Enemy naming - referred to as "enemies" but should be "Gummies" throughout
 4. Hookshot_spring.cs appears unused
 5. PlayerAttackManager.cs appears incomplete/unused
-6. Grenade.cs exists but doesn't fit current game concept
-7. Pen collision detection could be more robust (currently uses basic OnCollisionEnter)
+6. ~~Grenade.cs exists but doesn't fit current game concept~~ (repurposed — now general explosive with layer-based triggers and gummy destruction)
+7. ~~Pen collision detection could be more robust (currently uses basic OnCollisionEnter)~~ (fixed — now supports both OnCollisionEnter and OnTriggerEnter)
 
 ### Refactoring Needed
 1. Clean up unused scripts and commented code
@@ -557,12 +595,46 @@ Assets/
 - GummyBehaviour: test each IdleMovement + PlayerReaction combination
 - GummyBehaviour: verify hookshot attach/pull/carry/throw/cancel all resume behaviour correctly
 - GummyBehaviour: confirm no SetDestination errors when agent is off NavMesh
+- GummyBehaviour: verify `Still` idle mode keeps gummy stationary
+- **Player health:** verify hazards deal damage and don't instantly reset
+- **Player health:** invincibility frames prevent rapid damage stacking
+- **Player health:** knockback pushes player away from hazard
+- **Player health:** scene reloads when health reaches 0
+- **Grenade:** explodes on collision with configured layers only
+- **Grenade:** blast radius applies force and destroys gummies with explosion effect
+- **Grenade:** hookshot cancels when attached grenade or gummy explodes
+- **Explosion effects:** goal and hazard explosion prefabs spawn at correct position and scale
+- **Hookshot auto-cancel:** hookshot resets when gummy hits goal, hazard, or grenade blast
 
 ---
 
 ## Changelog
 
-### [Current] - Prototype v0.9
+### [Current] - Prototype v1.0
+- **Player health system (`PlayerHealth.cs`)** — hazards now deal configurable damage instead of instant death:
+  - `MMHealthBar` integration for visual health display
+  - Configurable `maxHealth` and `hazardDamage`
+  - **Invincibility frames** — `invincibilityDuration` (1.5s default) with renderer blink effect (`blinkInterval`)
+  - **Knockback** — pushes player away from hazard; `knockbackForce` and `knockbackDrag` tunable in inspector
+  - `TwinStickMovement` reads `PlayerHealth.knockbackVelocity` and includes it in the movement calculation
+  - Scene reloads when health reaches 0; `onDamage` and `onDeath` Unity Events for feedback
+- **Grenade system reworked (`Grenade.cs`)** — general-purpose explosive:
+  - Removed auto-explode countdown timer; now only explodes on collision
+  - `affectedLayers` LayerMask controls both what triggers the explosion and what gets hit by the blast
+  - `explosionPrefab` instantiated at impact point with configurable `explosionSize` scale
+  - Blast radius applies force to all rigidbodies (disables NavMeshAgent and kinematic first)
+  - **Destroys gummies in blast radius** — calls `GenericCollisions.TriggerHazardExplosion()` for consistent explosion effect
+  - Auto-cancels player hookshot if attached to the exploding grenade
+- **GenericCollisions reworked** — now handles both `OnCollisionEnter` and `OnTriggerEnter`:
+  - `goalExplosionPrefab` / `hazardExplosionPrefab` — configurable explosion effects spawned when gummies hit goal or hazard
+  - `explosionScale` — controls size of spawned explosion prefabs
+  - `TriggerHazardExplosion()` public method — allows external systems (grenade blast) to destroy gummies with the same effect
+  - **Hookshot auto-cancel** — automatically cancels hookshot when its target gummy is destroyed by goal, hazard, or explosion
+- **Still idle behaviour** — added `IdleMovement.Still` option to `GummyBehaviour`; gummy stays in place and never wanders
+- **TargetIndicator build fix** — added serialized `decalShader` field to avoid `Shader.Find` stripping in builds
+- **Removed `UnityEditor.PackageManager` import** from `CM_Hookshot.cs` — was causing build compilation errors
+
+### Prototype v0.9
 - **Removed jump** — jump functionality removed from `TwinStickMovement`; game is now ground-based with grapple traversal
 - **Zero-gravity grappling (player)** — `TwinStickMovement` zeroes `playerVelocity.y` when `CM_Hookshot.isGrappling` is true, so the player travels in a straight line to grapple points without dropping (enables horizontal traversal across gaps and multi-level play)
 - **Zero-gravity hookshot (objects)** — `CM_Hookshot` disables `Rigidbody.useGravity` on all hooked objects (Layer 11 Pullable, Layer 12 Collectible, Layer 13 Moveable) on attach; re-enables gravity on cancel, release, or throw
