@@ -25,6 +25,7 @@ TagManager:
   - enemy_lvl2
   - fire
   - melee
+  - Destructible
   layers:
   - Default
   - TransparentFX

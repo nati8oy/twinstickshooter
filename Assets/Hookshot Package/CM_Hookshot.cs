@@ -63,6 +63,13 @@ public class CM_Hookshot : MonoBehaviour
     [Header("Throw")]
     [SerializeField] private float throwResetDelay = 1f;
 
+    [Header("Throw Trajectory")]
+    [SerializeField] private LineRenderer trajectoryLine;
+    [SerializeField] [Range(10, 100)] private int trajectoryPoints = 25;
+    [SerializeField] [Range(0.01f, 0.25f)] private float timeBetweenPoints = 0.1f;
+    [SerializeField] private LayerMask trajectoryCollisionMask;
+    private bool isAimingThrow = false;
+
     [Header("Feedbacks")]
     [SerializeField] private UnityEvent onGrapple;
     [SerializeField] private UnityEvent OnHookshotHit;
@@ -154,9 +161,21 @@ public class CM_Hookshot : MonoBehaviour
                 case State.HookshotAttached:
                     ActivateHookshotPull();
                     break;
-                case State.HookshotCarry:
-                    ThrowCarriedObject();
-                    break;
+            }
+        };
+        hookshotPull.started += _ =>
+        {
+            if (state == State.HookshotCarry)
+            {
+                isAimingThrow = true;
+            }
+        };
+        hookshotPull.canceled += _ =>
+        {
+            if (state == State.HookshotCarry && isAimingThrow)
+            {
+                isAimingThrow = false;
+                ThrowCarriedObject();
             }
         };
         hookshotPull.Enable();
@@ -199,9 +218,23 @@ public class CM_Hookshot : MonoBehaviour
                 case State.HookshotAttached:
                     ActivateHookshotPull();
                     break;
-                case State.HookshotCarry:
-                    ThrowCarriedObject();
-                    break;
+            }
+        };
+        autoAction.started += _ =>
+        {
+            if (DebugManager.Instance == null || !DebugManager.Instance.autoTargetEnabled) return;
+            if (state == State.HookshotCarry)
+            {
+                isAimingThrow = true;
+            }
+        };
+        autoAction.canceled += _ =>
+        {
+            if (DebugManager.Instance == null || !DebugManager.Instance.autoTargetEnabled) return;
+            if (state == State.HookshotCarry && isAimingThrow)
+            {
+                isAimingThrow = false;
+                ThrowCarriedObject();
             }
         };
         autoAction.Enable();
@@ -214,7 +247,16 @@ public class CM_Hookshot : MonoBehaviour
 
             if (state == State.HookshotCarry)
             {
-                ReleaseCarriedObject();
+                if (isAimingThrow)
+                {
+                    // Cancel aim, return to normal carry
+                    isAimingThrow = false;
+                    if (trajectoryLine != null) trajectoryLine.enabled = false;
+                }
+                else
+                {
+                    ReleaseCarriedObject();
+                }
             }
             else if (state != State.Normal)
             {
@@ -313,9 +355,28 @@ public class CM_Hookshot : MonoBehaviour
                     }
                 }
 
+                // Draw trajectory while aiming throw
+                if (isAimingThrow)
+                {
+                    DrawThrowTrajectory();
+                }
+                else if (trajectoryLine != null)
+                {
+                    trajectoryLine.enabled = false;
+                }
+
                 if (IsCancelPressed())
                 {
-                    ReleaseCarriedObject();
+                    if (isAimingThrow)
+                    {
+                        // Cancel aim, return to normal carry
+                        isAimingThrow = false;
+                        if (trajectoryLine != null) trajectoryLine.enabled = false;
+                    }
+                    else
+                    {
+                        ReleaseCarriedObject();
+                    }
                 }
 
                 break;
@@ -686,6 +747,52 @@ private void LateUpdate(){
     }
 
 
+    private void DrawThrowTrajectory()
+    {
+        if (trajectoryLine == null || hitTarget == null) return;
+
+        var hitTargetRB = hitTarget.GetComponent<Rigidbody>();
+        if (hitTargetRB == null) return;
+
+        trajectoryLine.enabled = true;
+        trajectoryLine.positionCount = Mathf.CeilToInt(trajectoryPoints / timeBetweenPoints) + 1;
+
+        Vector3 startPosition = carryPoint.position;
+        float angle = hookshotThrowAngle;
+        float force = throwForce;
+        ThrowOverride throwOverride = hitTarget.GetComponent<ThrowOverride>();
+        if (throwOverride != null)
+        {
+            angle = throwOverride.throwAngle;
+            if (throwOverride.throwForce > 0f) force = throwOverride.throwForce;
+        }
+        Vector3 throwDir = Quaternion.AngleAxis(-angle, transform.right) * transform.forward;
+        Vector3 startVelocity = throwDir * force * Time.fixedDeltaTime / hitTargetRB.mass;
+
+        int i = 0;
+        trajectoryLine.SetPosition(i, startPosition);
+
+        for (float time = 0; time < trajectoryPoints; time += timeBetweenPoints)
+        {
+            i++;
+            Vector3 point = startPosition + startVelocity * time;
+            point.y = startPosition.y + startVelocity.y * time + (Physics.gravity.y / 2f * time * time);
+
+            trajectoryLine.SetPosition(i, point);
+
+            Vector3 lastPosition = trajectoryLine.GetPosition(i - 1);
+            Vector3 direction = (point - lastPosition).normalized;
+            float segmentLength = (point - lastPosition).magnitude;
+
+            if (Physics.Raycast(lastPosition, direction, out RaycastHit hit, segmentLength, trajectoryCollisionMask))
+            {
+                trajectoryLine.SetPosition(i, hit.point);
+                trajectoryLine.positionCount = i + 1;
+                return;
+            }
+        }
+    }
+
         private void ThrowCarriedObject()
         {
 
@@ -702,6 +809,8 @@ private void LateUpdate(){
             if (state == State.HookshotCarry)
             {
                 state = State.Normal;
+                isAimingThrow = false;
+                if (trajectoryLine != null) trajectoryLine.enabled = false;
 
                 //check if it's got a rigid body or not
                 if (hitTarget.GetComponent<Rigidbody>())
@@ -712,8 +821,16 @@ private void LateUpdate(){
 
 
                     //throw it in the direction the player is facing, angled upward
-                    Vector3 throwDir = Quaternion.AngleAxis(-hookshotThrowAngle, transform.right) * transform.forward;
-                    hitTargetRB.AddForce(throwDir * throwForce);
+                    float angle = hookshotThrowAngle;
+                    float force = throwForce;
+                    ThrowOverride throwOverride = hitTarget.GetComponent<ThrowOverride>();
+                    if (throwOverride != null)
+                    {
+                        angle = throwOverride.throwAngle;
+                        if (throwOverride.throwForce > 0f) force = throwOverride.throwForce;
+                    }
+                    Vector3 throwDir = Quaternion.AngleAxis(-angle, transform.right) * transform.forward;
+                    hitTargetRB.AddForce(throwDir * force);
 
                     /*
                     //check if the auto targeting is on and if the object you're throwing isn't an enemy
@@ -729,7 +846,7 @@ private void LateUpdate(){
                     */
 
                     //add a bit spin to the object when you throw it
-                    hitTargetRB.AddTorque(transform.forward * throwForce);
+                    hitTargetRB.AddTorque(transform.right * throwForce);
                 }
 
 
@@ -777,6 +894,8 @@ private void LateUpdate(){
         ResetEnemyMovement();
         DetachSpringJoint();
         state = State.Normal;
+        isAimingThrow = false;
+        if (trajectoryLine != null) trajectoryLine.enabled = false;
         lr.enabled = false;
             lr.positionCount = 0;
     }
@@ -821,6 +940,8 @@ private void LateUpdate(){
 
 
         state = State.Normal;
+        isAimingThrow = false;
+        if (trajectoryLine != null) trajectoryLine.enabled = false;
         lr.enabled = false;
             lr.positionCount = 0;
 

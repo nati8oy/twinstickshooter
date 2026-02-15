@@ -25,8 +25,17 @@ public class Grenade : MonoBehaviour
         hasExploded = false;
     }
 
+    private bool IsBeingCarried()
+    {
+        CM_Hookshot hookshot = FindObjectOfType<CM_Hookshot>();
+        return hookshot != null && hookshot.hitTarget == gameObject && hookshot.state == CM_Hookshot.State.HookshotCarry;
+    }
+
     private void OnCollisionEnter(Collision collision)
     {
+        // Don't explode while the player is carrying this object
+        if (IsBeingCarried()) return;
+
         // Check if the collided object's layer is in our affected layers mask
         if ((affectedLayers & (1 << collision.gameObject.layer)) == 0) return;
 
@@ -34,6 +43,12 @@ public class Grenade : MonoBehaviour
         if (damagable != null)
         {
             damagable.Damage(damageInflicted);
+        }
+
+        // Destroy the directly hit object if it's tagged Destructible
+        if (collision.gameObject.CompareTag("Destructible"))
+        {
+            Destroy(collision.gameObject);
         }
 
         Explode();
@@ -85,6 +100,12 @@ public class Grenade : MonoBehaviour
                 {
                     nearbyObject.gameObject.SetActive(false);
                 }
+            }
+
+            // Destroy any object tagged as Destructible
+            if (nearbyObject.CompareTag("Destructible"))
+            {
+                Destroy(nearbyObject.gameObject);
             }
         }
 

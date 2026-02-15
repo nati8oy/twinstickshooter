@@ -141,6 +141,14 @@ Auto-target is toggled via `DebugManager.autoTargetEnabled` in the inspector. Wh
   - `AnimationCurve ropeAffectCurve` controls wave distribution along the rope (peaks in center by default)
   - All parameters tunable in inspector with tooltips: `ropeQuality`, `ropeDamper`, `ropeStrength`, `ropeVelocity`, `ropeWaveCount`, `ropeWaveHeight`, `ropeLerpSpeed`, `ropeAffectCurve`
 - **Syncs auto-target detection radius** to `hookshotData.maxRange` on enable
+- **Throw trajectory preview** — hold-to-aim system with parabolic arc prediction:
+  - Holding the throw button (right mouse/R1 or South in auto-target) enters aiming mode and displays a trajectory arc
+  - Releasing the throw button fires the throw along the displayed arc
+  - Pressing cancel while aiming returns to normal carry (does not drop the Gummy)
+  - Separate `trajectoryLine` LineRenderer for the arc (independent from rope LineRenderer)
+  - Arc accounts for throw force, throw angle, object mass, and gravity
+  - Segment-by-segment raycasting truncates arc at environment collisions
+  - Configurable `trajectoryPoints`, `timeBetweenPoints`, and `trajectoryCollisionMask` in inspector
 
 **Gummy.cs** - Individual Gummy instance
 - References GummyData ScriptableObject
@@ -402,6 +410,11 @@ Assets/
 - [x] **Gummy destruction effects** — configurable explosion prefabs on goal deposit and hazard death
 - [x] **Hookshot auto-cancel** — hookshot resets when its target is destroyed (goal, hazard, or explosion)
 - [x] **Still idle behaviour** — gummies can be set to not move at all via `IdleMovement.Still`
+- [x] **Throw trajectory preview** — hold-to-aim throw with parabolic arc prediction:
+  - Hold throw button to display trajectory arc showing where Gummy will land
+  - Release to throw along the arc; cancel to return to normal carry
+  - Arc accounts for throw force, angle, mass, and gravity with environment collision detection
+  - Works in both standard and auto-target control modes
 
 ---
 
@@ -431,10 +444,10 @@ Assets/
    - Gummy spawn locations
    - Obstacles and hazards
 
-4. **Throw Landing Marker**
-   - When throwing a carried Gummy, display a ground marker (decal/projector) showing the predicted landing spot
-   - Gives players visual feedback on where the Gummy will land before and during the throw
-   - Helps with aiming Gummies into the pen
+4. ~~**Throw Landing Marker**~~ (done — throw trajectory preview)
+   - ~~When throwing a carried Gummy, display a ground marker (decal/projector) showing the predicted landing spot~~
+   - ~~Gives players visual feedback on where the Gummy will land before and during the throw~~
+   - ~~Helps with aiming Gummies into the pen~~
 
 5. **Visual/Audio Polish**
    - Feedback when trying to pull Gummy above hookshot strength
@@ -603,6 +616,14 @@ Assets/
 - **Grenade:** explodes on collision with configured layers only
 - **Grenade:** blast radius applies force and destroys gummies with explosion effect
 - **Grenade:** hookshot cancels when attached grenade or gummy explodes
+- **Throw trajectory:** hold throw button while carrying, verify arc appears and follows aim direction
+- **Throw trajectory:** release throw button, verify gummy follows the displayed arc
+- **Throw trajectory:** press cancel while aiming, verify trajectory disappears and returns to normal carry (no drop)
+- **Throw trajectory:** press cancel while NOT aiming, verify gummy is dropped as before
+- **Throw trajectory:** test with Light, Medium, Heavy gummies — arc should differ based on mass
+- **Throw trajectory:** test both standard (right mouse/R1) and auto-target (South button) modes
+- **Throw trajectory:** verify arc truncates at walls/floor collision
+- **Throw trajectory:** verify auto-cancel (East button) cancels aim in auto-target mode
 - **Explosion effects:** goal and hazard explosion prefabs spawn at correct position and scale
 - **Hookshot auto-cancel:** hookshot resets when gummy hits goal, hazard, or grenade blast
 
@@ -610,7 +631,18 @@ Assets/
 
 ## Changelog
 
-### [Current] - Prototype v1.0
+### [Current] - Prototype v1.1
+- **Throw trajectory preview (`CM_Hookshot.cs`)** — hold-to-aim throw system with predicted arc:
+  - Holding the throw button enters aiming mode and displays a parabolic trajectory arc via separate `trajectoryLine` LineRenderer
+  - Releasing the throw button fires the throw along the displayed arc
+  - Pressing cancel while aiming returns to normal carry without dropping the Gummy
+  - Arc computed using throw force, throw angle, object mass, and `Physics.gravity`
+  - Segment-by-segment raycasting truncates arc at environment collisions (`trajectoryCollisionMask`)
+  - Configurable `trajectoryPoints`, `timeBetweenPoints`, and `trajectoryCollisionMask` in inspector
+  - Works in both standard mode (right mouse/R1) and auto-target mode (South button)
+  - `isAimingThrow` flag reset in all exit paths: throw, release, cancel, and hookshot cancel
+
+### Prototype v1.0
 - **Player health system (`PlayerHealth.cs`)** — hazards now deal configurable damage instead of instant death:
   - `MMHealthBar` integration for visual health display
   - Configurable `maxHealth` and `hazardDamage`

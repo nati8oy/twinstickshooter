@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 4623019002832753310}
   - component: {fileID: 6026478078877244229}
   - component: {fileID: 1159738862405940774}
+  - component: {fileID: 18114708604382172}
   m_Layer: 11
   m_Name: ExplodingBox
   m_TagString: Untagged
@@ -95,7 +96,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9b83f4a06cc994285953918f16ee6bb9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Grenade
-  blastRadius: 10
+  blastRadius: 3
   explosionForce: 5000
   damageInflicted: 3
   onExplode:
@@ -106,6 +107,20 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 15168
   explosionSize: 4
+--- !u!114 &18114708604382172
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7637749116731166076}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 606d756a1ce7a4b82b4b6f72605332e9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ThrowOverride
+  throwAngle: 10
+  throwForce: 8000
 --- !u!1001 &1111310193345738678
 PrefabInstance:
   m_ObjectHideFlags: 0
