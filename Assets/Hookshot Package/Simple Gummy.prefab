@@ -159,9 +159,9 @@ Rigidbody:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 541802505096995604}
   serializedVersion: 5
-  m_Mass: 3.5
-  m_LinearDamping: 2
-  m_AngularDamping: 0.1
+  m_Mass: 5
+  m_LinearDamping: 1
+  m_AngularDamping: 0
   m_CenterOfMass: {x: 0, y: 0, z: 0}
   m_InertiaTensor: {x: 1, y: 1, z: 1}
   m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
@@ -246,6 +246,7 @@ MonoBehaviour:
       m_Calls: []
   goalExplosionPrefab: {fileID: 1391537856956348, guid: f59a2181e7715914bb2ee531a43afc1f, type: 3}
   hazardExplosionPrefab: {fileID: 1411227222130302, guid: 14c970e5088917041882baa0106b1400, type: 3}
+  explosionScale: 2.25
 --- !u!1 &566864763347462508
 GameObject:
   m_ObjectHideFlags: 0
@@ -1742,7 +1743,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6819315253618853363, guid: ee09c2e21d9f0db4685ea5dc5038469b, type: 3}
       propertyPath: managedReferences[753892367222702082].OriginalLabel
-      value: 
+      value: Flicker
       objectReference: {fileID: 0}
     - target: {fileID: 6819315253618853363, guid: ee09c2e21d9f0db4685ea5dc5038469b, type: 3}
       propertyPath: managedReferences[753892367222702082].RangeDistance
