@@ -12,7 +12,6 @@ GameObject:
   - component: {fileID: 541802505096995608}
   - component: {fileID: 541802505096995609}
   - component: {fileID: 541802505096995610}
-  - component: {fileID: 541802505096995611}
   - component: {fileID: 541802505096995614}
   - component: {fileID: 223871363996966822}
   - component: {fileID: 4904306181996186228}
@@ -123,34 +122,6 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1, y: 2.0330253, z: 1}
   m_Center: {x: 0, y: 0.008331458, z: 0}
---- !u!114 &541802505096995611
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 541802505096995604}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e11bc683e00fe49e3b80ed1fa1e171db, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  onStun:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 8603738213026947644}
-        m_TargetAssemblyTypeName: MoreMountains.Feedbacks.MMF_Player, MoreMountains.Feedbacks
-        m_MethodName: PlayFeedbacks
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-  hookshotScript: {fileID: 0}
 --- !u!54 &541802505096995614
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -159,8 +130,8 @@ Rigidbody:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 541802505096995604}
   serializedVersion: 5
-  m_Mass: 5
-  m_LinearDamping: 1
+  m_Mass: 8
+  m_LinearDamping: 0.8
   m_AngularDamping: 0
   m_CenterOfMass: {x: 0, y: 0, z: 0}
   m_InertiaTensor: {x: 1, y: 1, z: 1}
@@ -214,6 +185,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::GummyBehaviour
   idleMovement: 0
   playerReaction: 3
+  colour: 2
   playerDetectionRadius: 8
   wanderShortRadius: 3
   wanderMediumRadius: 7

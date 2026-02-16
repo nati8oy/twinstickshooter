@@ -17,5 +17,5 @@ MonoBehaviour:
   speedMin: 20
   speedMax: 80
   bounciness: 10
-  throwForce: 6000
-  throwAngle: 30
+  throwForce: 9000
+  throwAngle: 45

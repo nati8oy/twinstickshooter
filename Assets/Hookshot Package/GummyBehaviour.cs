@@ -10,6 +10,7 @@ public class GummyBehaviour : MonoBehaviour
     public IdleMovement idleMovement = IdleMovement.WanderShort;
     public PlayerReaction playerReaction = PlayerReaction.Ignore;
 
+
     [Header("Player Detection")]
     [SerializeField] private float playerDetectionRadius = 8f;
 
