@@ -12,4 +12,10 @@ public class HUD : MonoBehaviour
         score++;
         scoreText.text = score.ToString();
     }
+
+    public void ChangeScore(int amount)
+    {
+        score = Mathf.Max(0, score + amount);
+        scoreText.text = score.ToString();
+    }
 }

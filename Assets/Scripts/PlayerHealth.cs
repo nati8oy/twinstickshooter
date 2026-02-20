@@ -30,6 +30,14 @@ public class PlayerHealth : MonoBehaviour
 
     public bool IsInvincible => invincibilityTimer > 0f;
 
+    public void ResetHealth()
+    {
+        currentHealth = maxHealth;
+        invincibilityTimer = 0f;
+        if (renderers != null) SetRenderersVisible(true);
+        UpdateHealthBar();
+    }
+
     private void Start()
     {
         currentHealth = maxHealth;

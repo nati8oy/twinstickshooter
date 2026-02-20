@@ -52,6 +52,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3148327747404090035, guid: 0cd557a91abbd418ba989a833673647c, type: 3}
+      propertyPath: colour
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 5263227071803891491, guid: 0cd557a91abbd418ba989a833673647c, type: 3}
       propertyPath: m_Name
       value: Pen - Blue
@@ -60,7 +64,8 @@ PrefabInstance:
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
       objectReference: {fileID: 2100000, guid: 5c270a73328a99e439fec44a0cf3a17d, type: 2}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 1105988570644802863, guid: 0cd557a91abbd418ba989a833673647c, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []

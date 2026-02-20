@@ -10,6 +10,13 @@ public class GummyBehaviour : MonoBehaviour
     public IdleMovement idleMovement = IdleMovement.WanderShort;
     public PlayerReaction playerReaction = PlayerReaction.Ignore;
 
+    [Header("Colour")]
+    public GummyLevel.GummyColour colour = GummyLevel.GummyColour.Red;
+
+    [Header("Scoring")]
+    public int pointValue = 1;
+
+
 
     [Header("Player Detection")]
     [SerializeField] private float playerDetectionRadius = 8f;
@@ -232,14 +239,35 @@ public class GummyBehaviour : MonoBehaviour
         homePosition = position;
     }
 
+    private bool hasScored;
+
     private void OnCollisionEnter(Collision collision)
     {
-        if (collision.gameObject.CompareTag("goal"))
+        if (collision.gameObject.CompareTag("goal") && !hasScored)
         {
+            hasScored = true;
+            LevelStats levelStats = FindObjectOfType<LevelStats>();
+            if (levelStats != null) levelStats.RecordCollection(colour);
             HUD hud = FindObjectOfType<HUD>();
             if (hud != null)
             {
-                hud.IncreaseScore();
+                PenColour penColour = collision.gameObject.GetComponent<PenColour>();
+
+                if (penColour != null)
+                {
+                    if (colour == penColour.colour)
+                    {
+                        hud.ChangeScore(pointValue);
+                    }
+                    else
+                    {
+                        hud.ChangeScore(-1);
+                    }
+                }
+                else
+                {
+                    hud.ChangeScore(pointValue);
+                }
             }
 
             if (goalExplosionPrefab != null)

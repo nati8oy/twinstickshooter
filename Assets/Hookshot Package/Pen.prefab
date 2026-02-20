@@ -365,7 +365,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2124347549463687616}
-  - component: {fileID: 1105988570644802863}
   m_Layer: 0
   m_Name: Pen
   m_TagString: Untagged
@@ -392,19 +391,6 @@ Transform:
   - {fileID: 8234589968508415638}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1105988570644802863
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5263227071803891491}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d5aec4109fbac4f4781b945d8ec2268f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PenColour
-  colour: 2
 --- !u!1 &5704279981128904633
 GameObject:
   m_ObjectHideFlags: 0
@@ -775,6 +761,8 @@ GameObject:
   - component: {fileID: 8025634301235097486}
   - component: {fileID: 2838867406721479477}
   - component: {fileID: 7433185483514202917}
+  - component: {fileID: 199699635487173500}
+  - component: {fileID: 3148327747404090035}
   m_Layer: 0
   m_Name: Pen
   m_TagString: goal
@@ -1117,6 +1105,40 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: 0}
+--- !u!65 &199699635487173500
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6178505924596700660}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 10, y: 1, z: 6}
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &3148327747404090035
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6178505924596700660}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0afc9f8cbb3bb462c9b989acecc60c36, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PenColour
+  colour: 2
 --- !u!1 &8532849143555280607
 GameObject:
   m_ObjectHideFlags: 0

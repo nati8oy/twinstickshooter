@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class DebugManager : Singleton<DebugManager>
+public class DebugManager : PersistentSingleton<DebugManager>
 {
     public bool godMode = false;
     public bool infiniteAmmo = true;

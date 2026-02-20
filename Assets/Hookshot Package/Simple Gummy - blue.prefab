@@ -60,6 +60,10 @@ PrefabInstance:
       propertyPath: colour
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 4904306181996186228, guid: cd97d03d4f44b4e7d95bf838ca462f73, type: 3}
+      propertyPath: playerReaction
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

@@ -183,19 +183,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 87fa383e4732c4189bbe14acd99b24d9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GummyBehaviour
-  idleMovement: 0
-  playerReaction: 3
+  idleMovement: 1
+  playerReaction: 0
   colour: 2
-  playerDetectionRadius: 8
+  pointValue: 1
+  playerDetectionRadius: 12
   wanderShortRadius: 3
   wanderMediumRadius: 7
   wanderFarRadius: 15
   idlePauseDuration: 1.5
   scatterFarDistance: 20
-  scatterNearbyDistance: 5
-  wanderSpeed: 2
-  followSpeed: 4
-  scatterSpeed: 6
+  scatterNearbyDistance: 10
+  wanderSpeed: 4
+  followSpeed: 8
+  scatterSpeed: 10
   followStopDistance: 3
   goalExplosionPrefab: {fileID: 1391537856956348, guid: f59a2181e7715914bb2ee531a43afc1f, type: 3}
 --- !u!114 &1784795950484679826
@@ -372,7 +373,7 @@ MonoBehaviour:
         Active: 1
         UniqueID: 969129822
         Label: Particles Instantiation
-        OriginalLabel: 
+        OriginalLabel: Particles Instantiation
         ChannelMode: 0
         Channel: 0
         MMChannelDefinition: {fileID: 0}
@@ -616,7 +617,7 @@ MonoBehaviour:
         Active: 1
         UniqueID: -479373790
         Label: Particles Instantiation
-        OriginalLabel: 
+        OriginalLabel: Particles Instantiation
         ChannelMode: 0
         Channel: 0
         MMChannelDefinition: {fileID: 0}
@@ -860,7 +861,7 @@ MonoBehaviour:
         Active: 1
         UniqueID: 1892084623
         Label: Particles Instantiation
-        OriginalLabel: 
+        OriginalLabel: Particles Instantiation
         ChannelMode: 0
         Channel: 0
         MMChannelDefinition: {fileID: 0}
@@ -1104,7 +1105,7 @@ MonoBehaviour:
         Active: 1
         UniqueID: -424514165
         Label: Particles Instantiation
-        OriginalLabel: 
+        OriginalLabel: Particles Instantiation
         ChannelMode: 0
         Channel: 0
         MMChannelDefinition: {fileID: 0}
