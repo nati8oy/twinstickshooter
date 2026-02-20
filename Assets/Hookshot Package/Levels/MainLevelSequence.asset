@@ -13,6 +13,6 @@ MonoBehaviour:
   m_Name: MainLevelSequence
   m_EditorClassIdentifier: Assembly-CSharp::LevelSequence
   levels:
-  - CaptainHookshot
-  - CaptainHookshot
+  - GummyLevel1
+  - GummyLevel2
   allLevelsCompleteScene: 
