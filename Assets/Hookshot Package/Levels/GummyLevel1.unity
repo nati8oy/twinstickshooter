@@ -3441,7 +3441,7 @@ Light:
       e33: 1
     m_UseCullingMatrixOverride: 0
   m_Cookie: {fileID: 0}
-  m_DrawHalo: 0
+  m_DrawHalo: 1
   m_Flare: {fileID: 0}
   m_RenderMode: 0
   m_CullingMask:
@@ -3472,7 +3472,7 @@ Transform:
   m_GameObject: {fileID: 705507993}
   serializedVersion: 2
   m_LocalRotation: {x: 0.4924039, y: 0.15038373, z: -0.08682408, w: 0.85286856}
-  m_LocalPosition: {x: -28.700003, y: 35.7, z: -10.6}
+  m_LocalPosition: {x: -59.2, y: 66.2, z: -10.6}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

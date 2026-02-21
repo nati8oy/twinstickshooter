@@ -13,6 +13,8 @@ MonoBehaviour:
   m_Name: MainLevelSequence
   m_EditorClassIdentifier: Assembly-CSharp::LevelSequence
   levels:
+  - sceneName: FTUE-Collecting
+    objective: Put the gummies in their pen
   - sceneName: GummyLevel1
     objective: Take all green gummies to their pen
   - sceneName: GummyLevel2

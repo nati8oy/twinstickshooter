@@ -41,6 +41,20 @@ public class LevelFlowManager : PersistentSingleton<LevelFlowManager>
             }
         }
 
+        if (Keyboard.current.oKey.wasPressedThisFrame)
+        {
+            LevelExit exit = FindObjectOfType<LevelExit>(true);
+            if (exit != null)
+            {
+                exit.gameObject.SetActive(true);
+                Debug.Log("[DEBUG] LevelExit force-shown.");
+            }
+            else
+            {
+                Debug.Log("[DEBUG] No LevelExit found in scene.");
+            }
+        }
+
         if (Keyboard.current.commaKey.wasPressedThisFrame)
         {
             if (currentLevelIndex > 0)

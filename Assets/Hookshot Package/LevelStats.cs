@@ -6,6 +6,8 @@ public class LevelStats : Singleton<LevelStats>
 {
     private int[] totalByColour;
     private int[] collectedByColour;
+    private GummyBehaviour[] allGummies;
+    private bool exitUnlocked = false;
 
     private void Start()
     {
@@ -13,11 +15,25 @@ public class LevelStats : Singleton<LevelStats>
         totalByColour = new int[colourCount];
         collectedByColour = new int[colourCount];
 
-        GummyBehaviour[] gummies = FindObjectsOfType<GummyBehaviour>();
-        foreach (GummyBehaviour g in gummies)
+        allGummies = FindObjectsOfType<GummyBehaviour>();
+        foreach (GummyBehaviour g in allGummies)
         {
             totalByColour[(int)g.colour]++;
         }
+    }
+
+    private void Update()
+    {
+        if (exitUnlocked || allGummies == null || allGummies.Length == 0) return;
+
+        foreach (GummyBehaviour g in allGummies)
+        {
+            if (g != null && g.gameObject.activeSelf) return;
+        }
+
+        exitUnlocked = true;
+        LevelExit exit = FindObjectOfType<LevelExit>(true);
+        if (exit != null) exit.gameObject.SetActive(true);
     }
 
     public void RecordCollection(GummyLevel.GummyColour colour)
