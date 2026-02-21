@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
 
 public class LevelFlowManager : PersistentSingleton<LevelFlowManager>
@@ -21,17 +22,61 @@ public class LevelFlowManager : PersistentSingleton<LevelFlowManager>
         SceneManager.sceneLoaded -= OnSceneLoaded;
     }
 
+    private void Update()
+    {
+        if (levelSequence == null) return;
+
+        if (Keyboard.current.periodKey.wasPressedThisFrame)
+        {
+            if (currentLevelIndex < levelSequence.levels.Count - 1)
+            {
+                Time.timeScale = 1f;
+                currentLevelIndex++;
+                SceneManager.LoadScene(levelSequence.levels[currentLevelIndex].sceneName);
+                Debug.Log($"[DEBUG] Skipped to level {currentLevelIndex}: {levelSequence.levels[currentLevelIndex].sceneName}");
+            }
+            else
+            {
+                Debug.Log("[DEBUG] Already on the last level.");
+            }
+        }
+
+        if (Keyboard.current.commaKey.wasPressedThisFrame)
+        {
+            if (currentLevelIndex > 0)
+            {
+                Time.timeScale = 1f;
+                currentLevelIndex--;
+                SceneManager.LoadScene(levelSequence.levels[currentLevelIndex].sceneName);
+                Debug.Log($"[DEBUG] Skipped to level {currentLevelIndex}: {levelSequence.levels[currentLevelIndex].sceneName}");
+            }
+            else
+            {
+                Debug.Log("[DEBUG] Already on the first level.");
+            }
+        }
+    }
+
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
         // Sync index when entering a level directly from the editor
         if (levelSequence != null)
         {
-            int index = levelSequence.levels.IndexOf(scene.name);
+            int index = levelSequence.levels.FindIndex(l => l.sceneName == scene.name);
             if (index >= 0)
                 currentLevelIndex = index;
         }
 
         PositionPlayerAtEntry();
+        ShowObjective();
+    }
+
+    private void ShowObjective()
+    {
+        if (levelSequence == null || currentLevelIndex >= levelSequence.levels.Count) return;
+        string objective = levelSequence.levels[currentLevelIndex].objective;
+        HUD hud = FindObjectOfType<HUD>();
+        if (hud != null) hud.SetObjective(objective);
     }
 
     private void PositionPlayerAtEntry()
@@ -89,7 +134,7 @@ public class LevelFlowManager : PersistentSingleton<LevelFlowManager>
 
         if (currentLevelIndex < levelSequence.levels.Count)
         {
-            SceneManager.LoadScene(levelSequence.levels[currentLevelIndex]);
+            SceneManager.LoadScene(levelSequence.levels[currentLevelIndex].sceneName);
         }
         else if (!string.IsNullOrEmpty(levelSequence.allLevelsCompleteScene))
         {
