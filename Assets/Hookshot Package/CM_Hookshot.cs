@@ -6,7 +6,6 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.Events;
 using UnityEngine.AI;
-using UnityEditor.PackageManager;
 
 public class CM_Hookshot : MonoBehaviour
 {
@@ -15,8 +14,11 @@ public class CM_Hookshot : MonoBehaviour
     [Header("Inputs")]
     [SerializeField] private InputAction hookshot;
     [SerializeField] private InputAction hookshotPull;
-    [SerializeField] private InputAction jump;
+    [SerializeField] private InputAction cancel;
     [SerializeField] private InputAction pull;
+    private InputAction cycleTarget;
+    private InputAction autoAction;
+    private InputAction autoCancel;
 
     [SerializeField] private LayerMask layerMask;
 
@@ -47,8 +49,26 @@ public class CM_Hookshot : MonoBehaviour
     [SerializeField] private CharacterController characterController;
 
     private float hookshotMaxRange;
+    private int hookshotStrength;
+    private float hookshotBounciness;
+    private float hookshotThrowAngle;
 
     public bool isGrappling = false;
+    [HideInInspector] public float dragSpeedMultiplier = 1f;
+    [Header("Carry Speed Multipliers")]
+    [SerializeField] private float lightCarrySpeed = 1f;
+    [SerializeField] private float mediumCarrySpeed = 0.7f;
+    [SerializeField] private float heavyCarrySpeed = 0.45f;
+
+    [Header("Throw")]
+    [SerializeField] private float throwResetDelay = 1f;
+
+    [Header("Throw Trajectory")]
+    [SerializeField] private LineRenderer trajectoryLine;
+    [SerializeField] [Range(10, 100)] private int trajectoryPoints = 25;
+    [SerializeField] [Range(0.01f, 0.25f)] private float timeBetweenPoints = 0.1f;
+    [SerializeField] private LayerMask trajectoryCollisionMask;
+    private bool isAimingThrow = false;
 
     [Header("Feedbacks")]
     [SerializeField] private UnityEvent onGrapple;
@@ -65,10 +85,20 @@ public class CM_Hookshot : MonoBehaviour
     [SerializeField] Transform crosshair;
     private RaycastHit targetingRaycast;
     [SerializeField] private AutoTarget autoTargetScript;
+    [SerializeField] private TargetIndicator targetIndicator;
     [SerializeField] private GameObject lockOnTarget;
 
 
     [Header("Hookshot")]
+
+    [Header("Rope Animation")]
+    [Tooltip("How fast the rope visually travels from gun to target. Higher = faster.")]
+    [SerializeField] private float ropeLerpSpeed = 12f;
+    private Vector3 currentGrapplePosition;
+    private State pendingState;
+
+    [Header("Fuzzy Targeting")]
+    [SerializeField] private float hookshotArcAngle = 20f;
 
     private float hookshotSpeedMin;
     private float hookshotSpeedMax;
@@ -91,6 +121,17 @@ public class CM_Hookshot : MonoBehaviour
         hookshotMaxRange = hookshotData.maxRange;
         hookshotSpeedMin = hookshotData.speedMin;
         hookshotSpeedMax = hookshotData.speedMax;
+        hookshotStrength = (int)hookshotData.strength;
+        hookshotBounciness = hookshotData.bounciness;
+        throwForce = hookshotData.throwForce;
+        hookshotThrowAngle = hookshotData.throwAngle;
+
+        if (joint != null)
+            joint.spring = hookshotBounciness;
+
+        // Sync auto-target detection radius to hookshot range
+        if (autoTargetScript != null)
+            autoTargetScript.detectionRadius = hookshotMaxRange;
     }
 
     private void Awake()
@@ -105,32 +146,124 @@ public class CM_Hookshot : MonoBehaviour
        
 
         characterController = gameObject.GetComponent<CharacterController>();
-        ///twinStick = gameObject.GetComponent<TwinStickMovement>();
 
-        /*
-        hookshot = new InputAction(binding: "<Mouse>/leftButton");
-        //hookshot.performed += _ => LaunchHookshot();
-        hookshot.performed += _ => HandleHookshotStart();
-        hookshot.Enable();
-        */
-        
-        hookshotPull = new InputAction(binding: "<Mouse>/rightButton" );
-        //hookshotPull = new InputAction(binding: "<DualShockGamepad>/rightShoulder");
-        
-        hookshotPull.performed += _ => HandleHookshotStart();
-        hookshotPull.performed += _ => ThrowCarriedObject();
-        //hookshotPull.performed += _ => HandleHookshotPull();
+        hookshotPull = new InputAction();
+        hookshotPull.AddBinding("<Mouse>/rightButton");
+        hookshotPull.AddBinding("<Gamepad>/rightShoulder");
+        hookshotPull.performed += _ =>
+        {
+            switch (state)
+            {
+                case State.Normal:
+                case State.HookshotFlyingPlayer:
+                    HandleHookshotStart();
+                    break;
+                case State.HookshotAttached:
+                    ActivateHookshotPull();
+                    break;
+            }
+        };
+        hookshotPull.started += _ =>
+        {
+            if (state == State.HookshotCarry)
+            {
+                isAimingThrow = true;
+            }
+        };
+        hookshotPull.canceled += _ =>
+        {
+            if (state == State.HookshotCarry && isAimingThrow)
+            {
+                isAimingThrow = false;
+                ThrowCarriedObject();
+            }
+        };
         hookshotPull.Enable();
 
-        
-        jump = new InputAction(binding: "<Keyboard>/space");
-        jump.performed += _ => Jump();
-        jump.Enable();
+        cancel = new InputAction();
+        cancel.AddBinding("<Keyboard>/leftShift");
+        cancel.AddBinding("<Gamepad>/leftShoulder");
+        cancel.Enable();
 
-        pull = new InputAction(binding: "<Keyboard>/leftShift");
+        pull = new InputAction();
+        pull.AddBinding("<Keyboard>/e");
+        pull.AddBinding("<Gamepad>/buttonSouth");
         pull.performed += _ => ActivateHookshotPull();
         pull.Enable();
 
+        cycleTarget = new InputAction();
+        cycleTarget.AddBinding("<Keyboard>/tab");
+        cycleTarget.AddBinding("<Gamepad>/buttonNorth");
+        cycleTarget.performed += _ =>
+        {
+            if (DebugManager.Instance != null && DebugManager.Instance.autoTargetEnabled && autoTargetScript != null)
+            {
+                autoTargetScript.CycleTarget();
+            }
+        };
+        cycleTarget.Enable();
+
+        // Auto-target mode: South button is contextual (fire/pull/throw)
+        autoAction = new InputAction(binding: "<Gamepad>/buttonSouth");
+        autoAction.performed += _ =>
+        {
+            if (DebugManager.Instance == null || !DebugManager.Instance.autoTargetEnabled) return;
+
+            switch (state)
+            {
+                case State.Normal:
+                case State.HookshotFlyingPlayer:
+                    HandleHookshotStart();
+                    break;
+                case State.HookshotAttached:
+                    ActivateHookshotPull();
+                    break;
+            }
+        };
+        autoAction.started += _ =>
+        {
+            if (DebugManager.Instance == null || !DebugManager.Instance.autoTargetEnabled) return;
+            if (state == State.HookshotCarry)
+            {
+                isAimingThrow = true;
+            }
+        };
+        autoAction.canceled += _ =>
+        {
+            if (DebugManager.Instance == null || !DebugManager.Instance.autoTargetEnabled) return;
+            if (state == State.HookshotCarry && isAimingThrow)
+            {
+                isAimingThrow = false;
+                ThrowCarriedObject();
+            }
+        };
+        autoAction.Enable();
+
+        // Auto-target mode: East button cancels hookshot
+        autoCancel = new InputAction(binding: "<Gamepad>/buttonEast");
+        autoCancel.performed += _ =>
+        {
+            if (DebugManager.Instance == null || !DebugManager.Instance.autoTargetEnabled) return;
+
+            if (state == State.HookshotCarry)
+            {
+                if (isAimingThrow)
+                {
+                    // Cancel aim, return to normal carry
+                    isAimingThrow = false;
+                    if (trajectoryLine != null) trajectoryLine.enabled = false;
+                }
+                else
+                {
+                    ReleaseCarriedObject();
+                }
+            }
+            else if (state != State.Normal)
+            {
+                CancelHookshot();
+            }
+        };
+        autoCancel.Enable();
 
     }
 
@@ -140,21 +273,28 @@ public class CM_Hookshot : MonoBehaviour
         //stores the lock on target in the variable
         lockOnTarget = GetComponent<AutoTarget>().closestTarget;
 
-        //visualises a target/crosshair for the hookshot
-        if (targetVisible)
+        // Target highlight: show emission glow on the targeted object when in Normal state
+        if (state == State.Normal && targetIndicator != null)
         {
-            //set the crosshair object to a distance of hookshotMaxRange in front of the shotpoint
-            crosshair.position = shotPoint.position + shotPoint.forward * hookshotMaxRange;
-
-            
-            //raycast from the shotpoint to the crosshair
-            if (Physics.Raycast(shotPoint.position, shotPoint.forward, out targetingRaycast, hookshotMaxRange, layerMask))
+            // Auto-target mode: use the tracked closest target
+            if (DebugManager.Instance != null && DebugManager.Instance.autoTargetEnabled
+                && autoTargetScript != null && autoTargetScript.HasTarget)
             {
-                //if the raycast hits something then set the crosshair position to the hit point
-                crosshair.position = targetingRaycast.point;
-                //hitTarget = targetingRaycast.collider.gameObject;
+                targetIndicator.ShowAtTarget(autoTargetScript.closestTarget);
             }
-            
+            // Standard mode: raycast + fuzzy targeting
+            else if (FindBestTarget(out targetingRaycast))
+            {
+                targetIndicator.ShowAtTarget(targetingRaycast.collider.gameObject);
+            }
+            else
+            {
+                targetIndicator.Hide();
+            }
+        }
+        else if (targetIndicator != null)
+        {
+            targetIndicator.Hide();
         }
 
 
@@ -163,7 +303,9 @@ public class CM_Hookshot : MonoBehaviour
             default:
             case State.Normal:
             lr.enabled = false;
+            lr.positionCount = 0;
             isGrappling = false;
+            dragSpeedMultiplier = 1f;
                 break;
             case State.HookshotLaunched:
                 LaunchHookshot();
@@ -178,21 +320,65 @@ public class CM_Hookshot : MonoBehaviour
                 hook.gameObject.SetActive(true);
                 break;
             case State.HookshotAttached:
-                if (hookshotAutoPull)
+                if (hookshotAutoPull && !IsGummyTooStrong())
                 {
                     HandleHookshotPull();
                 }
                 else
                 {
-                    HandleHookshotAttached(); 
+                    HandleHookshotAttached();
                 }
-                
+
                 hook.gameObject.SetActive(true);
                 break;
             case State.HookshotCarry:
                 HandleHookshotCarry();
                 hook.gameObject.SetActive(false);
                 isGrappling = false;
+
+                //slow player based on gummy weight when carrying
+                if (hitTarget != null)
+                {
+                    GummyLevel gl = hitTarget.GetComponent<GummyLevel>();
+                    if (gl != null)
+                    {
+                        switch (gl.weight)
+                        {
+                            case GummyLevel.Weight.Light:  dragSpeedMultiplier = lightCarrySpeed;  break;
+                            case GummyLevel.Weight.Medium: dragSpeedMultiplier = mediumCarrySpeed; break;
+                            case GummyLevel.Weight.Heavy:  dragSpeedMultiplier = heavyCarrySpeed;  break;
+                        }
+                    }
+                    else
+                    {
+                        dragSpeedMultiplier = 1f;
+                    }
+                }
+
+                // Draw trajectory while aiming throw
+                if (isAimingThrow)
+                {
+                    DrawThrowTrajectory();
+                }
+                else if (trajectoryLine != null)
+                {
+                    trajectoryLine.enabled = false;
+                }
+
+                if (IsCancelPressed())
+                {
+                    if (isAimingThrow)
+                    {
+                        // Cancel aim, return to normal carry
+                        isAimingThrow = false;
+                        if (trajectoryLine != null) trajectoryLine.enabled = false;
+                    }
+                    else
+                    {
+                        ReleaseCarriedObject();
+                    }
+                }
+
                 break;
         }
 
@@ -204,14 +390,96 @@ public class CM_Hookshot : MonoBehaviour
     }
 
 private void LateUpdate(){
-   // lr.SetPosition(1, hookshotPosition);
-    //set the line renderer start point to that of the shot point
+    if (!lr.enabled) return;
+
+    // Determine the actual target endpoint for the rope
+    Vector3 ropeTarget = hookshotPosition;
+    if ((state == State.HookshotPull || state == State.HookshotAttached) && hitTarget != null)
+    {
+        ropeTarget = hitTarget.transform.position;
+    }
+
+    // Lerp the rope endpoint toward the target (animates the rope shooting out during launch)
+    currentGrapplePosition = Vector3.Lerp(currentGrapplePosition, ropeTarget, Time.deltaTime * ropeLerpSpeed);
+
+    // Check if rope reached target during launch — transition to pending state
+    if (state == State.HookshotLaunched && Vector3.Distance(currentGrapplePosition, hookshotPosition) < 0.5f)
+    {
+        if (pendingState == State.HookshotFlyingPlayer)
+        {
+            onGrapple.Invoke();
+            OnHookshotHit.Invoke();
+        }
+        state = pendingState;
+    }
+
+    // Draw straight line from gun tip to current rope position
+    if (lr.positionCount != 2)
+    {
+        lr.positionCount = 2;
+    }
+
     lr.SetPosition(0, shotPoint.position);
+    lr.SetPosition(1, currentGrapplePosition);
 }
+
+    private bool FindFuzzyTarget(out RaycastHit fuzzyHit)
+    {
+        fuzzyHit = default;
+        Collider[] colliders = Physics.OverlapSphere(shotPoint.position, hookshotMaxRange, layerMask);
+
+        float bestAngle = float.MaxValue;
+        Collider bestCollider = null;
+
+        foreach (Collider col in colliders)
+        {
+            Vector3 dirToTarget = (col.transform.position - shotPoint.position).normalized;
+            float angle = Vector3.Angle(shotPoint.forward, dirToTarget);
+
+            if (angle < hookshotArcAngle && angle < bestAngle)
+            {
+                bestAngle = angle;
+                bestCollider = col;
+            }
+        }
+
+        if (bestCollider == null)
+            return false;
+
+        // Raycast toward the chosen target to get a proper RaycastHit struct
+        Vector3 direction = (bestCollider.transform.position - shotPoint.position).normalized;
+        float distance = Vector3.Distance(shotPoint.position, bestCollider.transform.position);
+        if (Physics.Raycast(shotPoint.position, direction, out fuzzyHit, distance + 1f, layerMask))
+        {
+            return true;
+        }
+
+        return false;
+    }
+
+    /// <summary>
+    /// Finds the best hookshot target: direct raycast first, then fuzzy targeting as fallback.
+    /// </summary>
+    private bool FindBestTarget(out RaycastHit bestHit)
+    {
+        if (Physics.Raycast(shotPoint.position, shotPoint.forward, out bestHit, hookshotMaxRange, layerMask))
+        {
+            return true;
+        }
+
+        if (DebugManager.Instance != null && DebugManager.Instance.fuzzyTargetingEnabled)
+        {
+            return FindFuzzyTarget(out bestHit);
+        }
+
+        bestHit = default;
+        return false;
+    }
 
     private void HandleHookshotStart()
     {
-   
+        if (shotPoint == null) return;
+
         //if you are normal or flying through the air then shoot the hookshot
         if (state == State.Normal || state == State.HookshotFlyingPlayer)
         {
@@ -230,7 +498,9 @@ private void LateUpdate(){
 
 
                 
-                if (Physics.Raycast(shotPoint.position, shotPoint.forward, out raycastHit, hookshotMaxRange))
+                bool directHit = FindBestTarget(out raycastHit);
+
+                if (directHit)
                     {
 
                         //check the layer of the object that was hit
@@ -238,32 +508,64 @@ private void LateUpdate(){
                         //if not, then set the hookshot position to the maximum distance of the hookshot
                         if (raycastHit.collider.gameObject.layer == 10)
                         {
-                            // Debug.Log("hit grappleable object");
                             hook.position = raycastHit.point;
                             hookshotPosition = raycastHit.point;
-                            state = State.HookshotFlyingPlayer;
-                            onGrapple.Invoke();
-                            OnHookshotHit.Invoke();
-
+                            pendingState = State.HookshotFlyingPlayer;
                         }
 
                         //this is the pullable object layer
                         if (raycastHit.collider.gameObject.layer == 11)
                         {
-                            //Debug.Log("hit pullable object");
                             hook.position = raycastHit.point;
                             hookshotPosition = raycastHit.point;
-                            state = State.HookshotAttached;
+                            pendingState = State.HookshotAttached;
+
+                            // Disable gravity so the object doesn't drop while being hooked/pulled
+                            var rb = raycastHit.collider.gameObject.GetComponent<Rigidbody>();
+                            if (rb != null) rb.useGravity = false;
+
+                            //if hookshot is strong enough, freeze the gummy in place
+                            GummyLevel gummyLevel = raycastHit.collider.gameObject.GetComponent<GummyLevel>();
+                            if (gummyLevel != null && hookshotStrength >= gummyLevel.WeightValue)
+                            {
+                                GummyBehaviour gummyBehaviour = raycastHit.collider.gameObject.GetComponent<GummyBehaviour>();
+                                if (gummyBehaviour != null)
+                                {
+                                    gummyBehaviour.enabled = false;
+                                }
+                                else
+                                {
+                                    SimpleEnemyMovement enemyMovement = raycastHit.collider.gameObject.GetComponent<SimpleEnemyMovement>();
+                                    if (enemyMovement != null)
+                                    {
+                                        enemyMovement.enabled = false;
+                                    }
+                                }
+                            }
                         }
 
                         //this is the layer for collectibles that you can pull towards yourself
                         if (raycastHit.collider.gameObject.layer == 12)
                         {
-                            // Debug.Log("hit collectible object");
                             hook.position = raycastHit.point;
                             hookshotPosition = raycastHit.point;
-                            state = State.HookshotPull;
+                            pendingState = State.HookshotPull;
 
+                            // Disable gravity so the object doesn't drop while being pulled
+                            var rb = raycastHit.collider.gameObject.GetComponent<Rigidbody>();
+                            if (rb != null) rb.useGravity = false;
+                        }
+
+                        //this is the layer for moveable objects that can be pulled but not carried
+                        if (raycastHit.collider.gameObject.layer == 13)
+                        {
+                            hook.position = raycastHit.point;
+                            hookshotPosition = raycastHit.point;
+                            pendingState = State.HookshotAttached;
+
+                            // Disable gravity so the object doesn't drop while being hooked/pulled
+                            var rb = raycastHit.collider.gameObject.GetComponent<Rigidbody>();
+                            if (rb != null) rb.useGravity = false;
                         }
 
 
@@ -273,15 +575,18 @@ private void LateUpdate(){
 
                     //make the raycast ignore the hook object's collider
                     Physics.IgnoreCollision(raycastHit.collider, hook.GetComponent<Collider>());
+
+                    // Enter launched state — rope animates toward target before transitioning
+                    state = State.HookshotLaunched;
+                    currentGrapplePosition = shotPoint.position;
                 }
-                
+
 
             }
 
         }
-        
+
         lr.enabled = true;
-        lr.SetPosition(1, hookshotPosition);
     }
 
     private void HandleHookshotMovement()
@@ -308,17 +613,14 @@ private void LateUpdate(){
             // Reached hookshot position
             state = State.Normal;
             lr.enabled = false;
+            lr.positionCount = 0;
             // characterController.enabled = false;
         }
 
-        //if the player has jumped while hookshotting, cancel the hookshot
-        if (jump.ReadValue<float>() > 0)
+        //if the player has jumped/cancelled while hookshotting, cancel the hookshot
+        if (IsCancelPressed())
         {
-            
-            //also maintain momentum
-            float momentumExtraSpeed = 3f;
             CancelHookshot();
-
         }
 
         //dampen speed of momentum
@@ -340,7 +642,6 @@ private void LateUpdate(){
     private void HandleHookshotAttached()
     {
         lr.enabled = true;
-        lr.SetPosition(1, hookshotPosition);
         hook.gameObject.transform.position = hookshotPosition;
         hookshotPosition = hitTarget.transform.position;
 
@@ -350,26 +651,22 @@ private void LateUpdate(){
             CancelHookshot();
         }
 
-        //deactivate the navmesh agent of the object you've hit
-        if (hitTarget.GetComponent<NavMeshAgent>())
+        if (!IsGummyTooStrong())
         {
-            hitTarget.GetComponent<NavMeshAgent>().enabled = false;
+            //deactivate the navmesh agent of the object you've hit
+            if (hitTarget.GetComponent<NavMeshAgent>())
+            {
+                hitTarget.GetComponent<NavMeshAgent>().enabled = false;
+            }
 
+            if (joint != null)
+                joint.connectedBody = hitTarget.GetComponent<Rigidbody>();
         }
 
-        joint.connectedBody = hitTarget.GetComponent<Rigidbody>();
-      
-
-        //if the player has jumped while attached, cancel the hookshot
-        if (jump.ReadValue<float>() > 0)
+        //if the player has jumped/cancelled while attached, cancel the hookshot
+        if (IsCancelPressed())
         {
-
-            //also maintain momentum
-
-            float momentumExtraSpeed = 3f;
-
             CancelHookshot();
-
         }
 
     }
@@ -404,7 +701,6 @@ private void LateUpdate(){
 
 
             lr.enabled = true;
-            lr.SetPosition(1, hitTarget.transform.position);
 
             //check the distance between the hookshot position and the player
             //and if it's less than 1f, then cancel the hookshot
@@ -422,12 +718,10 @@ private void LateUpdate(){
 
             }
 
-            //if the player has jumped while hookshotting, cancel the hookshot
-            if (jump.ReadValue<float>() > 0)
+            //if the player has jumped/cancelled while pulling, cancel the hookshot
+            if (IsCancelPressed())
             {
-
                 CancelHookshot();
-
             }
         }
 
@@ -447,10 +741,57 @@ private void LateUpdate(){
             hitTarget.transform.position = carryPoint.transform.position;
 
             lr.enabled = false;
+            lr.positionCount = 0;
 
         }
     }
 
+
+    private void DrawThrowTrajectory()
+    {
+        if (trajectoryLine == null || hitTarget == null) return;
+
+        var hitTargetRB = hitTarget.GetComponent<Rigidbody>();
+        if (hitTargetRB == null) return;
+
+        trajectoryLine.enabled = true;
+        trajectoryLine.positionCount = Mathf.CeilToInt(trajectoryPoints / timeBetweenPoints) + 1;
+
+        Vector3 startPosition = carryPoint.position;
+        float angle = hookshotThrowAngle;
+        float force = throwForce;
+        ThrowOverride throwOverride = hitTarget.GetComponent<ThrowOverride>();
+        if (throwOverride != null)
+        {
+            angle = throwOverride.throwAngle;
+            if (throwOverride.throwForce > 0f) force = throwOverride.throwForce;
+        }
+        Vector3 throwDir = Quaternion.AngleAxis(-angle, transform.right) * transform.forward;
+        Vector3 startVelocity = throwDir * force * Time.fixedDeltaTime / hitTargetRB.mass;
+
+        int i = 0;
+        trajectoryLine.SetPosition(i, startPosition);
+
+        for (float time = 0; time < trajectoryPoints; time += timeBetweenPoints)
+        {
+            i++;
+            Vector3 point = startPosition + startVelocity * time;
+            point.y = startPosition.y + startVelocity.y * time + (Physics.gravity.y / 2f * time * time);
+
+            trajectoryLine.SetPosition(i, point);
+
+            Vector3 lastPosition = trajectoryLine.GetPosition(i - 1);
+            Vector3 direction = (point - lastPosition).normalized;
+            float segmentLength = (point - lastPosition).magnitude;
+
+            if (Physics.Raycast(lastPosition, direction, out RaycastHit hit, segmentLength, trajectoryCollisionMask))
+            {
+                trajectoryLine.SetPosition(i, hit.point);
+                trajectoryLine.positionCount = i + 1;
+                return;
+            }
+        }
+    }
 
         private void ThrowCarriedObject()
         {
@@ -468,6 +809,8 @@ private void LateUpdate(){
             if (state == State.HookshotCarry)
             {
                 state = State.Normal;
+                isAimingThrow = false;
+                if (trajectoryLine != null) trajectoryLine.enabled = false;
 
                 //check if it's got a rigid body or not
                 if (hitTarget.GetComponent<Rigidbody>())
@@ -476,10 +819,19 @@ private void LateUpdate(){
                     hitTargetRB.useGravity = true;
                     hitTargetRB.freezeRotation = false;
 
-                    
-                    //throw it in the direction the player is facing
-                    hitTargetRB.AddForce(transform.forward * throwForce);
-                    
+
+                    //throw it in the direction the player is facing, angled upward
+                    float angle = hookshotThrowAngle;
+                    float force = throwForce;
+                    ThrowOverride throwOverride = hitTarget.GetComponent<ThrowOverride>();
+                    if (throwOverride != null)
+                    {
+                        angle = throwOverride.throwAngle;
+                        if (throwOverride.throwForce > 0f) force = throwOverride.throwForce;
+                    }
+                    Vector3 throwDir = Quaternion.AngleAxis(-angle, transform.right) * transform.forward;
+                    hitTargetRB.AddForce(throwDir * force);
+
                     /*
                     //check if the auto targeting is on and if the object you're throwing isn't an enemy
                     if (autoTargetScript != null && hitTarget.tag != "enemy")
@@ -494,7 +846,7 @@ private void LateUpdate(){
                     */
 
                     //add a bit spin to the object when you throw it
-                    hitTargetRB.AddTorque(transform.forward * throwForce);
+                    hitTargetRB.AddTorque(transform.right * throwForce);
                 }
 
 
@@ -502,8 +854,7 @@ private void LateUpdate(){
                 if (hitTarget.GetComponent<NavMeshAgent>())
                 {
                     hitTarget.GetComponent<NavMeshAgent>().enabled = false;
-                    Invoke("ResetEnemyMovement", 1f);
-
+                    Invoke("ResetEnemyMovement", throwResetDelay);
                 }
             }
         }
@@ -511,44 +862,65 @@ private void LateUpdate(){
 
     private void LaunchHookshot()
     {
-        state = State.HookshotLaunched;
+        lr.enabled = true;
 
-
-        if (!hitSomething)
+        // Allow cancel during launch
+        if (IsCancelPressed())
         {
-            // shoot the hook at the object
-            //hook.position = shotPoint.position;
-            hook.position = Vector3.MoveTowards(shotPoint.position, shotPoint.position + transform.forward * 10f, 4f * Time.deltaTime);
-            //when the hook reaches 10f in front of the player, set the hook.position back to the shotpoint.position
-            if (Vector3.Distance(hook.position, shotPoint.position) < 1f)
+            CancelHookshot();
+        }
+    }
+
+    private void ReleaseCarriedObject()
+    {
+        if (hitTarget != null)
+        {
+            var hitTargetRB = hitTarget.GetComponent<Rigidbody>();
+            if (hitTargetRB != null)
             {
-                hitSomething = true;
-                
-                
+                hitTargetRB.useGravity = true;
+                hitTargetRB.freezeRotation = false;
+                hitTargetRB.AddForce(transform.forward * throwForce * 0.15f);
+            }
+
+            if (hitTarget.GetComponent<NavMeshAgent>())
+            {
+                hitTarget.GetComponent<NavMeshAgent>().enabled = false;
+                Invoke("ResetEnemyMovement", 1f);
             }
         }
 
-        else if (hitSomething)
-        {
-            hook.position = Vector3.MoveTowards(shotPoint.position + transform.forward * 10f, hook.position, 40f * Time.deltaTime);
-            hitSomething = false;
-            state = State.Normal;
-        }
-
+        stopFeedbacks.Invoke();
+        ResetEnemyMovement();
+        DetachSpringJoint();
+        state = State.Normal;
+        isAimingThrow = false;
+        if (trajectoryLine != null) trajectoryLine.enabled = false;
+        lr.enabled = false;
+            lr.positionCount = 0;
     }
 
     public void CancelHookshot()
     {
         stopFeedbacks.Invoke();
 
+        // Re-enable gravity on the hooked object
+        if (hitTarget != null)
+        {
+            var hitTargetRB = hitTarget.GetComponent<Rigidbody>();
+            if (hitTargetRB != null)
+            {
+                hitTargetRB.useGravity = true;
+            }
+        }
+
         //reset the enemy movement
         ResetEnemyMovement();
         DetachSpringJoint();
 
-        if (hitTarget.GetComponent<NavMeshAgent>())
+        if (hitTarget != null && hitTarget.GetComponent<NavMeshAgent>())
         {
             hitTarget.GetComponent<NavMeshAgent>().enabled = true;
-
         }
 
         //characterController.enabled = false;
@@ -568,28 +940,51 @@ private void LateUpdate(){
 
 
         state = State.Normal;
+        isAimingThrow = false;
+        if (trajectoryLine != null) trajectoryLine.enabled = false;
         lr.enabled = false;
-       
+            lr.positionCount = 0;
+
     }
 
-    private bool Jump()
+    public void OnPlayerJump()
     {
-        return true;
+        if (state != State.Normal)
+        {
+            CancelHookshot();
+        }
     }
 
     private void ActivateHookshotPull()
     {
-        if(state == State.HookshotAttached)
+        if(state == State.HookshotAttached && !IsGummyTooStrong())
         {
             state = State.HookshotPull;
 
         }
     }
 
+    private bool IsGummyTooStrong()
+    {
+        if (hitTarget == null) return false;
+        GummyLevel gummyLevel = hitTarget.GetComponent<GummyLevel>();
+        if (gummyLevel == null) return false;
+        return gummyLevel.WeightValue > hookshotStrength;
+    }
+
+    private bool IsCancelPressed()
+    {
+        if (DebugManager.Instance != null && DebugManager.Instance.autoTargetEnabled)
+        {
+            return autoCancel.ReadValue<float>() > 0 || cancel.ReadValue<float>() > 0;
+        }
+        return cancel.ReadValue<float>() > 0;
+    }
+
     private void DetachSpringJoint()
     {
         //if the spring joint is connect to something, disconnect it.
-        if (joint.connectedBody != null)
+        if (joint != null && joint.connectedBody != null)
         {
             joint.connectedBody = null;
         }
@@ -608,10 +1003,23 @@ private void LateUpdate(){
             if (hitTarget.GetComponent<NavMeshAgent>())
             {
                 hitTarget.GetComponent<NavMeshAgent>().enabled = true;
+            }
 
+            GummyBehaviour gummyBehaviour = hitTarget.GetComponent<GummyBehaviour>();
+            if (gummyBehaviour != null)
+            {
+                gummyBehaviour.enabled = true;
+            }
+            else
+            {
+                SimpleEnemyMovement enemyMovement = hitTarget.GetComponent<SimpleEnemyMovement>();
+                if (enemyMovement != null)
+                {
+                    enemyMovement.enabled = true;
+                }
             }
         }
-       
+
 
     }
 

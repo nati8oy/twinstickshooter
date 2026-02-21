@@ -14,8 +14,9 @@ GameObject:
   - component: {fileID: 6042416643365614190}
   - component: {fileID: 8794676051887516284}
   - component: {fileID: 7454154907774550183}
-  - component: {fileID: 5748216717567061833}
   - component: {fileID: 7222035785059331151}
+  - component: {fileID: 2737844223404662166}
+  - component: {fileID: 4413153747703201282}
   m_Layer: 11
   m_Name: Gummy
   m_TagString: Untagged
@@ -33,7 +34,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -20.44702, y: 2.0001, z: 3.37781}
-  m_LocalScale: {x: 1.5, y: 1.5, z: 1.5}
+  m_LocalScale: {x: 1.2, y: 1.2, z: 1.2}
   m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 0}
@@ -124,7 +125,7 @@ Rigidbody:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1070710326693234163}
   serializedVersion: 5
-  m_Mass: 1
+  m_Mass: 5
   m_LinearDamping: 0
   m_AngularDamping: 0.05
   m_CenterOfMass: {x: 0, y: 0, z: 0}
@@ -138,7 +139,7 @@ Rigidbody:
     m_Bits: 0
   m_ImplicitCom: 1
   m_ImplicitTensor: 1
-  m_UseGravity: 1
+  m_UseGravity: 0
   m_IsKinematic: 0
   m_Interpolate: 0
   m_Constraints: 0
@@ -161,23 +162,6 @@ MonoBehaviour:
   onHitHazard:
     m_PersistentCalls:
       m_Calls: []
---- !u!114 &5748216717567061833
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1070710326693234163}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7168325e1eee944d880f5293a9f5f593, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::EnemyMovement
-  roamingRadius: 10
-  detectionRadius: 5
-  chaseSpeed: 10
-  delayDuration: 2
-  currentPriorityTarget: {fileID: 0}
 --- !u!195 &7222035785059331151
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -200,3 +184,41 @@ NavMeshAgent:
   m_BaseOffset: 0.5
   m_WalkableMask: 4294967295
   m_ObstacleAvoidanceType: 4
+--- !u!114 &2737844223404662166
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1070710326693234163}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 40abd32338e844e48bee5920ac75fd25, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::GummyLevel
+  weight: 1
+--- !u!114 &4413153747703201282
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1070710326693234163}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 87fa383e4732c4189bbe14acd99b24d9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::GummyBehaviour
+  idleMovement: 0
+  playerReaction: 2
+  playerDetectionRadius: 10
+  wanderShortRadius: 3
+  wanderMediumRadius: 7
+  wanderFarRadius: 15
+  idlePauseDuration: 0.5
+  scatterFarDistance: 30
+  scatterNearbyDistance: 10
+  wanderSpeed: 2
+  followSpeed: 4
+  scatterSpeed: 30
+  followStopDistance: 3

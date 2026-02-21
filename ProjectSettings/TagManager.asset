@@ -17,6 +17,15 @@ TagManager:
   - grapple point
   - goal
   - hazard
+  - resource
+  - turret
+  - defence
+  - explosion
+  - XP
+  - enemy_lvl2
+  - fire
+  - melee
+  - Destructible
   layers:
   - Default
   - TransparentFX
@@ -31,7 +40,7 @@ TagManager:
   - Grappleable
   - Pullable
   - Collectible
-  - 
+  - Moveable
   - 
   - 
   - 

@@ -72,6 +72,7 @@ public class EnemyMovement : MonoBehaviour
 
     private void ChasePlayer()
     {
+        if (!navMeshAgent.isOnNavMesh) return;
         isDelaying = false;
         navMeshAgent.speed = chaseSpeed;
         navMeshAgent.SetDestination(playerTransform.position);
@@ -79,6 +80,7 @@ public class EnemyMovement : MonoBehaviour
 
     private void ChaseEndPoint()
     {
+        if (!navMeshAgent.isOnNavMesh) return;
         isDelaying = false;
         navMeshAgent.speed = chaseSpeed;
         navMeshAgent.SetDestination(endPointTransform.position);
@@ -86,6 +88,7 @@ public class EnemyMovement : MonoBehaviour
 
     private bool HasReachedDestination()
     {
+        if (!navMeshAgent.isOnNavMesh) return false;
         if (!navMeshAgent.pathPending)
         {
             if (navMeshAgent.remainingDistance <= navMeshAgent.stoppingDistance)
@@ -110,6 +113,7 @@ public class EnemyMovement : MonoBehaviour
 
     private void MoveToDestination()
     {
+        if (!navMeshAgent.isOnNavMesh) return;
         navMeshAgent.speed = chaseSpeed;
         navMeshAgent.SetDestination(destination);
     }

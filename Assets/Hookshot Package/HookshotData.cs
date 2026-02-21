@@ -5,9 +5,12 @@ using UnityEngine;
 [CreateAssetMenu(menuName = "Hookshot Data")] 
 public class HookshotData : ScriptableObject
 {
-    public float strength;
+    public GummyLevel.Weight strength = GummyLevel.Weight.Light;
     public float maxRange;
     //min and max speed is divided in the hookshot script to give you a minimum speed you will travel and a maximum speed you can travel
     public float speedMin;
     public float speedMax;
+    public float bounciness;
+    public float throwForce = 2000f;
+    public float throwAngle = 30f;
 }

@@ -4,146 +4,135 @@ using UnityEngine;
 
 public class AutoTarget : MonoBehaviour
 {
-    [SerializeField] private bool lockToClosestTarget;
-    [SerializeField] private bool furthestTarget;
-    [SerializeField] private bool hookshotAutoTargeting;
+    [Header("Detection")]
+    public float detectionRadius = 15f;
+    [SerializeField] private LayerMask targetLayerMask;
 
-    [SerializeField] private GameObject[] targets;
-    [SerializeField] private GameObject[] grapplePoints;
-    //[SerializeField] private GameObject currentTarget;
-    [SerializeField] private float attackRange = 10f;
+    [Header("Debug")]
+    [SerializeField] private bool drawDebugLines = true;
+
+    public GameObject closestTarget;
+    public GameObject closestGrapplePoint;
     public Vector3 attackDirection;
     public Vector3 grappleDirection;
 
-     public GameObject closestTarget;
-    public GameObject closestGrapplePoint;
+    public bool HasTarget => closestTarget != null && closestTarget.activeInHierarchy;
 
+    private List<GameObject> targetsInRadius = new List<GameObject>();
+    private int currentTargetIndex = 0;
+    private bool hasCycled = false;
 
     private void Start()
     {
-        FindClosestTarget();
-
-        //run this as a coroutine to save a bit of processing
         StartCoroutine(FindClosestTargetRoutine());
     }
 
-
     private IEnumerator FindClosestTargetRoutine()
     {
+        WaitForSeconds wait = new WaitForSeconds(0.2f);
 
-        //if the closest object is not null then run this coroutine
-        if (closestTarget)
+        while (true)
         {
-            WaitForSeconds wait = new WaitForSeconds(0.2f);
-
-            while (true)
-            {
-                yield return wait;
-                FindClosestTarget();
-            }
+            yield return wait;
+            UpdateTargetsInRadius();
         }
-        
     }
 
-
-    private void FindClosestTarget()
+    private void UpdateTargetsInRadius()
     {
-        //fill the arrawy with the enemy game objects
-        targets = GameObject.FindGameObjectsWithTag("enemy");
+        targetsInRadius.Clear();
 
-        float closestDistance = Mathf.Infinity;
+        Collider[] hits = Physics.OverlapSphere(transform.position, detectionRadius, targetLayerMask);
 
-        foreach (GameObject targetEnemy in targets)
+        foreach (Collider hit in hits)
         {
-
-            if (targetEnemy != null)
+            if (hit.gameObject.activeInHierarchy)
             {
-                // Calculate the distance between the player and the current object.
-                float distance = Vector3.Distance(transform.position, targetEnemy.transform.position);
-
-                // Check if this object is closer than the previously closest object.
-                if (distance < closestDistance)
-                {
-                    closestDistance = distance;
-                    closestTarget = targetEnemy;
-                    //draw a debug from the player to the current target
-                }
-               
-            }
-            else
-            {
-                closestTarget = null;
+                targetsInRadius.Add(hit.gameObject);
             }
         }
 
-
-        if (targets.Length > 0)
+        // Sort by distance
+        targetsInRadius.Sort((a, b) =>
         {
-            //this shows the direction that will be used by another script for auto targeting
+            float distA = Vector3.Distance(transform.position, a.transform.position);
+            float distB = Vector3.Distance(transform.position, b.transform.position);
+            return distA.CompareTo(distB);
+        });
+
+        // If we haven't manually cycled, default to closest
+        if (!hasCycled)
+        {
+            currentTargetIndex = 0;
+        }
+
+        // Clamp index if targets changed
+        if (targetsInRadius.Count > 0)
+        {
+            // If the currently selected target left the radius, reset to closest
+            if (hasCycled && closestTarget != null && !targetsInRadius.Contains(closestTarget))
+            {
+                currentTargetIndex = 0;
+                hasCycled = false;
+            }
+
+            currentTargetIndex = Mathf.Clamp(currentTargetIndex, 0, targetsInRadius.Count - 1);
+            closestTarget = targetsInRadius[currentTargetIndex];
             attackDirection = (closestTarget.transform.position - transform.position).normalized;
-
-
-            //drag a debug line to the closest enemy
-            Debug.DrawLine(transform.position, closestTarget.transform.position, Color.green);
-
         }
         else
         {
+            closestTarget = null;
             attackDirection = transform.forward;
+            currentTargetIndex = 0;
+            hasCycled = false;
         }
+
+        if (drawDebugLines && closestTarget != null)
+        {
+            Debug.DrawLine(transform.position, closestTarget.transform.position, Color.green, 0.2f);
+        }
+    }
+
+    public void CycleTarget()
+    {
+        if (targetsInRadius.Count <= 1) return;
+
+        currentTargetIndex = (currentTargetIndex + 1) % targetsInRadius.Count;
+        closestTarget = targetsInRadius[currentTargetIndex];
+        attackDirection = (closestTarget.transform.position - transform.position).normalized;
+        hasCycled = true;
     }
 
     public void FindClosestGrapplePoint()
     {
+        GameObject[] grapplePoints = GameObject.FindGameObjectsWithTag("grapple point");
 
-
-        //get the layer the grapple point object is on
-        //fill the arrawy with the enemy game objects
-        grapplePoints = GameObject.FindGameObjectsWithTag("grapple point");
-
-        float closestDistanceToGrapplePoint = Mathf.Infinity;
+        float closestDistance = Mathf.Infinity;
+        closestGrapplePoint = null;
 
         foreach (GameObject grapplePoint in grapplePoints)
         {
-
             if (grapplePoint != null)
             {
-                // Calculate the distance between the player and the current object.
                 float distance = Vector3.Distance(transform.position, grapplePoint.transform.position);
 
-                // Check if this object is closer than the previously closest object.
-                if (distance < closestDistanceToGrapplePoint)
+                if (distance < closestDistance)
                 {
-                    closestDistanceToGrapplePoint = distance;
+                    closestDistance = distance;
                     closestGrapplePoint = grapplePoint;
-                    Debug.Log("closest grapple point is " + closestGrapplePoint);
-                    //draw a debug from the player to the current target
                 }
-
             }
-            else
+        }
+
+        if (closestGrapplePoint != null)
+        {
+            grappleDirection = (closestGrapplePoint.transform.position - transform.position).normalized;
+
+            if (drawDebugLines)
             {
-                closestGrapplePoint = null;
+                Debug.DrawLine(transform.position, closestGrapplePoint.transform.position, Color.magenta);
             }
-        }
-
-
-        if (grapplePoints.Length > 0)
-        {
-            //this shows the direction that will be used by another script for auto targeting
-            grappleDirection = (closestTarget.transform.position - transform.position).normalized;
-
-
-            //drag a debug line to the closest enemy
-            Debug.DrawLine(transform.position, closestTarget.transform.position, Color.magenta);
-
-        }
-        else
-        {
-            //grappleDirection = transform.forward;
         }
     }
-
-
-
 }

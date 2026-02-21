@@ -30,24 +30,6 @@ public class EnemyNavMesh : MonoBehaviour
     }
     */
 
-    private void OnEnable()
-    {
-        //movePositionTransform = GameManager.Instance.player.transform;
-        if (GameObject.Find("EndPoint"))
-        {
-            movePositionTransform = GameObject.Find("EndPoint").transform;
-
-        }
-
-        else
-        {
-            Debug.LogError("There is no EndPoint available");
-        }
-
-        roamPosition = navPoints[Random.Range(0, 5)].transform.position;
-
-    }
-
     private void Start()
     {
         startingPosition = gameObject.transform.position;
@@ -58,27 +40,22 @@ public class EnemyNavMesh : MonoBehaviour
         navMeshAgent = GetComponent<NavMeshAgent>();
         //fill the array with the nav points that are tagged with "nav point"
         navPoints = GameObject.FindGameObjectsWithTag("nav point");
+    }
 
-
-
+    private void OnEnable()
+    {
         if (followPlayer)
         {
-
-
-            //movePositionTransform = GameObject.Find("EndPoint").transform;
-
-            movePositionTransform = GameManager.Instance.player.transform;
-
+            if (GameManager.Instance != null && GameManager.Instance.player != null)
+            {
+                movePositionTransform = GameManager.Instance.player.transform;
+            }
         }
-
-        else
+        else if (navPoints.Length > 0)
         {
-            movePositionTransform = navPoints[Random.Range(0,5)].transform;
+            movePositionTransform = navPoints[Random.Range(0, navPoints.Length)].transform;
+            roamPosition = navPoints[Random.Range(0, navPoints.Length)].transform.position;
         }
-
-       
-
-
     }
 
     private Vector3 GetRoamingPosition()

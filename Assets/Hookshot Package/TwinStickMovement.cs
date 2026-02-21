@@ -10,7 +10,7 @@ public class TwinStickMovement : MonoBehaviour
 {
 
     [SerializeField] private float playerSpeed = 5f;
-    [SerializeField] private float gravityValue = -9.81f;
+    [SerializeField] private float gravityValue = -20.98f;
     [SerializeField] private float controllerDeadZone = 0.1f;
     [SerializeField] private float gamepadRotateSmoothing = 1000f;
 
@@ -45,6 +45,8 @@ public class TwinStickMovement : MonoBehaviour
 
     private PlayerControls playerControls;
     private PlayerInput playerInput;
+    private AutoTarget autoTarget;
+    private FrictionController frictionController;
 
 
     private void Awake()
@@ -52,6 +54,8 @@ public class TwinStickMovement : MonoBehaviour
         controller = GetComponent<CharacterController>();
         playerControls = new PlayerControls();
         playerInput = GetComponent<PlayerInput>();
+        autoTarget = GetComponent<AutoTarget>();
+        frictionController = GetComponent<FrictionController>();
     }
 
 
@@ -125,24 +129,50 @@ public class TwinStickMovement : MonoBehaviour
         */
 
 
-        Vector3 move = new Vector3(movement.x, 0, movement.y);
-        controller.Move(move * Time.deltaTime * playerSpeed);
-
-        /*
-        if (CVM.magnitude >= 0f)
+        // Ground check — reset vertical velocity when grounded to prevent accumulation
+        if (controller.isGrounded && playerVelocity.y < 0f)
         {
-            float momentumDrag = 3f;
-
-            CVM -= CVM * momentumDrag * Time.deltaTime;
-            if (CVM.magnitude < .0f)
-            {
-                CVM = Vector3.zero;
-            }
+            playerVelocity.y = -2f;
         }
 
-        */
+        CM_Hookshot hookshot = GetComponent<CM_Hookshot>();
 
-        playerVelocity.y += gravityValue * Time.deltaTime;
+        Vector3 move = new Vector3(movement.x, 0, movement.y);
+
+        float speedMod = 1f;
+        if (hookshot != null)
+        {
+            speedMod = hookshot.dragSpeedMultiplier;
+        }
+
+        // Disable gravity while grappling so player travels in a straight line to the grapple point
+        if (hookshot != null && hookshot.isGrappling)
+        {
+            playerVelocity.y = 0f;
+        }
+        else
+        {
+            playerVelocity.y += gravityValue * Time.deltaTime;
+        }
+
+        // Include friction-based velocity if FrictionController is present
+        Vector3 frictionMove = Vector3.zero;
+        if (frictionController != null)
+        {
+            frictionMove = frictionController.FrictionVelocity;
+        }
+
+        // Include knockback velocity if PlayerHealth is present
+        Vector3 knockback = Vector3.zero;
+        PlayerHealth playerHealth = GetComponent<PlayerHealth>();
+        if (playerHealth != null)
+        {
+            knockback = playerHealth.knockbackVelocity;
+        }
+
+        // Combine horizontal movement, friction velocity, knockback, and vertical gravity into a single Move call
+        Vector3 finalMove = (move * playerSpeed * speedMod) + frictionMove + knockback + new Vector3(0, playerVelocity.y, 0);
+        controller.Move(finalMove * Time.deltaTime);
 
         
         
@@ -151,15 +181,63 @@ public class TwinStickMovement : MonoBehaviour
 
     public void HandleRotation()
     {
+        // Auto-target mode: face tracked gummy, or face movement direction if no target/carrying
+        if (DebugManager.Instance != null && DebugManager.Instance.autoTargetEnabled)
+        {
+            CM_Hookshot hookshot = GetComponent<CM_Hookshot>();
+            bool isCarrying = hookshot != null && hookshot.state == CM_Hookshot.State.HookshotCarry;
+            bool isHooked = hookshot != null && (hookshot.state == CM_Hookshot.State.HookshotAttached
+                || hookshot.state == CM_Hookshot.State.HookshotPull
+                || hookshot.state == CM_Hookshot.State.HookshotFlyingPlayer);
+
+            // When hooked onto a gummy, face the hooked target instead of auto-target
+            if (isHooked && hookshot.hitTarget != null)
+            {
+                Vector3 hookedDir = hookshot.hitTarget.transform.position - transform.position;
+                hookedDir.y = 0f;
+
+                if (hookedDir.sqrMagnitude > 0.01f)
+                {
+                    Quaternion hookedRotation = Quaternion.LookRotation(hookedDir, Vector3.up);
+                    transform.rotation = Quaternion.RotateTowards(transform.rotation, hookedRotation, gamepadRotateSmoothing * Time.deltaTime);
+                }
+                return;
+            }
+
+            // When carrying, face movement direction
+            // When no target, face movement direction
+            // Otherwise, track closest gummy
+            if (!isCarrying && autoTarget != null && autoTarget.HasTarget)
+            {
+                Vector3 targetDir = autoTarget.closestTarget.transform.position - transform.position;
+                targetDir.y = 0f;
+
+                if (targetDir.sqrMagnitude > 0.01f)
+                {
+                    Quaternion targetRotation = Quaternion.LookRotation(targetDir, Vector3.up);
+                    transform.rotation = Quaternion.RotateTowards(transform.rotation, targetRotation, gamepadRotateSmoothing * Time.deltaTime);
+                }
+            }
+            else if (movement.sqrMagnitude > controllerDeadZone * controllerDeadZone)
+            {
+                // No target — face movement direction
+                Vector3 moveDir = new Vector3(movement.x, 0f, movement.y);
+
+                if (moveDir.sqrMagnitude > 0.01f)
+                {
+                    Quaternion moveRotation = Quaternion.LookRotation(moveDir, Vector3.up);
+                    transform.rotation = Quaternion.RotateTowards(transform.rotation, moveRotation, gamepadRotateSmoothing * Time.deltaTime);
+                }
+            }
+            return;
+        }
+
+        // Standard mode: gamepad right stick or mouse
         if (isGamepad)
         {
-            //rotate player
             if (Mathf.Abs(aim.x) > controllerDeadZone || Mathf.Abs(aim.y) > controllerDeadZone)
             {
                 Vector3 playerDirection = Vector3.right * aim.x + Vector3.forward * aim.y;
-
-                //shoots whenever the player is rotating 
-                //Shoot();
 
                 if (playerDirection.sqrMagnitude > 0.0f)
                 {
@@ -168,7 +246,6 @@ public class TwinStickMovement : MonoBehaviour
                 }
             }
         }
-
         else
         {
             Ray ray = Camera.main.ScreenPointToRay(aim);
