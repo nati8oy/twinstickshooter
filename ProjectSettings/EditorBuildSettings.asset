@@ -23,5 +23,14 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Hookshot Package/Levels/GummyLevel2.unity
     guid: 2e5cc7c49f1f34db4b8bef9ced4c0eb6
+  - enabled: 1
+    path: Assets/Hookshot Package/Levels/FTUE-ExplodingCrates.unity
+    guid: 5120333c06d0c4325859ae259b9a4543
+  - enabled: 1
+    path: Assets/Hookshot Package/Levels/FTUE-Collecting.unity
+    guid: 8b7bd1927398f4ff0a0197146549ba63
+  - enabled: 1
+    path: Assets/Hookshot Package/Levels/FTUE-Hookshot.unity
+    guid: 6900900ae22ae48f3a29777542426b97
   m_configObjects: {}
   m_UseUCBPForAssetBundles: 0

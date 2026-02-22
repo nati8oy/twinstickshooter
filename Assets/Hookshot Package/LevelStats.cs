@@ -20,6 +20,13 @@ public class LevelStats : Singleton<LevelStats>
         {
             totalByColour[(int)g.colour]++;
         }
+
+        if (allGummies.Length == 0)
+        {
+            exitUnlocked = true;
+            LevelExit exit = FindObjectOfType<LevelExit>(true);
+            if (exit != null) exit.gameObject.SetActive(true);
+        }
     }
 
     private void Update()

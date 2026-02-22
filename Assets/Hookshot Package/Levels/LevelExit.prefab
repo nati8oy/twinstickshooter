@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 964825620114847685}
   - component: {fileID: 6892854180100473097}
   - component: {fileID: 5582766453719262455}
-  m_Layer: 10
+  m_Layer: 0
   m_Name: LevelExit
   m_TagString: Untagged
   m_Icon: {fileID: 5132851093641282708, guid: 0000000000000000d000000000000000, type: 0}
@@ -207,7 +207,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4024109404293698043, guid: 21eff8e3b57794540a58901962427ed3, type: 3}
       propertyPath: m_Layer
-      value: 10
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4024109404293698044, guid: 21eff8e3b57794540a58901962427ed3, type: 3}
       propertyPath: m_Materials.Array.size
@@ -255,7 +255,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4024109405021033351, guid: 21eff8e3b57794540a58901962427ed3, type: 3}
       propertyPath: m_Layer
-      value: 10
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4024109405021033353, guid: 21eff8e3b57794540a58901962427ed3, type: 3}
       propertyPath: m_Materials.Array.size
@@ -267,7 +267,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6276410702624290202, guid: 21eff8e3b57794540a58901962427ed3, type: 3}
       propertyPath: m_Layer
-      value: 10
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

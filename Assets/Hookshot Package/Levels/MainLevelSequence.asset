@@ -15,6 +15,10 @@ MonoBehaviour:
   levels:
   - sceneName: FTUE-Collecting
     objective: Put the gummies in their pen
+  - sceneName: FTUE-Hookshot
+    objective: Grapple onto blue objects
+  - sceneName: FTUE-ExplodingCrates
+    objective: Throw crates at doors to destroy them
   - sceneName: GummyLevel1
     objective: Take all green gummies to their pen
   - sceneName: GummyLevel2
